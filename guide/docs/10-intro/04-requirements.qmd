@@ -1,0 +1,79 @@
+# Requerimientos
+
+Los requerimientos generales de IASI se expresan en términos de **capacidades**, no de una plataforma concreta.
+
+La combinación Windows + Hyper-V + Ubuntu Server/Kubuntu utilizada en esta guía se documenta posteriormente como instalación de referencia.
+
+## Capacidades del anfitrión
+
+El equipo anfitrión debe proporcionar capacidad suficiente para materializar y ejecutar los nodos seleccionados.
+
+Cuando la plataforma elegida utilice máquinas virtuales, el anfitrión debe disponer de:
+
+- arquitectura de 64 bits;
+- virtualización por hardware habilitada;
+- memoria suficiente para los nodos que deban ejecutarse simultáneamente;
+- almacenamiento suficiente para discos virtuales, imágenes de instalación, caches y artefactos;
+- conectividad de red durante las fases que consuman recursos externos;
+- permisos para crear y administrar los mecanismos de aislamiento utilizados por la plataforma.
+
+## Recursos
+
+El dimensionamiento depende de los nodos que se materialicen y, especialmente, de los servicios de inteligencia artificial que se ejecuten.
+
+```{r}
+#| echo: false
+
+recursos = data.frame(
+  Rol = c(
+    "tools",
+    "work",
+    "ai · light",
+    "ai · normal",
+    "ai · heavy",
+    "ai · beast"
+  ),
+  Función = c(
+    "Herramientas y servicios comunes",
+    "Entorno de trabajo interactivo",
+    "Servicios de IA",
+    "Servicios de IA",
+    "Servicios de IA",
+    "Servicios de IA"
+  ),
+  vCPU = c("4", "Según escenario", "4", "8", "12", "16"),
+  Memoria = c(
+    "4 GB",
+    "Según escenario",
+    "8–16 GB",
+    "16–32 GB",
+    "32–64 GB",
+    "64–128 GB"
+  ),
+  GPU = c("No", "No, salvo necesidad específica", "Sí", "Sí", "Sí", "Sí"),
+  check.names = FALSE
+)
+
+knitr::kable(
+  recursos,
+  caption = "Dimensionamiento orientativo por rol",
+  align = c("l", "l", "c", "c", "c")
+)
+```
+
+Estas cifras son una referencia de capacidad, no una definición de plataforma.
+
+## Red
+
+La plataforma debe poder proporcionar:
+
+- una red mediante la que se comuniquen los nodos IASI;
+- resolución de nombres o direccionamiento estable entre los nodos que lo necesiten;
+- acceso a Internet cuando deban descargarse repositorios, paquetes, imágenes o componentes externos;
+- acceso a GitHub y a los demás servicios externos utilizados por el entorno.
+
+## GPU
+
+Los nodos que ejecuten modelos o servicios de inteligencia artificial pueden necesitar acceso a GPU. La cantidad de VRAM y el mecanismo utilizado para exponerla dependen de los modelos y de la plataforma seleccionada.
+
+La necesidad de GPU pertenece al nodo y a su carga de trabajo. El mecanismo concreto para proporcionarla pertenece a la instalación.

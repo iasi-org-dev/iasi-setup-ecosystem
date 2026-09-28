@@ -1,0 +1,139 @@
+# Configuración
+
+La configuración de `iasi-setup-ecosystem` describe el **estado deseado del ecosistema**. Su función es expresar qué debe materializarse, no imponer cómo debe hacerlo una instalación concreta.
+
+Por este motivo, la configuración se mantiene conceptualmente separada de decisiones como:
+
+- el sistema operativo del anfitrión;
+- el gestor de máquinas virtuales;
+- la distribución utilizada por los sistemas invitados.
+
+Esas elecciones pertenecen a la instalación.
+
+## Organización
+
+La configuración se divide en información común del ecosistema y configuración específica de cada nodo.
+
+```{.plantuml}
+@startfiles
+/config/iasi-net.toml
+
+/config/iasi-tools/config-data/config.ps1
+/config/iasi-tools/config-data/packages.ps1
+/config/iasi-tools/meta-data
+/config/iasi-tools/user-data
+/config/iasi-tools/services/iasi-tools-compose.yml
+
+/config/iasi-ai/config-data/modes.ps1
+/config/iasi-ai/config-data/packages.ps1
+
+/config/iasi-work/config-data/config.ps1
+@endfiles
+```
+
+La estructura puede crecer a medida que aparezcan nuevos nodos o nuevas responsabilidades. Los nombres concretos de los ficheros consumidos por una implementación pueden evolucionar sin cambiar la separación entre configuración común y configuración por nodo.
+
+## Configuración común
+
+`config/iasi-net.toml` mantiene la información de red compartida por los nodos.
+
+Actualmente define:
+
+```{r}
+#| echo: false
+
+red = data.frame(
+  Elemento = c(
+    "Red",
+    "Subred",
+    "Prefijo",
+    "Gateway",
+    "DNS",
+    "iasi-dev",
+    "iasi-tools",
+    "iasi-ai",
+    "iasi-labs",
+    "iasi-work",
+    "iasi-tests"
+  ),
+  Valor = c(
+    "iasi-net",
+    "10.77.0.0/24",
+    "24",
+    "10.77.0.1",
+    "1.1.1.1, 8.8.8.8",
+    "10.77.0.10",
+    "10.77.0.20",
+    "10.77.0.30",
+    "10.77.0.40",
+    "10.77.0.50",
+    "10.77.0.60"
+  ),
+  check.names = FALSE
+)
+
+knitr::kable(
+  red,
+  caption = "Configuración de red de referencia",
+  align = c("l", "l")
+)
+```
+
+La red forma parte de la descripción del ecosistema. La forma de materializarla pertenece a la instalación correspondiente.
+
+## Configuración por nodo
+
+Cada directorio de nodo contiene la información necesaria para materializar ese rol. Según el nodo pueden aparecer datos relativos a:
+
+- identidad;
+- recursos de cálculo y memoria;
+- almacenamiento;
+- paquetes requeridos;
+- servicios;
+- perfiles de ejecución;
+- datos necesarios durante la instalación del sistema invitado.
+
+No todos los nodos necesitan los mismos elementos. La configuración expresa únicamente aquello que tenga sentido para cada rol.
+
+## Tipos de nodo
+
+A efectos de instalación distinguimos dos necesidades generales:
+
+```{r}
+#| echo: false
+
+tipos = data.frame(
+  Tipo = c("server", "desktop"),
+  Necesidad = c(
+    "Ejecución de servicios y herramientas sin necesidad de escritorio gráfico",
+    "Entorno de trabajo interactivo con escritorio gráfico"
+  ),
+  check.names = FALSE
+)
+
+knitr::kable(
+  tipos,
+  caption = "Tipos generales de sistema invitado",
+  align = c("l", "l")
+)
+```
+
+Los tipos describen una **capacidad requerida**, no una distribución Linux determinada.
+
+## Valores de referencia y valores locales
+
+La configuración versionada contiene valores de referencia que permiten reproducir el entorno.
+
+Algunos valores pueden ser necesariamente locales durante determinadas fases de la implementación, por ejemplo una ruta física del anfitrión donde se almacene temporalmente una imagen ISO. Que un valor sea local no lo convierte en parte del modelo abstracto de IASI.
+
+La regla es:
+
+> La configuración describe el entorno. La instalación interpreta esa configuración y resuelve los detalles locales necesarios para materializarlo.
+
+## Artefactos externos
+
+Las imágenes ISO de los sistemas operativos **no se almacenan en los repositorios de IASI**.
+
+Son artefactos externos y voluminosos. El proceso de instalación debe obtenerlos desde sus fuentes oficiales cuando sean necesarios y puede conservar una copia local para reutilizarla.
+
+Por tanto, la configuración puede identificar el tipo de sistema que necesita un nodo, mientras que la instalación decide cómo localizarlo, descargarlo, validarlo y almacenarlo.

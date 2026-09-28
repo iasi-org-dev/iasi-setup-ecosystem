@@ -1,0 +1,9 @@
+---
+title: "Licencias"
+---
+
+`iasi-setup-ecosystem` se distribuye bajo la licencia indicada en el fichero `LICENSE` de la raíz del repositorio.
+
+La guía incluye una copia del texto legal aplicable en `back-matter/LICENSES/MIT.txt` para que la publicación sea autocontenida. Los avisos y licencias de terceros que deban acompañar a binarios redistribuidos se mantienen en `LICENSES/` y, cuando corresponda, en `NOTICE`.
+
+El inventario definitivo de terceros se cerrará al decidir qué binarios y componentes forman parte de la distribución estable.

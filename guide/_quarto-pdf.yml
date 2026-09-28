@@ -1,0 +1,41 @@
+project:
+  output-dir: _outputs/pdf
+
+format:
+  pdf:
+    documentclass: scrreprt
+    classoption:
+      - twoside
+      - open=right
+    papersize: a4
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    colorlinks: true
+    linkcolor: black
+    urlcolor: blue
+    citecolor: blue
+
+    geometry:
+      - top=22mm
+      - bottom=22mm
+      - left=25mm
+      - right=25mm
+      - headheight=15pt
+      - headsep=8mm
+      - footskip=10mm
+
+    template-partials:
+      - resources/latex/before-body.tex
+
+    include-in-header:
+      - resources/latex/header-footer.tex
+      - text: |
+           % Compactar títulos de capítulo y sección para una composición más editorial.
+           \RedeclareSectionCommand[
+             afterskip=.2\baselineskip
+           ]{chapter}
+           \RedeclareSectionCommand[
+             beforeskip=.35\baselineskip,
+             afterskip=.2\baselineskip
+           ]{section}

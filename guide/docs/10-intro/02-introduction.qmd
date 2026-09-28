@@ -1,0 +1,39 @@
+# Introducción
+
+IASI no se distribuye como una única aplicación ni como un único repositorio. Está formado por un conjunto de proyectos con responsabilidades diferentes: herramientas, documentación, infraestructura, componentes de ejecución, servicios y productos derivados.
+
+El repositorio sigue siendo la unidad natural de desarrollo y control de versiones, pero el ecosistema no puede gestionarse correctamente como una colección de repositorios independientes. Las operaciones que afectan a IASI suelen tener alcance conjunto: preparar un entorno, validar compatibilidades, construir, versionar, congelar un estado, promocionarlo o materializarlo para su consumo.
+
+Por ese motivo, IASI organiza sus repositorios alrededor de **organizaciones GitHub** que representan estados distintos del ecosistema.
+
+## Organizaciones IASI
+
+### `iasi-org-dev`
+
+`iasi-org-dev` contiene el ecosistema de **desarrollo**. Es la fuente de verdad para el trabajo de ingeniería: aquí evolucionan los repositorios, se integran cambios y se preparan nuevas versiones.
+
+Los repositorios de esta organización conservan la información necesaria para desarrollar IASI y continuar su evolución.
+
+### `iasi-org`
+
+`iasi-org` contiene el estado **promovido** del ecosistema. No es una segunda línea de desarrollo paralela, sino una materialización obtenida a partir de un estado validado y congelado de `iasi-org-dev`.
+
+Esta separación permite distinguir con claridad entre el entorno donde IASI evoluciona y el estado que se pone a disposición para su utilización.
+
+## Gestión del ecosistema
+
+La existencia de múltiples repositorios y de dos organizaciones relacionadas hace que determinadas operaciones no deban resolverse manualmente repositorio a repositorio.
+
+IASI proporciona herramientas explícitas para trabajar con el ecosistema como una unidad coherente. Entre otras responsabilidades, estas herramientas permiten:
+
+- preparar un entorno desde un punto de entrada conocido;
+- descubrir y gestionar los repositorios que forman parte del ecosistema;
+- aplicar operaciones comunes de forma consistente;
+- mantener la relación entre desarrollo, versión y promoción;
+- materializar el estado necesario sin convertir cada instalación en un procedimiento artesanal.
+
+`iasi-setup-ecosystem` es el punto de entrada para preparar ese entorno. Su objetivo es que una instalación pueda comenzar clonando **un único repositorio** y que la documentación, las herramientas y la configuración necesarias para continuar estén disponibles desde él.
+
+A partir de ese punto, otras herramientas de IASI, como `iasi-dev`, gestionan operaciones de ciclo de vida que afectan al conjunto de repositorios.
+
+La guía parte de este modelo: primero se obtiene el punto de entrada, después se revisa la configuración general del ecosistema y, finalmente, se materializa esa configuración sobre una plataforma concreta.

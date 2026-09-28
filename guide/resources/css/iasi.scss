@@ -1,0 +1,300 @@
+/*-- scss:defaults --*/
+
+// IASI common layout
+$grid-body-width: 1200px;
+$grid-sidebar-width: 360px;
+
+// IASI corporate palette
+$iasi-quarto-blue: #39729e;
+$navbar-bg: $iasi-quarto-blue;
+$navbar-fg: #ffffff;
+
+
+/*-- scss:rules --*/
+
+body {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+#quarto-document-content p,
+#quarto-document-content ul,
+#quarto-document-content ol {
+  max-width: 133ch;
+}
+
+:root {
+  --iasi-page-pad: clamp(1.5rem, 4vw, 4rem);
+  --iasi-quarto-blue: #{$iasi-quarto-blue};
+  --iasi-soft: rgba(127, 127, 127, 0.10);
+  --iasi-border: rgba(127, 127, 127, 0.22);
+
+  /* Shared IASI page-title typography. */
+  --iasi-title-font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --iasi-title-font-size: clamp(2.6rem, 5vw, 4.1rem);
+  --iasi-title-font-weight: 600;
+  --iasi-title-line-height: 1.02;
+  --iasi-title-letter-spacing: -0.025em;
+
+  --iasi-nav-brand-width: 240px;  
+}
+
+/* Keep Quarto's header flush with the page content below it. */
+#quarto-header {
+  margin: 0 !important;
+  padding: 0 !important;
+  border-bottom: 0 !important;
+}
+
+#quarto-header + #quarto-content {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* IASI headings use the corporate blue throughout the site. */
+#quarto-document-content h1,
+#quarto-document-content h2,
+#quarto-document-content h3,
+#title-block-header h1 {
+  color: var(--iasi-quarto-blue);
+}
+
+#quarto-document-content h1 a,
+#quarto-document-content h2 a,
+#quarto-document-content h3 a,
+#title-block-header h1 a {
+  color: inherit;
+}
+
+/* Quarto title block shared by IASI publications. */
+#title-block-header {
+  width: 100% !important;
+  max-width: none !important;
+  padding: 1.25rem var(--iasi-page-pad) !important;
+  /* margin-top: -17px; */
+}
+
+#title-block-header .quarto-title,
+#title-block-header .quarto-title-block,
+.quarto-title-block .quarto-title {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.quarto-title-block .quarto-title h1.title,
+#title-block-header .title {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: var(--iasi-title-font-family) !important;
+  font-size: var(--iasi-title-font-size) !important;
+  font-weight: var(--iasi-title-font-weight) !important;
+  line-height: var(--iasi-title-line-height) !important;
+  letter-spacing: var(--iasi-title-letter-spacing) !important;
+  color: var(--iasi-quarto-blue) !important;
+  text-align: center;
+}
+
+/* Full-width page heading used when a page supplies its own title block. */
+.iasi-page-heading {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 2.5rem !important;
+  padding: 1.25rem var(--iasi-page-pad) !important;
+  text-align: center;
+}
+
+.iasi-page-heading > h1,
+.iasi-page-heading > .iasi-page-title {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: var(--iasi-title-font-family);
+  font-size: var(--iasi-title-font-size);
+  font-weight: var(--iasi-title-font-weight);
+  line-height: var(--iasi-title-line-height);
+  letter-spacing: var(--iasi-title-letter-spacing);
+  color: var(--iasi-quarto-blue);
+  text-align: center;
+}
+
+.iasi-page-heading > .iasi-epigraph {
+  width: 100%;
+  max-width: none;
+  margin: 0.1rem 0 0 !important;
+  padding: 0 !important;
+  border: 0;
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
+  line-height: 1.3;
+  text-align: center;
+  opacity: 0.62;
+}
+
+.iasi-page-heading > .iasi-epigraph > p {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+}
+
+/***********************************************************/
+/* Corporate banner: Quarto announcement above the navbar. */
+/***********************************************************/
+
+#quarto-announcement {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+#quarto-announcement .quarto-announcement-content,
+#quarto-announcement .quarto-figure,
+#quarto-announcement figure {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#quarto-announcement .quarto-announcement-content p {
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+#quarto-announcement .iasi-ants-image {
+  display: block;
+  width: 100%;
+  height: 128px;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Corporate IASI navigation. */
+#quarto-header .navbar {
+  margin-bottom: 0 !important;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 0 !important;
+}
+
+#quarto-header .navbar-brand,
+#quarto-header .navbar-nav .nav-link,
+#quarto-header .navbar .quarto-navbar-tools a {
+  color: $navbar-fg !important;
+}
+
+#quarto-header .navbar-nav .nav-link:hover,
+#quarto-header .navbar-nav .nav-link:focus,
+#quarto-header .navbar .quarto-navbar-tools a:hover {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  min-width: var(--iasi-nav-brand-width);  
+}
+
+/* Site status is part of the corporate navbar identity. */
+.navbar-brand::after {
+  content: "🚧 WORK IN PROGRESS";
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.5rem;
+  border-radius: 999px;
+  background: #f4c95d;
+  color: #2d2a22;
+  font-size: 0.64rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+#title-block-header .subtitle {
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .navbar-brand::after {
+    content: "🚧 WIP";
+  }
+}
+
+.iasi-ai-banner {
+  width: 100%;
+  margin: 2rem 0 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.iasi-ai-banner-image {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  opacity: 0.72;
+}
+
+/******************************************************************************/
+/* Componentes comunes: p, blockquote, etc                                    */
+/******************************************************************************/
+
+p {
+  margin-top: 1em;
+  margin-bottom: 0;
+}
+
+blockquote, ul, ol {
+  margin-bottom: 0.5em;
+}
+
+/******************************************************************************
+ * Icono para abrir iframes en otro ventana y control del banner             
+ ******************************************************************************/
+
+#navbarCollapse a[href$="#iasi-open-external"] {
+  display: none !important;
+}
+
+.iasi-embedded #navbarCollapse a[href$="#iasi-open-external"] {
+  display: inline-flex !important;
+}
+
+.iasi-embedded #quarto-announcement {
+  display: none !important;
+}
+
+.iasi-hidden {
+  display: none !important;
+}
+
+/******************************************************************************
+ * Pie de pagina pro defecto
+ ******************************************************************************/
+
+.nav-footer {
+  background: #eef5fb;
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+  font-size: 0.85rem;
+}
+
+#iasi-publish-date {
+  color: var(--bs-primary);
+  font-weight: 600;
+}
+
+.principle {
+  color: red;
+}

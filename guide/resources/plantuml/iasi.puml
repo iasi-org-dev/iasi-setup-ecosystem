@@ -1,0 +1,154 @@
+' =============================================================================
+' IASI PlantUML Library
+' Ingeniería Aumentada por Sistemas Inteligentes
+' =============================================================================
+
+' -----------------------------------------------------------------------------
+' Global style
+' -----------------------------------------------------------------------------
+
+skinparam backgroundColor transparent
+skinparam shadowing false
+skinparam linetype ortho
+
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 14
+skinparam defaultFontColor #202124
+
+skinparam ArrowColor #4A4A4A
+skinparam ArrowThickness 2
+
+skinparam rectangle {
+    BorderColor #4E79A7
+    BackgroundColor #EAF2FB
+    FontColor #202124
+    RoundCorner 10
+}
+
+skinparam package {
+    BorderColor #7A7A7A
+    BackgroundColor #F6F8FA
+    FontColor #202124
+}
+
+skinparam note {
+    BorderColor #C8A951
+    BackgroundColor #FFF8DC
+    FontColor #202124
+}
+
+skinparam title {
+    FontSize 18
+    FontStyle bold
+    FontColor #202124
+}
+
+skinparam nodesep 28
+skinparam ranksep 34
+
+' -----------------------------------------------------------------------------
+' Semantic palette
+' -----------------------------------------------------------------------------
+
+!define IASI_COLOR_KNOWLEDGE   #EAF2FB
+!define IASI_BORDER_KNOWLEDGE  #4E79A7
+
+!define IASI_COLOR_PROCESS     #F1EAF8
+!define IASI_BORDER_PROCESS    #7A5AA6
+
+!define IASI_COLOR_SPEC        #EDE7F6
+!define IASI_BORDER_SPEC       #6F52A3
+
+!define IASI_COLOR_IMPLEMENT   #EAF6EA
+!define IASI_BORDER_IMPLEMENT  #4D8B57
+
+!define IASI_COLOR_VERIFY      #FFF0D9
+!define IASI_BORDER_VERIFY     #C7852E
+
+!define IASI_COLOR_EVIDENCE    #F0F0F0
+!define IASI_BORDER_EVIDENCE   #777777
+
+!define IASI_COLOR_DECISION    #FCE8F1
+!define IASI_BORDER_DECISION   #A94F7A
+
+!define IASI_COLOR_EXTERNAL    #F7F7F7
+!define IASI_BORDER_EXTERNAL   #9A9A9A
+
+!define IASI_COLOR_WARNING     #FFF4CC
+!define IASI_BORDER_WARNING    #B48A00
+
+' -----------------------------------------------------------------------------
+' Semantic elements
+' -----------------------------------------------------------------------------
+
+!unquoted procedure IASI_KNOWLEDGE(alias, label)
+rectangle label as alias IASI_COLOR_KNOWLEDGE IASI_BORDER_KNOWLEDGE
+!endprocedure
+
+!unquoted procedure IASI_PROCESS(alias, label)
+rectangle label as alias IASI_COLOR_PROCESS IASI_BORDER_PROCESS
+!endprocedure
+
+!unquoted procedure IASI_SPEC(alias, label)
+rectangle label as alias IASI_COLOR_SPEC IASI_BORDER_SPEC
+!endprocedure
+
+!unquoted procedure IASI_IMPLEMENTATION(alias, label)
+rectangle label as alias IASI_COLOR_IMPLEMENT IASI_BORDER_IMPLEMENT
+!endprocedure
+
+!unquoted procedure IASI_VERIFICATION(alias, label)
+rectangle label as alias IASI_COLOR_VERIFY IASI_BORDER_VERIFY
+!endprocedure
+
+!unquoted procedure IASI_EVIDENCE(alias, label)
+rectangle label as alias IASI_COLOR_EVIDENCE IASI_BORDER_EVIDENCE
+!endprocedure
+
+!unquoted procedure IASI_DECISION(alias, label)
+rectangle label as alias IASI_COLOR_DECISION IASI_BORDER_DECISION
+!endprocedure
+
+!unquoted procedure IASI_EXTERNAL(alias, label)
+rectangle label as alias IASI_COLOR_EXTERNAL IASI_BORDER_EXTERNAL
+!endprocedure
+
+!unquoted procedure IASI_WARNING(alias, label)
+rectangle label as alias IASI_COLOR_WARNING IASI_BORDER_WARNING
+!endprocedure
+
+' -----------------------------------------------------------------------------
+' Semantic relations
+' -----------------------------------------------------------------------------
+
+!unquoted procedure IASI_FLOW(from, to)
+from --> to
+!endprocedure
+
+!unquoted procedure IASI_FLOW_LABELED(from, to, label)
+from --> to : label
+!endprocedure
+
+!unquoted procedure IASI_FEEDBACK(from, to)
+from ..> to
+!endprocedure
+
+!unquoted procedure IASI_FEEDBACK_LABELED(from, to, label)
+from ..> to : label
+!endprocedure
+
+!unquoted procedure IASI_TRACE(from, to)
+from .> to
+!endprocedure
+
+!unquoted procedure IASI_TRACE_LABELED(from, to, label)
+from .> to : label
+!endprocedure
+
+!unquoted procedure IASI_DEPENDS(from, to)
+from --> to
+!endprocedure
+
+!unquoted procedure IASI_DEPENDS_LABELED(from, to, label)
+from --> to : label
+!endprocedure

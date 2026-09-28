@@ -1,0 +1,27 @@
+## Guests
+
+Los **guests** son los sistemas invitados donde se materializan los nodos IASI.
+
+La instalación de referencia utiliza una plataforma Linux basada en Ubuntu, pero la elección se realiza a partir de la capacidad que necesita cada nodo, no de una dependencia arquitectónica de IASI con una distribución concreta.
+
+```{r}
+#| echo: false
+
+guests = data.frame(
+  Tipo = c("server", "desktop"),
+  `Distribución de referencia` = c("Ubuntu Server", "Kubuntu"),
+  Uso = c(
+    "Servicios, herramientas y ejecución sin escritorio gráfico",
+    "Entorno de trabajo interactivo con escritorio KDE"
+  ),
+  check.names = FALSE
+)
+
+knitr::kable(
+  guests,
+  caption = "Sistemas invitados de la instalación de referencia",
+  align = c("l", "l", "l")
+)
+```
+
+Ubuntu Server y Kubuntu constituyen la combinación sobre la que se desarrolla y prueba actualmente esta instalación. Otras distribuciones pueden incorporarse cuando proporcionen las capacidades requeridas y exista soporte para instalarlas y configurarlas.

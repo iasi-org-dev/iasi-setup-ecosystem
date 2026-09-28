@@ -1,0 +1,14 @@
+services:
+
+  plantuml:
+    image: plantuml/plantuml-server:jetty
+    container_name: iasi-plantuml
+    ports:
+      - "10025:8080"
+    networks:
+      - iasi
+    restart: unless-stopped
+
+networks:
+  iasi:
+    name: iasi

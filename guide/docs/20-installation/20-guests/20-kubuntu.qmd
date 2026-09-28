@@ -1,0 +1,11 @@
+### Kubuntu
+
+**Kubuntu** es la variante de referencia elegida actualmente para nodos de tipo `desktop`.
+
+Proporciona una base Ubuntu con escritorio KDE y se utiliza cuando el nodo necesita un entorno gráfico completo de trabajo.
+
+Kubuntu es una elección de la implementación actual. No es una dependencia conceptual de IASI.
+
+#### Imágenes ISO
+
+Las ISOs de Kubuntu tampoco se almacenan en Git. El setup debe tratarlas como artefactos externos, descargarlas desde su fuente oficial cuando sean necesarias y reutilizar una copia local válida cuando esté disponible.

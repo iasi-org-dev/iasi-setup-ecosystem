@@ -1,0 +1,10 @@
+.Rproj.user/
+.Rhistory
+.quarto/
+_freeze/
+_outputs/
+_publish/
+release/
+**/logs/
+*.log
+.Rproj.user

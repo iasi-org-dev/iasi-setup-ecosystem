@@ -1,0 +1,7 @@
+## Host
+
+El **host** es el equipo físico sobre el que se materializa el entorno IASI.
+
+Su responsabilidad es proporcionar capacidad de proceso, memoria, almacenamiento, red y los mecanismos necesarios para ejecutar los entornos aislados definidos por la instalación.
+
+El host no debe asumir las responsabilidades funcionales de los nodos IASI. Su papel es proporcionar la plataforma sobre la que esos nodos pueden crearse, ejecutarse y administrarse.

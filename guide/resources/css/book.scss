@@ -1,0 +1,50 @@
+/*-- scss:rules --*/
+
+/* IASI Book
+   -------------------------------------------------------------------------- */
+
+/*
+ * Estilos específicos de publicaciones tipo book.
+ * La identidad corporativa común vive en iasi.css.
+ */
+ 
+ 
+ /*****************************************************************************/
+ /* QUARTO                                                                    */
+ /*****************************************************************************/
+ 
+ /* En los libros formales no sacamos los metadatos */
+ .quarto-title-meta {
+  display: none !important;
+}
+
+.nav-footer {
+  background: var(--bs-tertiary-bg);
+  border-top: 1px solid var(--bs-border-color);
+}
+
+#quarto-margin-sidebar {
+  display: none !important;
+}
+
+ /*****************************************************************************/
+ /* Footer                                                                    */
+ /*****************************************************************************/
+
+.nav-footer {
+  background: #eef5fb;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  font-size: 0.85rem;
+}
+
+#iasi-publish-date {
+  color: var(--bs-primary);
+  font-weight: 600;
+}
+
+/* Breadcrumbs */
+
+.quarto-page-breadcrumbs {
+  display: none !important;
+}

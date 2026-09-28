@@ -1,0 +1,44 @@
+# Obtener el ecosistema
+
+La instalación comienza desde un único repositorio: `iasi-setup-ecosystem`.
+
+Este repositorio actúa como **bootstrap** del ecosistema. Contiene la guía, las herramientas de setup y la configuración necesarias para continuar el proceso sin obligar al usuario a localizar y clonar manualmente cada repositorio que forme parte de IASI.
+
+## Elegir la organización
+
+IASI mantiene dos organizaciones con responsabilidades distintas.
+
+Para **instalar o utilizar** un estado promovido del ecosistema, el punto de entrada es `iasi-org`:
+
+```bash
+git clone https://github.com/iasi-org/iasi-setup-ecosystem.git
+cd iasi-setup-ecosystem
+```
+
+Para **desarrollar IASI**, el punto de entrada es `iasi-org-dev`:
+
+```bash
+git clone https://github.com/iasi-org-dev/iasi-setup-ecosystem.git
+cd iasi-setup-ecosystem
+```
+
+En ambos casos se trabaja sobre la rama `main` salvo que el procedimiento indique expresamente otra versión o referencia.
+
+La elección determina qué estado del ecosistema se pretende materializar:
+
+- `iasi-org-dev`: estado de desarrollo y fuente de verdad para la ingeniería de IASI;
+- `iasi-org`: estado promovido preparado para su utilización.
+
+## Qué proporciona el repositorio
+
+Después del clonado, `iasi-setup-ecosystem` proporciona el punto de partida del setup:
+
+- esta guía de instalación;
+- scripts y ejecutables de instalación;
+- configuración versionada del ecosistema;
+- valores de referencia para iniciar una instalación;
+- mecanismos para obtener o materializar los demás componentes cuando sean necesarios.
+
+El objetivo es que **clonar repositorios adicionales no sea un paso manual de instalación**. La incorporación del resto del ecosistema corresponde a las herramientas de setup.
+
+El siguiente paso es revisar la configuración que describe el entorno que se desea materializar.

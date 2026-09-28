@@ -1,0 +1,41 @@
+# Objetivo
+
+El objetivo de la instalación es obtener un **entorno IASI coherente, reproducible y reconstruible** a partir de un punto de entrada mínimo.
+
+La instalación no consiste simplemente en descargar repositorios. Debe dejar preparado un entorno desde el que las herramientas de IASI puedan descubrir, construir, validar y gestionar los componentes que correspondan al escenario elegido.
+
+El proceso persigue cuatro objetivos principales:
+
+1. disponer de una base común y conocida para trabajar con IASI;
+2. evitar configuraciones manuales dispersas entre repositorios y máquinas;
+3. separar con claridad el desarrollo del ecosistema de sus materializaciones para consumo;
+4. permitir que el entorno pueda reconstruirse a partir de fuentes y configuración versionadas.
+
+## Separación entre configuración e instalación
+
+IASI distingue entre el **modelo del entorno** y la **plataforma utilizada para materializarlo**.
+
+La configuración describe qué elementos deben existir: nodos, red, recursos, servicios, paquetes y demás propiedades del entorno. Esa descripción debe mantenerse tan independiente como sea posible del sistema operativo anfitrión, del gestor de máquinas virtuales y del sistema invitado utilizados por una instalación concreta.
+
+La instalación resuelve después cómo convertir ese modelo en máquinas y servicios reales.
+
+```{.plantuml}
+@startuml
+left to right direction
+
+skinparam shadowing false
+skinparam rectangle {
+  BackgroundColor #FFF7D6
+  BorderColor #666666
+}
+
+rectangle "Configuración IASI\nqué debe existir" as config
+rectangle "Instalación\ncómo se materializa" as install
+rectangle "Entorno IASI\nmaterializado" as environment
+
+config --> install
+install --> environment
+@enduml
+```
+
+Esta separación permite evolucionar la implementación sin convertir una decisión concreta de plataforma en una dependencia arquitectónica de IASI.

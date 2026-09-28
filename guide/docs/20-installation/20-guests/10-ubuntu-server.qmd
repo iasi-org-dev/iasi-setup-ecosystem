@@ -1,0 +1,11 @@
+### Ubuntu Server
+
+**Ubuntu Server** es la variante de referencia para nodos de tipo `server`.
+
+Su uso encaja con máquinas dedicadas a servicios, herramientas de infraestructura, procesos de construcción y otros componentes que no necesitan una sesión gráfica interactiva.
+
+La instalación actual utiliza el mecanismo de instalación desatendida de Ubuntu cuando el nodo dispone de la configuración necesaria para ello.
+
+#### Imágenes ISO
+
+Las ISOs de Ubuntu Server no se almacenan en Git. Son artefactos externos que el setup debe poder obtener desde su fuente oficial y conservar localmente cuando resulte útil reutilizarlas.

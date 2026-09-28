@@ -1,0 +1,32 @@
+#### Hyper-V
+
+Dentro de la variante Windows, **Hyper-V** es el gestor de máquinas virtuales encargado de materializar los nodos IASI.
+
+La configuración expresa qué nodos y capacidades necesita el ecosistema. Las herramientas de instalación traducen esa información a máquinas, discos, memoria, procesadores y adaptadores de red de Hyper-V.
+
+##### Materialización declarativa
+
+Las máquinas no deberían construirse manualmente desde Hyper-V Manager como parte del procedimiento normal de instalación.
+
+Las herramientas incluidas en `iasi-setup-ecosystem` utilizan la configuración versionada para crear o reconciliar el entorno. De este modo, la configuración sigue siendo la fuente de información y Hyper-V es el mecanismo que la materializa.
+
+##### Red
+
+La implementación actual distingue dos necesidades de conectividad para las máquinas virtuales:
+
+- una **red privada IASI**, con direccionamiento estable entre nodos;
+- conectividad a **Internet** para descargar paquetes y dependencias externas.
+
+`config/iasi-net.toml` contiene la topología y las direcciones del ecosistema. Los scripts de la instalación Windows son responsables de convertir esos datos en switches, interfaces, NAT y adaptadores de Hyper-V cuando corresponda.
+
+##### Ciclo de vida
+
+La creación de una máquina incluye, según el nodo:
+
+1. creación de la VM;
+2. asignación de CPU y memoria;
+3. creación y conexión del disco virtual;
+4. conexión de los adaptadores de red;
+5. asociación del medio de instalación;
+6. arranque de la instalación del sistema invitado;
+7. aplicación de la configuración específica del nodo.

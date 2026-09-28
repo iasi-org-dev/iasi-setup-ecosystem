@@ -1,0 +1,19 @@
+---
+title: "IASI Ecosystem Installation Guide"
+---
+
+Esta guía describe cómo preparar un entorno para desarrollar, construir, probar y evolucionar el ecosistema IASI.
+
+La instalación parte de un único repositorio, `iasi-setup-ecosystem`, y separa deliberadamente tres cuestiones distintas:
+
+1. **qué es el ecosistema que queremos materializar**;
+2. **cómo se configura ese ecosistema**;
+3. **qué plataforma concreta utilizamos para materializarlo**.
+
+La configuración se mantiene general. La guía utiliza después una instalación de referencia basada en **Windows + Hyper-V + Ubuntu Server/Kubuntu**, pero esa combinación no forma parte del contrato arquitectónico de IASI.
+
+## Principio de validación
+
+Si durante una instalación limpia es necesario recordar un paso que no aparece en esta guía, la guía está incompleta. Si un paso documentado no funciona, el procedimiento debe corregirse. Si aparece un requisito no declarado, debe incorporarse a la documentación.
+
+![](resources/images/iasi-banner.png){.iasi-subproducts-banner fig-alt="Ecosistema de herramientas de inteligencia artificial"}

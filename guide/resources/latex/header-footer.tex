@@ -1,0 +1,27 @@
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+
+% CABECERA
+\fancyhead[LE]{\small IASI Ecosystem Installation Guide}
+\fancyhead[RO]{\small IASI Ecosystem Installation Guide}
+
+% PIE: número de página en el exterior
+\fancyfoot[LE]{\small\thepage}
+\fancyfoot[RO]{\small\thepage}
+
+% Líneas
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Inicio de capítulo
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyhead[LE]{\small IASI Ecosystem Installation Guide}
+  \fancyhead[RO]{\small IASI Ecosystem Installation Guide}
+  \fancyfoot[LE]{\small\thepage}
+  \fancyfoot[RO]{\small\thepage}
+  \renewcommand{\headrulewidth}{0.4pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+}

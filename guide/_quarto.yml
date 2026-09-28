@@ -1,0 +1,45 @@
+project:
+  type: book
+  output-dir: _outputs
+
+  resources:
+    - back-matter/LICENSES/*.txt
+    - "!_publish/**"
+    - "!release/**"
+    - "!_outputs/**"
+
+profile:
+  group:
+    - [html, pdf]
+
+lang: es
+
+metadata-files:
+  - _generated/iasi-metadata.yml
+
+resource-path:
+  - resources
+
+book:
+  title: "IASI Ecosystem Installation Guide"
+  subtitle: "Instalación, configuración y validación del ecosistema IASI"
+  author: "Javier G. Grandez"
+  output-file: "IASI_Ecosystem_Installation_Guide"
+
+copyright:
+  holder: "Javier G. Grandez"
+  year: 2026
+
+license: "MIT"
+
+filters:
+  - iasi-plantuml
+  - resources/lua/iasi-js.lua
+
+filter-options:
+  plantuml:
+    enabled: true
+    server: http://iasi-docker:10025
+    cache: true
+    styles:
+      - resources/plantuml/iasi.puml

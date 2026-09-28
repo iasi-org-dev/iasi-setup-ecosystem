@@ -1,0 +1,8 @@
+title: IASI PlantUML
+author: Javier G. Grandez
+version: 0.4.0
+quarto-required: ">=1.4.0"
+
+contributes:
+  filters:
+    - iasi-plantuml.lua

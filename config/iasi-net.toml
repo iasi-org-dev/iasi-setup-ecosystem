@@ -1,0 +1,25 @@
+[network]
+name = "iasi-net"
+subnet = "10.77.0.0/24"
+prefix-length = 24
+gateway = "10.77.0.1"
+
+[internet]
+name = "Default Switch"
+
+[nat]
+name = "iasi-nat"
+
+[dns]
+servers = [
+  "1.1.1.1",
+  "8.8.8.8"
+]
+
+[nodes]
+iasi-dev = "10.77.0.10"
+iasi-tools = "10.77.0.20"
+iasi-ai = "10.77.0.30"
+iasi-labs = "10.77.0.40"
+iasi-work = "10.77.0.50"
+iasi-tests = "10.77.0.60"

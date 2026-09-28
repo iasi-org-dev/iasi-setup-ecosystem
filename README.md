@@ -1,119 +1,47 @@
+[🇬🇧 **English**](README.md) | [🇪🇸 Español](README.es.md)
+
 # IASI Setup Ecosystem
 
-[Español](#español) · [English](#english)
+`iasi-setup-ecosystem` is the entry point for installing and configuring the IASI ecosystem.
 
-`iasi-setup-ecosystem` forma parte de **IASI** y proporciona el punto de entrada para preparar un entorno desde el que desarrollar y trabajar con el ecosistema IASI.
+The repository keeps together:
 
-`iasi-setup-ecosystem` is part of **IASI** and provides the entry point for preparing an environment from which to develop and work with the IASI ecosystem.
+- the **Installation Guide**, materializable as web and PDF;
+- the **binaries and scripts** required by the installation;
+- the **configuration** of the ecosystem components;
+- the **licenses and notices** that must travel with the distribution.
 
-## Español
+## Getting started
 
-### Objetivo
-
-Este proyecto reúne:
-
-- una **guía de usuario** con el proceso de preparación del entorno;
-- los **ejecutables de setup** para las plataformas soportadas;
-- la base sobre la que se irá automatizando la instalación, configuración y materialización de los componentes necesarios del ecosistema IASI.
-
-### Estructura
-
-```text
-iasi-setup-ecosystem/
-├── bin/
-│   ├── ps/
-│   │   └── setup.ps1
-│   └── sh/
-│       └── setup.sh
-├── docs/
-│   └── user-guide/
-│       ├── _quarto.yml
-│       └── index.qmd
-├── LICENSE
-└── README.md
+```bash
+git clone https://github.com/iasi-org/iasi-setup-ecosystem.git
+cd iasi-setup-ecosystem
 ```
 
-### Uso
-
-#### Windows / PowerShell
+Windows:
 
 ```powershell
-.\bin\ps\setup.ps1
+.\setup.ps1
 ```
 
-#### Linux / shell
+Linux:
 
 ```bash
-./bin/sh/setup.sh
+./setup.sh
 ```
 
-Los scripts son, por ahora, el esqueleto mínimo del proceso de setup. Su funcionalidad crecerá junto con las necesidades del ecosistema IASI.
+The complete procedure is documented in [`guide/`](guide/).
 
-### Guía de usuario
+This repository is currently an **integration skeleton**. Its individual installation components have already been exercised separately; the next validation step is to reproduce the complete installation from a clean environment using only this repository and its guide.
 
-La documentación se encuentra en [`docs/user-guide`](docs/user-guide/).
+## Repository layout
 
-Para previsualizarla con Quarto:
-
-```bash
-quarto preview docs/user-guide
-```
-
----
-
-## English
-
-### Purpose
-
-This project contains:
-
-- a **user guide** describing the environment setup process;
-- the **setup executables** for supported platforms;
-- the foundation for progressively automating the installation, configuration, and materialization of the components required by the IASI ecosystem.
-
-### Structure
-
-```text
-iasi-setup-ecosystem/
-├── bin/
-│   ├── ps/
-│   │   └── setup.ps1
-│   └── sh/
-│       └── setup.sh
-├── docs/
-│   └── user-guide/
-│       ├── _quarto.yml
-│       └── index.qmd
-├── LICENSE
-└── README.md
-```
-
-### Usage
-
-#### Windows / PowerShell
-
-```powershell
-.\bin\ps\setup.ps1
-```
-
-#### Linux / shell
-
-```bash
-./bin/sh/setup.sh
-```
-
-For now, the scripts provide the minimal skeleton of the setup process. Their functionality will grow together with the needs of the IASI ecosystem.
-
-### User guide
-
-Documentation is located in [`docs/user-guide`](docs/user-guide/).
-
-To preview it with Quarto:
-
-```bash
-quarto preview docs/user-guide
-```
+- `bin/`: installation and ecosystem binaries/scripts.
+- `config/`: node, network and service configuration.
+- `guide/`: IASI Ecosystem Installation Guide source.
+- `setup.ps1` / `setup.sh`: human-facing bootstrap entry points.
+- `LICENSES/`: third-party license material redistributed with the product.
 
 ## License
 
-MIT License. See [`LICENSE`](LICENSE).
+MIT License. See [`LICENSE`](LICENSE). Third-party license material belongs under [`LICENSES/`](LICENSES/).

@@ -1,0 +1,22 @@
+### Windows
+
+En la instalación de referencia, el sistema operativo del host es **Windows**.
+
+Windows proporciona:
+
+- acceso a los recursos físicos del equipo;
+- Hyper-V y sus cmdlets de administración;
+- conectividad de red;
+- almacenamiento para discos virtuales e imágenes de instalación;
+- PowerShell para ejecutar las herramientas de materialización;
+- utilidades auxiliares necesarias para preparar determinados medios de instalación.
+
+La implementación actual utiliza Windows 11 Pro o una edición compatible con Hyper-V y requiere virtualización por hardware habilitada en BIOS/UEFI.
+
+#### Herramientas auxiliares
+
+WSL y `xorriso` pueden utilizarse para preparar o modificar determinados medios ISO cuando una operación requiere utilidades Linux.
+
+WSL no ejecuta el ecosistema IASI. Es una herramienta auxiliar del proceso de instalación sobre Windows.
+
+Las imágenes ISO no forman parte del repositorio. La instalación puede utilizar inicialmente rutas locales explícitas del host para almacenarlas o reutilizarlas y, cuando no estén disponibles, debe poder obtenerlas desde sus fuentes oficiales.

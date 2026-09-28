@@ -1,0 +1,49 @@
+#cloud-config
+
+autoinstall:
+  version: 1
+
+  source:
+    id: ubuntu-server-minimal
+
+  locale: en_US.UTF-8
+
+  keyboard:
+    layout: es
+
+  timezone: Europe/Madrid
+
+  identity:
+    hostname: iasi-tools
+    username: iasi
+    password: "$6$iasi2026$pKscDyXRTcuu3G965ISdMpcbWYUP64EIm2PZMglaqPOMvL9oOlMHR4.tzy2MlwdqlXtCL1.e5gwMGYmzpCgcn1"
+
+  network:
+    version: 2
+    ethernets:
+      iasi:
+        match:
+          driver: hv_netvsc
+        addresses:
+          - 10.77.0.20/24
+        routes:
+          - to: default
+            via: 10.77.0.1
+        nameservers:
+          addresses:
+            - 1.1.1.1
+            - 8.8.8.8
+
+  storage:
+    layout:
+      name: direct
+
+  ssh:
+    install-server: true
+    allow-pw: true
+
+  packages: []
+
+  updates: security
+
+  shutdown: poweroff
