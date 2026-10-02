@@ -1,0 +1,16 @@
+type = "quarto"
+
+[publication]
+strategy = "outlined"
+content-dir = "docs"
+back-matter = "back-matter"
+numbered = true
+
+[paths]
+inputs = "inputs"
+orchestration = "orchestration"
+outputs = "_outputs"
+release = "release"
+
+[excludes]
+paths = ["includes"]

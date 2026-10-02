@@ -1,0 +1,40 @@
+[38;2;0;0;255m--- CONTEXT ----------------------------------------------
+Verbose: 7
+All: false
+Checkpoints: false
+Debug: false
+PrepareOnly: true
+DryRun: false
+Force: false
+Help: false
+Install: false
+Local: false
+Tolerant: false
+Message: "build"
+Format: ""
+Platforms:
+  - windows
+  - linux
+Path: ""
+LogDir: ""
+Organization: "iasi-org-dev"
+SourceOrganization: ""
+DestinationOrganization: ""
+SourcePath: ""
+DestinationPath: ""
+Version: "v0.5.7"
+TargetVersion: ""
+NextVersion: ""
+MaterializeDestination: ""
+Subcommand: ""
+RequestedTargets:
+Targets:
+  guide [quarto]
+Exclusions:
+  - .git
+  - .github
+  - tests
+Repos:
+  - C:\iasi-org-dev\iasi-setup-ecosystem
+BlackList:
+----------------------------------------------------------[0m
