@@ -1,140 +1,12 @@
-<#
-.SYNOPSIS
-GPU-P discovery and assignment helpers for IASI Hyper-V virtual machines.
-
-.DESCRIPTION
-Discovers GPUs exposed by Hyper-V as partitionable, correlates them with
-Windows video controllers and selects a GPU without hard-coded vendor, model,
-PCI vendor ID or device ID.
-
-The default selector is "auto":
-- one partitionable GPU: use it;
-- several partitionable GPUs: choose the uniquely largest reported AdapterRAM;
-- no GPU, missing data or a tie: fail rather than choose arbitrarily.
-
-GPU assignment is structural VM configuration. Resource profiles such as
-light, normal, heavy and beast do not add or remove the GPU.
-#>
-
-
-function Convert-GpuPartitionNameToPnpDeviceId {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Name
-    )
-
-    $Value = $Name
-
-    if ($Value.StartsWith("\\?\")) {
-        $Value = $Value.Substring(4)
-    }
-
-    $GuidMarker = $Value.IndexOf("#{")
-    if ($GuidMarker -ge 0) {
-        $Value = $Value.Substring(0, $GuidMarker)
-    }
-
-    $Parts = $Value -split "#"
-    if ($Parts.Count -lt 3) { return $null }
-
-    return "$($Parts[0])\$($Parts[1])\$($Parts[2])"
-}
-
-
-function Get-IasiGpuInventory {
-    if (-not (Get-Command Get-VMHostPartitionableGpu -ErrorAction SilentlyContinue)) {
-        throw "Get-VMHostPartitionableGpu is not available on this host."
-    }
-
-    $Partitionable = @(Get-VMHostPartitionableGpu)
-    $Controllers = @(Get-CimInstance Win32_VideoController)
-    $Inventory = @()
-
-    foreach ($GPU in $Partitionable) {
-        $PnpDeviceId = Convert-GpuPartitionNameToPnpDeviceId -Name $GPU.Name
-        $Controller = $null
-
-        if ($PnpDeviceId) {
-            $Controller = @(
-                $Controllers |
-                Where-Object {
-                    $_.PNPDeviceID -and
-                    $_.PNPDeviceID.Equals(
-                        $PnpDeviceId,
-                        [System.StringComparison]::OrdinalIgnoreCase
-                    )
-                }
-            ) | Select-Object -First 1
-        }
-
-        $Inventory += [pscustomobject]@{
-            PartitionableGpu = $GPU
-            PartitionName    = $GPU.Name
-            PnpDeviceId      = $PnpDeviceId
-            Controller       = $Controller
-            FriendlyName     = if ($Controller) { $Controller.Name } else { $null }
-            AdapterRAM       = if ($Controller) { $Controller.AdapterRAM } else { $null }
-            Status           = if ($Controller) { $Controller.Status } else { $null }
-            VideoProcessor   = if ($Controller) { $Controller.VideoProcessor } else { $null }
-        }
-    }
-
-    return @($Inventory)
-}
-
-
-function Select-IasiGpu {
-    param(
-        [string]$Selector = "auto"
-    )
-
-    if ($Selector -ne "auto") {
-        throw "GPU selector '$Selector' is not supported yet."
-    }
-
-    $Inventory = @(Get-IasiGpuInventory)
-
-    if ($Inventory.Count -eq 0) {
-        throw "No partitionable GPU is available on this Hyper-V host."
-    }
-
-    if ($Inventory.Count -eq 1) {
-        return $Inventory[0]
-    }
-
-    $Matched = @(
-        $Inventory |
-        Where-Object {
-            $null -ne $_.Controller -and
-            $null -ne $_.AdapterRAM -and
-            [double]$_.AdapterRAM -gt 0
-        }
-    )
-
-    if ($Matched.Count -eq 0) {
-        throw "Automatic GPU selection is ambiguous: no partitionable GPU could be correlated with usable video-memory information."
-    }
-
-    $MaxRAM = ($Matched | Measure-Object -Property AdapterRAM -Maximum).Maximum
-    $Candidates = @(
-        $Matched |
-        Where-Object { [double]$_.AdapterRAM -eq [double]$MaxRAM }
-    )
-
-    if ($Candidates.Count -ne 1) {
-        throw "Automatic GPU selection is ambiguous: $($Candidates.Count) GPUs share the greatest reported video memory."
-    }
-
-    return $Candidates[0]
-}
-
+﻿. "$PSScriptRoot\gpu-selection.ps1"
 
 function Add-IasiGpuPartition {
     param(
         [Parameter(Mandatory = $true)]
         [string]$VMName,
 
-        [string]$Selector = "auto",
+        [Parameter(Mandatory = $true)]
+        $GPU,
 
         [uint32]$LowMemoryMappedIoSpace = 1GB,
 
@@ -151,10 +23,13 @@ function Add-IasiGpuPartition {
         throw "Virtual machine '$VMName' already has a GPU partition adapter."
     }
 
-    $Selected = Select-IasiGpu -Selector $Selector
+    $Selected = $GPU
+    if (-not $Selected.Name -or $Selected.Kind -notin @('DiscreteCandidate','IntegratedCandidate','DisplayUnknown')) {
+        throw "GPU selection did not return an eligible GPU-P device."
+    }
 
     Write-LogInfo "Selected GPU: $($Selected.FriendlyName)"
-    Write-LogInfo "GPU instance: $($Selected.PartitionName)"
+    Write-LogInfo "GPU instance: $($Selected.Name)"
 
     Set-VM `
         -Name $VMName `
@@ -165,7 +40,7 @@ function Add-IasiGpuPartition {
 
     Add-VMGpuPartitionAdapter `
         -VMName $VMName `
-        -InstancePath $Selected.PartitionName | Out-Null
+        -InstancePath $Selected.Name | Out-Null
 
     $Adapter = Get-VMGpuPartitionAdapter -VMName $VMName -ErrorAction Stop
     Write-LogSuccess "GPU partition adapter assigned to '$VMName'."
@@ -174,4 +49,134 @@ function Add-IasiGpuPartition {
         GPU     = $Selected
         Adapter = $Adapter
     }
+}
+
+
+# Prepare the selected NVIDIA GPU guest resources before the seed ISO is built.
+# All files are staged under this VM's own <ConfigPath>/services/gpu.
+function Copy-IasiGpuGuestResources {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)] $GPU,
+        [Parameter(Mandatory = $true)] [string] $ConfigPath
+    )
+
+    if ($GPU.Name -notmatch '(?i)VEN_10DE') {
+        throw "Linux GPU guest resource staging is currently implemented only for NVIDIA devices: $($GPU.FriendlyName)"
+    }
+
+    # Separate Windows GPU libraries and WSL libraries; no optional source variable.
+    $WindowsLib = Join-Path $env:WINDIR 'System32\lxss\lib'
+    $WslLib = Join-Path $env:ProgramFiles 'WSL\lib'
+    if (-not (Test-Path -LiteralPath $WindowsLib -PathType Container)) {
+        throw "Windows GPU library source not found: '$WindowsLib'."
+    }
+    if (-not (Test-Path -LiteralPath $WslLib -PathType Container)) {
+        throw "WSL library source not found: '$WslLib'."
+    }
+    $LibSource = $WindowsLib
+
+    $ServicesPath = Join-Path $ConfigPath 'services'
+    if (-not (Test-Path -LiteralPath $ServicesPath -PathType Container)) {
+        throw "Services directory not found: '$ServicesPath'."
+    }
+    $GpuPath = Join-Path $ServicesPath 'gpu'
+    $LibTarget = Join-Path $GpuPath 'lib'
+    $DriverTarget = Join-Path $GpuPath 'drivers'
+    $WslTarget = Join-Path $GpuPath 'wsl'
+
+    # Only refresh generated folders. Preserve the files copied earlier by scp
+    # (and their case-sensitive spellings) in gpu/wsl.
+    foreach ($GeneratedDir in @($LibTarget, $DriverTarget)) {
+        if (Test-Path -LiteralPath $GeneratedDir) {
+            Remove-Item -LiteralPath $GeneratedDir -Recurse -Force -ErrorAction Stop
+        }
+        New-Item -ItemType Directory -Path $GeneratedDir -Force | Out-Null
+    }
+    New-Item -ItemType Directory -Path $WslTarget -Force | Out-Null
+
+    Write-LogInfo "Copying Windows guest libraries from '$LibSource' to '$LibTarget'..."
+    Get-ChildItem -LiteralPath $LibSource -Force -ErrorAction Stop | ForEach-Object {
+        Copy-Item -LiteralPath $_.FullName -Destination $LibTarget -Recurse -Force -ErrorAction Stop
+    }
+    $LibcudaFiles = @(Get-ChildItem -LiteralPath $LibTarget -File -Recurse -ErrorAction Stop |
+        Where-Object { $_.Name -like 'libcuda.so*' })
+    if ($LibcudaFiles.Count -eq 0) {
+        throw "No libcuda.so files were copied from '$LibSource'."
+    }
+    Write-LogSuccess "NVIDIA libraries staged in '$LibTarget'."
+
+    # Stage all WSL library files into their own folder, preserving any files
+    # previously recovered with scp. No renaming, filtering or symlinks here.
+    Write-LogInfo "Copying WSL libraries from '$WslLib' to '$WslTarget'..."
+    $WslItems = @(Get-ChildItem -LiteralPath $WslLib -Force -ErrorAction Stop)
+    if ($WslItems.Count -eq 0) {
+        throw "WSL library source is empty: '$WslLib'."
+    }
+    foreach ($Item in $WslItems) {
+        Copy-Item -LiteralPath $Item.FullName -Destination $WslTarget -Recurse -Force -ErrorAction Stop
+    }
+    $WslCopied = @(Get-ChildItem -LiteralPath $WslTarget -Force -ErrorAction Stop)
+    if ($WslCopied.Count -eq 0) {
+        throw "WSL library staging produced an empty directory: '$WslTarget'."
+    }
+    Write-LogSuccess "WSL libraries staged in '$WslTarget'."
+
+    # Resolve the selected GPU's exact PnP driver package. Never take the
+    # first arbitrary NVIDIA directory from FileRepository.
+    if (-not $GPU.PnpId) {
+        throw "Selected GPU has no resolved PnP ID: $($GPU.FriendlyName)"
+    }
+    Write-LogInfo "Resolving installed driver package for $($GPU.PnpId)..."
+    $Signed = @(Get-CimInstance Win32_PnPSignedDriver -ErrorAction Stop |
+        Where-Object { $_.DeviceID -ieq $GPU.PnpId -and $_.InfName })
+    if ($Signed.Count -ne 1) {
+        throw "Expected one signed PnP driver for '$($GPU.PnpId)', found $($Signed.Count)."
+    }
+    $InfName = [string]$Signed[0].InfName
+    Write-LogInfo "Installed INF: $InfName; driver version: $($Signed[0].DriverVersion)"
+
+    # DISM maps the published oem*.inf to the original INF in DriverStore.
+    $Packages = @(Get-WindowsDriver -Online -All -ErrorAction Stop |
+        Where-Object { $_.Driver -ieq $InfName })
+    if ($Packages.Count -ne 1) {
+        throw "Could not uniquely resolve INF '$InfName' in the online DriverStore (matches: $($Packages.Count))."
+    }
+    $OriginalInf = [string]$Packages[0].OriginalFileName
+    if ([string]::IsNullOrWhiteSpace($OriginalInf) -or -not (Test-Path -LiteralPath $OriginalInf -PathType Leaf)) {
+        throw "DriverStore original INF is missing: '$OriginalInf'."
+    }
+    $PackagePath = Split-Path -Parent $OriginalInf
+    $DriverStoreRoot = [IO.Path]::GetFullPath((Join-Path $env:WINDIR 'System32\DriverStore\FileRepository'))
+    $CanonicalPackagePath = [IO.Path]::GetFullPath($PackagePath)
+    if (-not $CanonicalPackagePath.StartsWith($DriverStoreRoot.TrimEnd('\') + '\', [StringComparison]::OrdinalIgnoreCase)) {
+        throw "Resolved driver directory is outside FileRepository: '$CanonicalPackagePath'."
+    }
+
+    # Preserve the original FileRepository package directory as well as its
+    # internal NVIDIA subdirectories: drivers/<FileRepositoryPackage>/...
+    $PackageFolder = Split-Path $CanonicalPackagePath -Leaf
+    $PackageTarget = Join-Path $DriverTarget $PackageFolder
+    Write-LogInfo "Copying selected GPU driver package: $CanonicalPackagePath"
+    Copy-Item -LiteralPath $CanonicalPackagePath -Destination $PackageTarget -Recurse -Force -ErrorAction Stop
+    $CopiedInf = Join-Path $PackageTarget (Split-Path $OriginalInf -Leaf)
+    if (-not (Test-Path -LiteralPath $CopiedInf -PathType Leaf)) {
+        throw "Copied driver package verification failed: '$CopiedInf'."
+    }
+    Write-LogSuccess "NVIDIA driver package staged at '$PackageTarget'."
+
+    # Preserve original Windows DriverStore identity for auditability.
+    $TracePath = Join-Path $DriverTarget 'driverstore-source.txt'
+    @(
+        "DriverStoreFolder: $(Split-Path $CanonicalPackagePath -Leaf)"
+        "DriverStorePath: $CanonicalPackagePath"
+        "PublishedINF: $InfName"
+        "OriginalINF: $(Split-Path $OriginalInf -Leaf)"
+        "DriverVersion: $($Signed[0].DriverVersion)"
+        "GPU: $($GPU.FriendlyName)"
+        "PnPDeviceID: $($GPU.PnpId)"
+    ) | Set-Content -LiteralPath $TracePath -Encoding UTF8 -ErrorAction Stop
+    Write-LogSuccess "GPU driver package contents staged in '$DriverTarget'."
+    Write-LogInfo "DriverStore trace saved to '$TracePath'."
+    Write-LogInfo 'GPU drivers, lib and wsl directories are ready for inspection.'
 }

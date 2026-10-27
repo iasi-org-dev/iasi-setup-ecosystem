@@ -1,0 +1,33 @@
+#cloud-config
+
+autoinstall:
+  version: 1
+
+  source:
+    id: ubuntu-server-minimal
+
+  locale: en_US.UTF-8
+
+  keyboard:
+    layout: es
+
+  timezone: Europe/Madrid
+
+  identity:
+    hostname: iasi-models
+    username: iasi
+    password: "$6$iasi2026$pKscDyXRTcuu3G965ISdMpcbWYUP64EIm2PZMglaqPOMvL9oOlMHR4.tzy2MlwdqlXtCL1.e5gwMGYmzpCgcn1"
+
+  storage:
+    layout:
+      name: direct
+
+  ssh:
+    install-server: true
+    allow-pw: true
+
+  packages: []
+
+  updates: security
+
+  shutdown: poweroff

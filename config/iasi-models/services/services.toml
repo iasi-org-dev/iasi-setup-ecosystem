@@ -1,0 +1,47 @@
+# IASI-Models: preparación en el sistema de destino durante el despliegue.
+[[install]]
+action = "run"
+command = "mkdir -p /opt/iasi/dxgkrnl"
+
+[[install]]
+action = "run"
+command = "curl -fL https://content.staralt.dev/dxgkrnl-dkms/main/install.sh -o /opt/iasi/dxgkrnl/install.sh"
+
+[[install]]
+action = "run"
+command = "chmod +x /opt/iasi/dxgkrnl/install.sh"
+
+[[install]]
+action = "copy"
+source = "activate-gpu.sh"
+target = "/opt/iasi/activate-gpu.sh"
+
+[[install]]
+action = "run"
+command = "chmod +x /opt/iasi/activate-gpu.sh"
+
+[[install]]
+action = "run"
+command = "usermod -aG docker iasi"
+
+[[install]]
+action = "copy"
+source = "iasi-models-compose.yml"
+target = "/opt/iasi/iasi-models-compose.yml"
+
+[[install]]
+action = "copy"
+source = "iasi-services.env"
+target = "/opt/iasi/iasi-services.env"
+
+# Stage de GPU: conservar los tres conjuntos completos en el Ubuntu destino.
+# setup-gpu.sh NO instala drivers ni crea enlaces simbolicos.
+[[install]]
+action = "run"
+command = "sh /mnt/iasi-seed/services/setup-gpu.sh"
+context = "installer"
+
+# Docker queda instalado pero sin levantar servicios de IASI-Models.
+# Activacion manual de GPU, cuando decidamos probarla:
+#   sudo sh /opt/iasi/activate-gpu.sh
+# Despues de verificar GPU y CUDA, arrancar los contenedores manualmente.

@@ -1,0 +1,8 @@
+IASI Models: overlay onto the repository root.
+New: config/iasi-models (based on old iasi-ai), bin/ps/common/gpu-selection.ps1, test.
+Modified: common/gpu.ps1, hyper-v.ps1, config/iasi-net.toml.
+Select-IasiGpu is called before VM creation; Add-IasiGpuPartition receives selected object.
+CAUTION: host GPU-P selection does not establish NVIDIA/CUDA support inside Ubuntu.
+This patch does NOT install an inference service yet.
+Review old iasi-ai configurations before deleting them; they remain intact.
+Existing VM removal with -f is destructive: avoid until testing.

@@ -1,0 +1,13 @@
+name: iasi-models
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: iasi-ollama
+    ports:
+      - "${IASI_MODELS_PORT}:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+volumes:
+  ollama-data:
+    name: iasi-models-ollama-data

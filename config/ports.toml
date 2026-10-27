@@ -1,0 +1,10 @@
+# Published ports are IASI decisions; container ports belong to the services.
+[plantuml]
+node = "iasi-tools"
+host = 10025
+container = 8080
+
+[ollama]
+node = "iasi-models"
+host = 10434
+container = 11434

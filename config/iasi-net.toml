@@ -19,7 +19,7 @@ servers = [
 [nodes]
 iasi-dev = "10.77.0.10"
 iasi-tools = "10.77.0.20"
-iasi-ai = "10.77.0.30"
+iasi-models = "10.77.0.30"
 iasi-labs = "10.77.0.40"
 iasi-work = "10.77.0.50"
 iasi-tests = "10.77.0.60"

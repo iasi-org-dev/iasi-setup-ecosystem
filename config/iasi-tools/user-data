@@ -18,22 +18,6 @@ autoinstall:
     username: iasi
     password: "$6$iasi2026$pKscDyXRTcuu3G965ISdMpcbWYUP64EIm2PZMglaqPOMvL9oOlMHR4.tzy2MlwdqlXtCL1.e5gwMGYmzpCgcn1"
 
-  network:
-    version: 2
-    ethernets:
-      iasi:
-        match:
-          driver: hv_netvsc
-        addresses:
-          - 10.77.0.20/24
-        routes:
-          - to: default
-            via: 10.77.0.1
-        nameservers:
-          addresses:
-            - 1.1.1.1
-            - 8.8.8.8
-
   storage:
     layout:
       name: direct

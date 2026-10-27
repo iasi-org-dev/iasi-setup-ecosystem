@@ -1,3 +1,4 @@
+﻿#requires -RunAsAdministrator
 <#
 .SYNOPSIS
 Creates or reconfigures an IASI Hyper-V virtual machine from a configuration directory.
@@ -116,6 +117,7 @@ Optional configuration:
     $NetworkInterface
     $InternetNetworkInterface
     $GPUEnabled
+    $SecureBootEnabled  # Defaults to $false for disposable IASI labs.
     $GPUSelector
     $GPULowMemoryMappedIoSpace
     $GPUHighMemoryMappedIoSpace
@@ -254,6 +256,7 @@ function Import-Configuration {
         "DefaultMode",
         "Modes",
         "GPUEnabled",
+        "SecureBootEnabled",
         "GPUSelector",
         "GPULowMemoryMappedIoSpace",
         "GPUHighMemoryMappedIoSpace",
@@ -500,6 +503,33 @@ function Import-NetworkConfiguration {
 }
 
 
+function Import-ServicePorts {
+    $script:ServicePorts = @{}
+    if ($ModeSpecified) { return }
+    $Path = Join-Path $IASIRoot "config\\ports.toml"
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+        throw "Missing shared service port configuration '$Path'."
+    }
+    $Ports = Read-IasiToml -Path $Path
+    foreach ($Service in @($Ports.Keys)) {
+        $Entry = $Ports[$Service]
+        if (-not $Entry.Contains('node') -or -not $Entry.Contains('host') -or -not $Entry.Contains('container')) {
+            throw "Service '$Service' must declare node, host and container in ports.toml."
+        }
+        $HostPort = [int]$Entry['host']
+        $ContainerPort = [int]$Entry['container']
+        if ($HostPort -lt 1 -or $HostPort -gt 65535 -or $ContainerPort -lt 1 -or $ContainerPort -gt 65535) {
+            throw "Invalid ports for '$Service'."
+        }
+        if ([string]$Entry['node'] -ne $NodeName) { continue }
+        $Key = 'IASI_' + ($Service.ToUpperInvariant() -replace '[^A-Z0-9]', '_') + '_PORT'
+        if ($ServicePorts.ContainsKey($Key)) { throw "Duplicate service port variable '$Key'." }
+        if (@($ServicePorts.Values) -contains $HostPort) { throw "Duplicate published port $HostPort on node '$NodeName'." }
+        $ServicePorts[$Key] = $HostPort
+        Write-LogInfo "Port configuration: $Service -> $HostPort (container $ContainerPort)"
+    }
+}
+
 function Initialize {
     Read-Arguments
     Initialize-Log "hyper-v"
@@ -512,6 +542,7 @@ function Initialize {
 
     if (-not $ModeSpecified) {
         Import-NetworkConfiguration
+        Import-ServicePorts
     }
 }
 
@@ -746,8 +777,19 @@ function Resolve-InstallationMediaPaths {
 function Prepare-Build {
     Test-BuildConfiguration
     Test-BuildEnvironment
+    if ($GPUEnabled) {
+        $script:SelectedGPU = Select-IasiGpu -Selector $GPUSelector
+        Write-LogInfo "GPU selected: $($SelectedGPU.FriendlyName)"
+        Write-LogInfo "GPU classification: $($SelectedGPU.Kind)"
+        Write-LogInfo "GPU classification reason: $($SelectedGPU.Reason)"
+        Write-LogInfo "GPU-P device path: $($SelectedGPU.Name)"
+        Write-LogInfo "GPU guest driver / CUDA support remains unverified."
+    }
     Resolve-ExistingVMForBuild
     Resolve-Paths
+    if ($GPUEnabled -and $Installer -eq "subiquity") {
+        Copy-IasiGpuGuestResources -GPU $SelectedGPU -ConfigPath $ConfigPath
+    }
     Resolve-InstallationMediaPaths
 
     if ($Installer -eq "subiquity") {
@@ -814,7 +856,7 @@ function New-VirtualMachine {
     if ($GPUEnabled) {
         Add-IasiGpuPartition `
             -VMName $VMName `
-            -Selector $GPUSelector `
+            -GPU $SelectedGPU `
             -LowMemoryMappedIoSpace $GPULowMemoryMappedIoSpace `
             -HighMemoryMappedIoSpace $GPUHighMemoryMappedIoSpace | Out-Null
     }
@@ -834,11 +876,22 @@ function Add-InstallationMedia {
     }
 
     if ($Generation -eq 2) {
+        # IASI labs default to Secure Boot off to avoid interactive MOK enrollment.
+        # Node configuration can explicitly set $SecureBootEnabled = $true.
+        $SecureBootState = if ($SecureBootEnabled -eq $true) { "On" } else { "Off" }
+
         Set-VMFirmware `
             -VMName $VMName `
-            -EnableSecureBoot On `
-            -SecureBootTemplate MicrosoftUEFICertificateAuthority `
+            -EnableSecureBoot $SecureBootState `
             -FirstBootDevice $InstallDVD
+
+        if ($SecureBootState -eq "On") {
+            Set-VMFirmware `
+                -VMName $VMName `
+                -SecureBootTemplate MicrosoftUEFICertificateAuthority
+        }
+
+        Write-LogInfo "Secure Boot: $SecureBootState"
     }
 }
 
@@ -860,6 +913,7 @@ function Deploy-Build {
             -ConfigPath $ConfigPath `
             -VMName $VMName `
             -Packages $Packages `
+            -ServicePorts $ServicePorts `
             -IPAddress $IPAddress `
             -PrefixLength $PrefixLength `
             -Gateway $Gateway `
@@ -959,7 +1013,7 @@ function Show-BuildSummary {
         Write-LogInfo "Memory:          $($MemoryStartupBytes / 1GB) GB static"
     }
 
-    Write-LogInfo "GPU:             $(if ($GPUEnabled) { $GPUSelector } else { 'disabled' })"
+    Write-LogInfo "GPU:             $(if ($GPUEnabled) { $SelectedGPU.FriendlyName } else { 'disabled' })"
     Write-LogInfo "Path:            $VMPath"
     Write-LogInfo "VHDX:            $VHDPath"
     Write-LogInfo "Installer:       $Installer"

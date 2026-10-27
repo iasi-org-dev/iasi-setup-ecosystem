@@ -1,4 +1,4 @@
-$VMName = "vm-iasi-tools"
+$VMName = "iasi-tools"
 
 $Generation = 2
 $MemoryStartupBytes = 4GB
@@ -7,4 +7,4 @@ $DiskSizeBytes = 80GB
 
 $SwitchName = "iasi-net"
 
-$UbuntuISO = "C:\discos\ubuntu-24.04.5-live-server-amd64.iso"
+$SourceISO = "C:\discos\ubuntu-24.04.5-live-server-amd64.iso"

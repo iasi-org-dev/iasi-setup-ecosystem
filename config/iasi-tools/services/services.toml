@@ -1,0 +1,19 @@
+# IASI tools services: ordered operations for installation and first boot.
+
+[[install]]
+action = "run"
+command = "usermod -aG docker iasi"
+
+[[install]]
+action = "copy"
+source = "iasi-tools-compose.yml"
+target = "/opt/iasi/iasi-tools-compose.yml"
+
+[[install]]
+action = "copy"
+source = "iasi-services.env"
+target = "/opt/iasi/iasi-services.env"
+
+[[startup]]
+action = "run"
+command = "systemctl start docker && docker compose --env-file /opt/iasi/iasi-services.env -f /opt/iasi/iasi-tools-compose.yml up -d"
