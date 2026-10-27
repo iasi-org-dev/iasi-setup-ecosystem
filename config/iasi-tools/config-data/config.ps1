@@ -2,7 +2,7 @@ $VMName = "iasi-tools"
 
 $Generation = 2
 $MemoryStartupBytes = 4GB
-$ProcessorCount = 4
+$ProcessorCount = 2
 $DiskSizeBytes = 80GB
 
 $SwitchName = "iasi-net"
