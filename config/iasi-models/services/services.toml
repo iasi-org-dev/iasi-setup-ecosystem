@@ -41,19 +41,29 @@ action = "run"
 command = "sh /mnt/iasi-seed/services/setup-gpu.sh"
 context = "installer"
 
-# Primer arranque: GPU-P -> verificacion -> Docker -> IASI-Models.
-# Si falla GPU, el script se detiene sin arrancar los contenedores.
-# cloud-init runcmd se ejecuta una vez; se puede repetir manualmente con
-#   sudo sh /opt/iasi/iasi-deploy-start.sh
+# NVIDIA Container Toolkit: installed/configured at first boot, after GPU-P.
 [[install]]
 action = "copy"
-source = "iasi-deploy-start.sh"
-target = "/opt/iasi/iasi-deploy-start.sh"
+source = "setup-nvidia.sh"
+target = "/opt/iasi/setup-nvidia.sh"
 
 [[install]]
 action = "run"
-command = "chmod +x /opt/iasi/iasi-deploy-start.sh"
+command = "chmod +x /opt/iasi/setup-nvidia.sh"
+
+# Primer arranque: GPU-P -> verificacion -> NVIDIA Toolkit -> Docker Compose.
+# Si falla GPU, el script se detiene sin arrancar los contenedores.
+# cloud-init runcmd se ejecuta una vez; se puede repetir manualmente con
+#   sudo sh /opt/iasi/iasi-deploy.sh
+[[install]]
+action = "copy"
+source = "iasi-deploy.sh"
+target = "/opt/iasi/iasi-deploy.sh"
+
+[[install]]
+action = "run"
+command = "chmod +x /opt/iasi/iasi-deploy.sh"
 
 [[startup]]
 action = "run"
-command = "sh /opt/iasi/iasi-deploy-start.sh"
+command = "sh /opt/iasi/iasi-deploy.sh"

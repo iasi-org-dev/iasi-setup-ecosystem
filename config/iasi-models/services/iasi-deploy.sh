@@ -16,8 +16,10 @@ elif command -v nvidia-smi >/dev/null 2>&1; then
 else
     fail 'nvidia-smi is not installed; IASI-Models not started'
 fi
-log 'GPU-P verified. Starting Docker...'
-systemctl start docker
+log 'GPU-P verified. Preparing NVIDIA Container Toolkit...'
+[ -f /opt/iasi/setup-nvidia.sh ] || fail 'Missing setup-nvidia.sh'
+/bin/sh /opt/iasi/setup-nvidia.sh
+log 'NVIDIA Docker runtime verified.'
 [ -f /opt/iasi/iasi-models-compose.yml ] || fail 'Missing compose file'
 [ -f /opt/iasi/iasi-services.env ] || fail 'Missing env file'
 docker compose --env-file /opt/iasi/iasi-services.env -f /opt/iasi/iasi-models-compose.yml up -d
