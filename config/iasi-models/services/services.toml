@@ -41,7 +41,19 @@ action = "run"
 command = "sh /mnt/iasi-seed/services/setup-gpu.sh"
 context = "installer"
 
-# Docker queda instalado pero sin levantar servicios de IASI-Models.
-# Activacion manual de GPU, cuando decidamos probarla:
-#   sudo sh /opt/iasi/activate-gpu.sh
-# Despues de verificar GPU y CUDA, arrancar los contenedores manualmente.
+# Primer arranque: GPU-P -> verificacion -> Docker -> IASI-Models.
+# Si falla GPU, el script se detiene sin arrancar los contenedores.
+# cloud-init runcmd se ejecuta una vez; se puede repetir manualmente con
+#   sudo sh /opt/iasi/iasi-deploy-start.sh
+[[install]]
+action = "copy"
+source = "iasi-deploy-start.sh"
+target = "/opt/iasi/iasi-deploy-start.sh"
+
+[[install]]
+action = "run"
+command = "chmod +x /opt/iasi/iasi-deploy-start.sh"
+
+[[startup]]
+action = "run"
+command = "sh /opt/iasi/iasi-deploy-start.sh"
