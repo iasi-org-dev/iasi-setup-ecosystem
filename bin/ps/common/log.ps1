@@ -1,4 +1,4 @@
-function Initialize-Log {
+﻿function Initialize-Log {
     param([string]$CommandName)
 
     $LogDirectory = Join-Path (Get-Location).Path "logs"
@@ -53,10 +53,23 @@ function Invoke-LoggedCommand {
 
     Push-Location $Directory
     try {
+        # In Windows PowerShell 5.1, native stderr redirected with 2>&1 can
+        # become a NativeCommandError. With Stop inherited from the caller it
+        # would throw even when the native process exits successfully.
+        # Native success/failure must be decided by its process exit code.
+        $ErrorActionPreference = 'Continue'
+        $global:LASTEXITCODE = $null
         $Output = & $Command @Arguments 2>&1
-        $RC = $LASTEXITCODE
+        $CommandSucceeded = $?
+        $RC = $global:LASTEXITCODE
         Write-RawLog $Output
-        return $RC
+
+        if ($null -eq $RC) {
+            # Fallback for a PowerShell command rather than a native executable.
+            if ($CommandSucceeded) { return 0 }
+            return 1
+        }
+        return [int]$RC
     }
     catch {
         Write-RawLog $_
