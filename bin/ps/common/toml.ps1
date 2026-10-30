@@ -46,7 +46,21 @@ function Read-IasiToml {
     $Result = [ordered]@{}; $Section = $Result
     $PendingKey = $null; $PendingValue = ''
     foreach ($RawLine in Get-Content -LiteralPath $Path -Encoding UTF8) {
-        $Line = $RawLine.Trim()
+        # Strip inline comments only when outside TOML quoted strings.
+        $quoted = $null; $escaped = $false; $clean = ''
+        foreach ($ch in $RawLine.ToCharArray()) {
+            if ($quoted) {
+                $clean += $ch
+                if ($quoted -eq '"' -and $ch -eq '\' -and -not $escaped) { $escaped = $true; continue }
+                if ($ch -eq $quoted -and -not $escaped) { $quoted = $null }
+                $escaped = $false
+                continue
+            }
+            if ($ch -eq '"' -or $ch -eq "'") { $quoted = $ch }
+            if ($ch -eq '#') { break }
+            $clean += $ch
+        }
+        $Line = $clean.Trim()
         if (-not $Line -or $Line.StartsWith('#')) { continue }
         if ($PendingKey) {
             $PendingValue += ' ' + $Line
@@ -73,8 +87,8 @@ function Read-IasiToml {
             $Section = $Result[$Name]
             continue
         }
-        if ($Line -notmatch '^([A-Za-z0-9_.-]+)\s*=\s*(.+)$') { throw "Unable to parse TOML line: $RawLine" }
-        $Key = $Matches[1]; $Value = $Matches[2].Trim()
+        if ($Line -notmatch '^(?:"([^"]+)"|([A-Za-z0-9_.-]+))\s*=\s*(.+)$') { throw "Unable to parse TOML line: $RawLine" }
+        $Key = if ($Matches[1]) { $Matches[1] } else { $Matches[2] }; $Value = $Matches[3].Trim()
         if ($Section.Contains($Key)) { throw "Duplicate TOML key '$Key'." }
         if ($Value.StartsWith('[') -and -not $Value.Contains(']')) {
             $PendingKey = $Key; $PendingValue = $Value; continue

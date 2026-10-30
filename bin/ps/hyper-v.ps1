@@ -1,137 +1,17 @@
 ﻿#requires -RunAsAdministrator
 <#
 .SYNOPSIS
-Creates or reconfigures an IASI Hyper-V virtual machine from a configuration directory.
-
+Creates an IASI Hyper-V virtual machine from declarative TOML configuration.
 .USAGE
-    .\hyper-v.ps1
-    .\hyper-v.ps1 -f
-    .\hyper-v.ps1 -l
-    .\hyper-v.ps1 --config <path>
-    .\hyper-v.ps1 --path <path>
-    .\hyper-v.ps1 --mode normal
-    .\hyper-v.ps1 --mode heavy
-    .\hyper-v.ps1 --mode heavy -l
-
+    .\hyper-v.ps1 --config <path> --path <path> [-f] [-l]
 .PARAMETERS
-    -f
-        Force recreation in build mode.
-        Invalid together with --mode.
-
-    -l
-        No launch.
-        In build mode, creates and configures the VM but leaves it powered off.
-        In mode-change mode, applies the requested profile and leaves it off.
-
-    --mode <mode>
-        Reconfigures CPU and memory on an EXISTING virtual machine.
-        Supplying --mode never creates a VM. If the VM does not exist, the
-        command fails.
-
-        The available modes are defined by the node configuration. For
-        iasi-ai they are currently light, normal, heavy and beast.
-
-    --config <path>
-        Configuration directory.
-        Default: current working directory.
-
-    --path <path>
-        Root directory where a new virtual machine is materialized.
-        A subdirectory named after $VMName is created below this path.
-        Used when $Path is not defined in configuration.
-        Default: Hyper-V VirtualMachinePath.
-        Invalid together with --mode because --mode never creates a VM.
-
-.BEHAVIOR
-Without --mode, the command is in build mode:
-- the node's default mode is used when profiles exist (normal for iasi-ai);
-- if the VM does not exist, it is created;
-- if it exists, the command leaves it unchanged unless -f is supplied;
-- -f recreates it;
-- -l leaves it powered off.
-
-With --mode, the command is in resource-profile mode:
-- the VM must already exist;
-- the VM is shut down if necessary;
-- CPU and dynamic-memory values are changed;
-- the VM is started again unless -l is supplied;
-- no disk, ISO, network or GPU assignment is created or changed.
-
-.CONFIGURATION
-The configuration directory contains node-specific files. Build mode requires:
-
-    user-data
-    meta-data
-    config-data\
-        *.ps1
-
-Mode-change mode only requires config-data because it never installs or creates
-anything.
-
-All PowerShell files directly under config-data are loaded in name order.
-
-Base configuration must define:
-
-    $VMName
-    $Generation
-    $DiskSizeBytes
-
-Installation media is selected by $Installer:
-
-    subiquity
-        Uses $SourceISO and the existing Subiquity/NoCloud autoinstall flow.
-        This is the default when $Installer is omitted.
-
-    calamares
-        Uses $SourceISO directly as the live installer ISO.
-        Calamares itself is still interactive at this stage.
-
-Every created virtual machine receives two network adapters:
-
-    NIC 1
-        Connected to the IASI private switch.
-        Uses the node's static address from config\iasi-net.toml.
-
-    NIC 2
-        Connected to the Hyper-V Internet switch declared in
-        config\iasi-net.toml.
-        Uses DHCP and provides Internet connectivity.
-
-$SourceISO is the canonical ISO configuration variable. $UbuntuISO and
-$KubuntuISO are accepted temporarily as legacy fallbacks.
-
-A node without profiles must also define:
-
-    $MemoryStartupBytes
-    $ProcessorCount
-
-A node with profiles defines:
-
-    $DefaultMode
-    $Modes
-
-Optional configuration:
-
-    $Path
-    $Packages
-    $NetworkInterface
-    $InternetNetworkInterface
-    $GPUEnabled
-    $SecureBootEnabled  # Defaults to $false for disposable IASI labs.
-    $GPUSelector
-    $GPULowMemoryMappedIoSpace
-    $GPUHighMemoryMappedIoSpace
-    $Installer
-    $SourceISO
-    $UbuntuISO
-    $KubuntuISO
-
-Network topology and node addresses are read from:
-
-    config\iasi-net.toml
-
-GPU assignment is structural VM configuration. It is performed only while
-building a GPU-enabled VM. Changing --mode never adds, removes or changes GPU-P.
+    -f      Recreate an existing VM (destructive).
+    -l      Create without starting.
+    --config Configuration directory containing config-data/config.toml.
+    --path   Base directory for VM files.
+.NOTES
+    Machine resources and GPU settings are declared in [vm] of config.toml.
+    Installer adapters: subiquity, calamares, interactive.
 #>
 
 
@@ -153,8 +33,6 @@ $NetworkConfigurationFile = "config\iasi-net.toml"
 function Read-Arguments {
     $script:Force = $false
     $script:NoLaunch = $false
-    $script:ModeSpecified = $false
-    $script:RequestedMode = $null
     $script:ConfigPath = "."
     $script:TargetPath = $null
 
@@ -162,12 +40,6 @@ function Read-Arguments {
         switch ($ScriptArguments[$i]) {
             "-f" { $script:Force = $true }
             "-l" { $script:NoLaunch = $true }
-            "--mode" {
-                $i++
-                if ($i -ge $ScriptArguments.Count) { throw "Missing value for --mode." }
-                $script:ModeSpecified = $true
-                $script:RequestedMode = $ScriptArguments[$i]
-            }
             "--config" {
                 $i++
                 if ($i -ge $ScriptArguments.Count) { throw "Missing value for --config." }
@@ -182,13 +54,6 @@ function Read-Arguments {
         }
     }
 
-    if ($ModeSpecified -and $Force) {
-        throw "-f cannot be used together with --mode. --mode never creates or recreates a virtual machine."
-    }
-
-    if ($ModeSpecified -and $TargetPath) {
-        throw "--path cannot be used together with --mode. --mode operates on an existing virtual machine."
-    }
 }
 
 
@@ -220,103 +85,97 @@ function Resolve-ConfigurationPath {
         throw "Missing config-data directory."
     }
 
-    if (-not $ModeSpecified) {
-        $script:UserDataPath = Join-Path $ConfigPath "user-data"
-        $script:MetaDataPath = Join-Path $ConfigPath "meta-data"
-    }
+    $script:UserDataPath = Join-Path $ConfigPath "user-data"
+    $script:MetaDataPath = Join-Path $ConfigPath "meta-data"
 }
 
 
 function Import-Configuration {
-    $ConfigScripts = @(
-        Get-ChildItem `
-            -Path $ConfigDataPath `
-            -Filter "*.ps1" `
-            -File |
-        Sort-Object Name
-    )
-
-    if ($ConfigScripts.Count -eq 0) {
-        throw "No PowerShell configuration found in config-data."
+    # Configuration is data, never executable PowerShell.
+    $Base = Read-IasiToml -Path (Join-Path $ConfigDataPath 'config.toml')
+    if (-not $Base.Contains('vm')) { throw 'Missing [vm] in config.toml.' }
+    $VM = $Base['vm']
+    foreach ($Key in @('name','os','installer','generation','disk_size_gb','source_iso')) {
+        if (-not $VM.Contains($Key)) { throw "Missing vm.$Key in config.toml." }
     }
+    $script:VMName = [string]$VM['name']
+    $script:OSType = [string]$VM['os']
+    $script:Installer = [string]$VM['installer']
+    $script:Generation = [int]$VM['generation']
+    $script:DiskSizeBytes = [int64]$VM['disk_size_gb'] * 1GB
+    $script:SourceISO = [string]$VM['source_iso']
+    if ($VM.Contains('processors')) { $script:ProcessorCount = [int]$VM['processors'] }
+    if ($VM.Contains('memory_startup_gb')) { $script:MemoryStartupBytes = [int64]$VM['memory_startup_gb'] * 1GB }
+    if ($VM.Contains('memory_minimum_gb')) { $script:MemoryMinimumBytes = [int64]$VM['memory_minimum_gb'] * 1GB }
+    if ($VM.Contains('memory_maximum_gb')) { $script:MemoryMaximumBytes = [int64]$VM['memory_maximum_gb'] * 1GB }
+    if ($VM.Contains('gpu_enabled')) { $script:GPUEnabled = [bool]$VM['gpu_enabled'] }
+    if ($VM.Contains('gpu_selector')) { $script:GPUSelector = [string]$VM['gpu_selector'] }
+    if ($VM.Contains('switch')) { $script:SwitchName = [string]$VM['switch'] }
+    if ($VM.Contains('path')) { $script:Path = [string]$VM['path'] }
 
-    $RequiredVariables = @(
-        "VMName",
-        "Generation",
-        "DiskSizeBytes"
-    )
-
-    $OptionalVariables = @(
-        "Path",
-        "Packages",
-        "NetworkInterface",
-        "InternetNetworkInterface",
-        "ProcessorCount",
-        "MemoryStartupBytes",
-        "DefaultMode",
-        "Modes",
-        "GPUEnabled",
-        "SecureBootEnabled",
-        "GPUSelector",
-        "GPULowMemoryMappedIoSpace",
-        "GPUHighMemoryMappedIoSpace",
-        "Installer",
-        "SourceISO",
-        "UbuntuISO",
-        "KubuntuISO"
-    )
-
-    $ConfigurationVariables = $RequiredVariables + $OptionalVariables
-
-    $Configuration = & {
-        param($Scripts, $VariableNames)
-
-        foreach ($ConfigScript in $Scripts) {
-            . $ConfigScript.FullName
-        }
-
-        $Values = @{}
-
-        foreach ($VariableName in $VariableNames) {
-            $Variable = Get-Variable -Name $VariableName -Scope 0 -ErrorAction SilentlyContinue
-            if ($Variable) {
-                $Values[$VariableName] = $Variable.Value
+    $PackagesFile = Join-Path $ConfigDataPath 'packages.toml'
+    if (Test-Path -LiteralPath $PackagesFile) {
+        $Pkg = Read-IasiToml -Path $PackagesFile
+        foreach ($category in @('SDK', 'software', 'custom')) {
+            if ($Pkg.Contains($category)) {
+                foreach ($entry in $Pkg[$category].GetEnumerator()) {
+                    if ($entry.Value -isnot [bool]) { throw "Invalid package flag $category / $($entry.Key): boolean required." }
+                }
             }
         }
-
-        $Values
-    } $ConfigScripts $ConfigurationVariables
-
-    foreach ($VariableName in $RequiredVariables) {
-        if (-not $Configuration.ContainsKey($VariableName)) {
-            throw "Configuration variable '$VariableName' is not defined."
-        }
-
-        Set-Variable `
-            -Name $VariableName `
-            -Value $Configuration[$VariableName] `
-            -Scope Script
     }
 
-    foreach ($VariableName in $OptionalVariables) {
-        if ($Configuration.ContainsKey($VariableName)) {
-            Set-Variable `
-                -Name $VariableName `
-                -Value $Configuration[$VariableName] `
-                -Scope Script
-        }
+    $SetupFile = Join-Path $ConfigDataPath 'setup.toml'
+    if (Test-Path -LiteralPath $SetupFile) {
+        $Data = Read-IasiToml -Path $SetupFile
+        if (-not $Data.Contains('setup')) { throw 'Expected [setup] in setup.toml.' }
+        $Setup = $Data['setup']
+        if ($Setup.Contains('profile')) { $script:SetupProfile = [string]$Setup['profile'] }
+        if ($Setup.Contains('user')) { $script:SetupUser = [string]$Setup['user'] }
+        if ($Setup.Contains('password')) { $script:SetupPassword = [string]$Setup['password'] }
     }
 }
 
 
+function Get-IasiInstallerAdapter {
+    param([Parameter(Mandatory)][string]$Name)
+    switch ($Name.ToLowerInvariant()) {
+        'subiquity'   { return 'subiquity' }
+        'calamares'   { return 'calamares' }
+        'interactive' { return 'windows-interactive' }
+        default { throw "IASI installer adapter not registered: $Name" }
+    }
+}
 
 function Resolve-InstallerConfiguration {
-    if ($ModeSpecified) {
-        return
+    if (-not $OSType) {
+        # Compatibility with existing IASI Linux node configurations.
+        $script:OSType = "linux"
+    }
+    $script:OSType = ([string]$OSType).ToLowerInvariant()
+    if ($OSType -notin @("linux", "windows")) {
+        throw "Unsupported OSType '$OSType'. Supported: linux, windows."
     }
 
     if (-not $Installer) {
-        $script:Installer = "subiquity"
+        $script:Installer = if ($OSType -eq "windows") { "interactive" } else { "subiquity" }
+    }
+    $script:Installer = ([string]$Installer).ToLowerInvariant()
+
+    # Installer adapters are registered here; VM configuration selects an adapter.
+    $InstallerAdapters = @{
+        'subiquity'   = 'linux'
+        'calamares'   = 'linux'
+        'interactive' = 'windows'
+    }
+    if (-not $InstallerAdapters.ContainsKey($Installer)) {
+        throw "Unsupported installer '$Installer'. Available: $($InstallerAdapters.Keys -join ', ')."
+    }
+    if ($OSType -ne $InstallerAdapters[$Installer]) {
+        throw "Installer '$Installer' requires OS '$($InstallerAdapters[$Installer])', but VM declares '$OSType'."
+    }
+    if ($OSType -eq "windows" -and $Generation -ne 2) {
+        throw "Windows 11 IASI guests require generation 2."
     }
 
     if (-not $SourceISO) {
@@ -341,6 +200,12 @@ function Resolve-InstallerConfiguration {
         throw "Configuration variable 'SourceISO' is required for installer '$Installer'."
     }
 
+    # Windows profile values are provided by config-data/setup.toml.
+    if ($OSType -eq "windows" -and $Installer -eq "interactive" -and
+        (-not $SetupProfile -or -not $SetupUser -or $null -eq $SetupPassword)) {
+        throw "Missing SetupProfile, SetupUser or SetupPassword in config-data."
+    }
+
     switch ($Installer) {
         "subiquity" {
             if (-not (Test-Path $UserDataPath -PathType Leaf)) {
@@ -355,78 +220,29 @@ function Resolve-InstallerConfiguration {
         "calamares" {
             # Calamares currently uses the source ISO directly.
         }
+        "interactive" {
+            # The unmodified ISO is attached for manual installation.
+        }
 
         default {
-            throw "Unsupported installer '$Installer'. Supported installers: subiquity, calamares."
+            throw "Unsupported installer '$Installer'. Supported installers: subiquity, calamares, interactive."
         }
     }
 }
 
 
-function Resolve-ModeConfiguration {
-    $HasModes = $null -ne $Modes
-
-    if (-not $HasModes) {
-        if ($ModeSpecified) {
-            throw "Node '$NodeName' does not define resource modes."
+function Resolve-ResourceConfiguration {
+    if ($null -eq $ProcessorCount -or $ProcessorCount -lt 1) { throw 'vm.processors must be a positive integer.' }
+    if ($null -eq $MemoryStartupBytes -or $MemoryStartupBytes -le 0) { throw 'vm.memory_startup_gb must be positive.' }
+    $script:UseDynamicMemory = ($null -ne $MemoryMinimumBytes -or $null -ne $MemoryMaximumBytes)
+    if ($UseDynamicMemory) {
+        if ($null -eq $MemoryMinimumBytes) { $script:MemoryMinimumBytes = $MemoryStartupBytes }
+        if ($null -eq $MemoryMaximumBytes) { $script:MemoryMaximumBytes = $MemoryStartupBytes }
+        if ($MemoryMinimumBytes -le 0 -or $MemoryMinimumBytes -gt $MemoryStartupBytes -or $MemoryStartupBytes -gt $MemoryMaximumBytes) {
+            throw 'Invalid vm.memory_minimum_gb / memory_startup_gb / memory_maximum_gb relationship.'
         }
-
-        if ($null -eq $ProcessorCount) {
-            throw "Configuration variable 'ProcessorCount' is required when no modes are defined."
-        }
-
-        if ($null -eq $MemoryStartupBytes) {
-            throw "Configuration variable 'MemoryStartupBytes' is required when no modes are defined."
-        }
-
-        $script:EffectiveMode = $null
-        $script:UseDynamicMemory = $false
-        return
-    }
-
-    if (-not $DefaultMode) {
-        $script:DefaultMode = "normal"
-    }
-
-    $script:EffectiveMode = if ($ModeSpecified) { $RequestedMode } else { $DefaultMode }
-
-    if (-not $Modes.ContainsKey($EffectiveMode)) {
-        $Available = @($Modes.Keys | Sort-Object) -join ", "
-        throw "Unknown mode '$EffectiveMode'. Available modes: $Available."
-    }
-
-    $Profile = $Modes[$EffectiveMode]
-
-    foreach ($Key in @(
-        "ProcessorCount",
-        "MinimumMemory",
-        "StartupMemory",
-        "MaximumMemory"
-    )) {
-        if (-not $Profile.ContainsKey($Key)) {
-            throw "Mode '$EffectiveMode' does not define '$Key'."
-        }
-    }
-
-    $script:ProcessorCount = [int]$Profile["ProcessorCount"]
-    $script:MemoryMinimumBytes = [int64]$Profile["MinimumMemory"]
-    $script:MemoryStartupBytes = [int64]$Profile["StartupMemory"]
-    $script:MemoryMaximumBytes = [int64]$Profile["MaximumMemory"]
-    $script:UseDynamicMemory = $true
-
-    if ($MemoryMinimumBytes -le 0 -or $MemoryStartupBytes -le 0 -or $MemoryMaximumBytes -le 0) {
-        throw "Mode '$EffectiveMode' contains an invalid memory value."
-    }
-
-    if ($MemoryMinimumBytes -gt $MemoryStartupBytes) {
-        throw "Mode '$EffectiveMode' has MinimumMemory greater than StartupMemory."
-    }
-
-    if ($MemoryStartupBytes -gt $MemoryMaximumBytes) {
-        throw "Mode '$EffectiveMode' has StartupMemory greater than MaximumMemory."
     }
 }
-
 
 function Resolve-GpuConfiguration {
     if ($null -eq $GPUEnabled) {
@@ -505,7 +321,6 @@ function Import-NetworkConfiguration {
 
 function Import-ServicePorts {
     $script:ServicePorts = @{}
-    if ($ModeSpecified) { return }
     $Path = Join-Path $IASIRoot "config\\ports.toml"
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
         throw "Missing shared service port configuration '$Path'."
@@ -537,13 +352,11 @@ function Initialize {
     Resolve-ConfigurationPath
     Import-Configuration
     Resolve-InstallerConfiguration
-    Resolve-ModeConfiguration
+    Resolve-ResourceConfiguration
     Resolve-GpuConfiguration
 
-    if (-not $ModeSpecified) {
-        Import-NetworkConfiguration
-        Import-ServicePorts
-    }
+    Import-NetworkConfiguration
+    Import-ServicePorts
 }
 
 
@@ -691,10 +504,10 @@ function Remove-VirtualMachine {
     )
 
     if ($VM.State -ne "Off") {
-        Stop-VM -Name $VMName -TurnOff -Force
+        Stop-VM -Name $VMName -TurnOff -Force -ErrorAction Stop
     }
 
-    Remove-VM -Name $VMName -Force
+    Remove-VM -Name $VMName -Force -ErrorAction Stop
 
     foreach ($Disk in $Disks) {
         $DiskName = [System.IO.Path]::GetFileName($Disk)
@@ -758,6 +571,141 @@ function Resolve-Paths {
 }
 
 
+function Test-WindowsSetupPrerequisites {
+    if ($OSType -ne "windows" -or $Installer -ne "interactive") { return }
+    if ($SetupProfile -ne "win-dev") {
+        throw "Unsupported Windows setup profile '$SetupProfile' (supported: win-dev)."
+    }
+    if ($SetupUser -notmatch '^[a-zA-Z][a-zA-Z0-9_.-]{0,19}$') {
+        throw "SetupUser must start with a letter and contain only letters, digits, underscores, dots or hyphens (max 20)."
+    }
+    if ([string]::IsNullOrEmpty([string]$SetupPassword)) {
+        throw "SetupPassword must not be empty."
+    }
+    if (-not (Get-Command wsl.exe -ErrorAction SilentlyContinue)) {
+        throw "wsl.exe is unavailable. WSL and xorriso are required for win-dev setup media."
+    }
+    & wsl.exe --exec sh -c 'command -v xorriso >/dev/null 2>&1'
+    if ($LASTEXITCODE -ne 0) {
+        throw "xorriso was not found in the default WSL distribution. No VM has been removed."
+    }
+
+}
+
+function New-WindowsSetupMedia {
+    # Global IASI staging directory. VM creation is sequential.
+    # Media must remain present while the interactive OS installation runs.
+    $TempRoot = Join-Path $env:TEMP "iasi"
+    New-Item -ItemType Directory -Force -Path $TempRoot -ErrorAction Stop | Out-Null
+    $StageDir = Join-Path $TempRoot "setup-content"
+    # Only remove our own staging files; avoid touching unrelated TEMP data.
+    foreach ($Name in @("setup.iso", "setup.building.iso", "setup-content")) {
+        $Target = Join-Path $TempRoot $Name
+        if (Test-Path -LiteralPath $Target) {
+            Remove-Item -LiteralPath $Target -Recurse -Force -ErrorAction Stop
+        }
+    }
+    New-Item -ItemType Directory -Force -Path $StageDir -ErrorAction Stop | Out-Null
+    $UserXml = [System.Security.SecurityElement]::Escape([string]$SetupUser)
+    $PasswordXml = [System.Security.SecurityElement]::Escape([string]$SetupPassword)
+    $xml = @"
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+  <!-- Valid windowsPE settings make this answer file applicable at initial Setup discovery. -->
+  <settings pass="windowsPE">
+    <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+      <SetupUILanguage>
+        <UILanguage>es-ES</UILanguage>
+      </SetupUILanguage>
+      <InputLocale>es-ES</InputLocale>
+    </component>
+  </settings>
+  <settings pass="oobeSystem">
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+      <OOBE>
+        <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+        <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+        <ProtectYourPC>3</ProtectYourPC>
+      </OOBE>
+      <FirstLogonCommands>
+        <SynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Description>IASI Windows development bootstrap</Description>
+          <CommandLine>powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "&amp; { `$script = Get-PSDrive -PSProvider FileSystem | ForEach-Object { Join-Path `$_.Root 'iasi\launch-bootstrap.ps1' } | Where-Object { Test-Path -LiteralPath `$_ } | Select-Object -First 1; if (-not `$script) { throw 'IASI launcher not found on setup.iso' }; &amp; `$script }"</CommandLine>
+        </SynchronousCommand>
+      </FirstLogonCommands>
+      <UserAccounts>
+        <LocalAccounts>
+          <LocalAccount wcm:action="add">
+            <Name>$UserXml</Name>
+            <DisplayName>$UserXml</DisplayName>
+            <Group>Administrators</Group>
+            <Password>
+              <Value>$PasswordXml</Value>
+              <PlainText>true</PlainText>
+            </Password>
+          </LocalAccount>
+        </LocalAccounts>
+      </UserAccounts>
+    </component>
+  </settings>
+</unattend>
+"@
+    $Autounattend = Join-Path $StageDir "Autounattend.xml"
+    [System.IO.File]::WriteAllText($Autounattend, $xml, [System.Text.UTF8Encoding]::new($false))
+    [xml](Get-Content -LiteralPath $Autounattend -Raw -ErrorAction Stop) | Out-Null
+
+    $ReadmeDir = Join-Path $StageDir "iasi"
+    New-Item -ItemType Directory -Force -Path $ReadmeDir -ErrorAction Stop | Out-Null
+    [System.IO.File]::WriteAllText((Join-Path $ReadmeDir 'README.txt'), "IASI profile: $SetupProfile`r`nInteractive Windows installation, local account configured by Autounattend.xml.`r`nChange the default lab password after installation if required.`r`n")
+
+    # Bootstrap resources are packaged inside setup.iso, not installed on host.
+    $BootstrapSource = Join-Path $PSScriptRoot "windows\bootstrap.ps1"
+    if (-not (Test-Path -LiteralPath $BootstrapSource -PathType Leaf)) {
+        throw "Windows bootstrap script missing: $BootstrapSource"
+    }
+    Copy-Item -LiteralPath $BootstrapSource -Destination (Join-Path $ReadmeDir 'bootstrap.ps1') -ErrorAction Stop
+    foreach ($actionName in @('directories','drives','git','organization')) { Copy-Item -LiteralPath (Join-Path $PSScriptRoot ('windows\action-' + $actionName + '.ps1')) -Destination (Join-Path $ReadmeDir ('action-' + $actionName + '.ps1')) -Force -ErrorAction Stop }
+    $LauncherSource = Join-Path $PSScriptRoot 'windows\launch-bootstrap.ps1'
+    Copy-Item -LiteralPath $LauncherSource -Destination (Join-Path $ReadmeDir 'launch-bootstrap.ps1') -ErrorAction Stop
+    # The VM's declarative services are packaged beside the common bootstrap.
+    $ServicesSource = Join-Path $ConfigPath 'services'
+    if (-not (Test-Path -LiteralPath (Join-Path $ServicesSource 'services.toml') -PathType Leaf)) {
+        throw "Missing Windows services manifest: $ServicesSource\services.toml"
+    }
+    Copy-Item -LiteralPath $ServicesSource -Destination (Join-Path $ReadmeDir 'services') -Recurse -Force -ErrorAction Stop
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'common\toml.ps1') -Destination (Join-Path $ReadmeDir 'toml.ps1') -Force -ErrorAction Stop
+    # Optional node software catalog, staged beside the service manifest.
+    $PackageManifest = Join-Path $ConfigDataPath 'packages.toml'
+    if (Test-Path -LiteralPath $PackageManifest) {
+        Copy-Item -LiteralPath $PackageManifest -Destination (Join-Path $ReadmeDir 'services\packages.toml') -Force -ErrorAction Stop
+    }
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'windows\install-packages.ps1') -Destination (Join-Path $ReadmeDir 'install-packages.ps1') -Force -ErrorAction Stop
+    foreach ($name in @('install-software.ps1','run-packages-on-logon.ps1')) {
+        Copy-Item -LiteralPath (Join-Path $PSScriptRoot ('windows\' + $name)) -Destination (Join-Path $ReadmeDir $name) -Force -ErrorAction Stop
+    }
+
+
+    # Microsoft Windows Setup searches removable read-only media for Autounattend.xml.
+    # Keep the vendor Windows ISO intact (including its hidden EFI El Torito images).
+    # Our separate IASI_SETUP DVD contains Autounattend.xml at its root and the scripts.
+    $script:InstallISO = $SourceISO
+    $script:SeedISO = Join-Path $TempRoot "setup.iso"
+    $TmpSetup = Join-Path $TempRoot "setup.building.iso"
+    $StageLinux = (& wsl.exe --exec wslpath -a -u $StageDir | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0 -or -not $StageLinux) { throw "Cannot translate staging path into WSL." }
+    $SetupLinux = (& wsl.exe --exec wslpath -a -u $TmpSetup | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0 -or -not $SetupLinux) { throw "Cannot translate setup ISO path into WSL." }
+    & wsl.exe --exec xorriso -as mkisofs -J -R -V IASI_SETUP -o $SetupLinux $StageLinux
+    if ($LASTEXITCODE -ne 0 -or -not (Test-Path $TmpSetup -PathType Leaf)) {
+        throw "Failed to generate setup.iso with WSL xorriso (exit code $LASTEXITCODE)."
+    }
+    Move-Item -LiteralPath $TmpSetup -Destination $SeedISO -Force -ErrorAction Stop
+    Remove-Item -LiteralPath $StageDir -Recurse -Force -ErrorAction Stop
+    Write-LogInfo "Prepared original Windows ISO and separate IASI_SETUP answer media: $InstallISO; $SeedISO"
+    Write-LogWarning "setup.iso contains a plaintext lab password. Do not distribute it."
+}
+
 function Resolve-InstallationMediaPaths {
     switch ($Installer) {
         "subiquity" {
@@ -770,6 +718,15 @@ function Resolve-InstallationMediaPaths {
             $script:InstallISO = $SourceISO
             $script:SeedISO = $null
         }
+        "interactive" {
+            if ($OSType -eq "windows") {
+                New-WindowsSetupMedia
+            }
+            else {
+                $script:InstallISO = $SourceISO
+                $script:SeedISO = $null
+            }
+        }
     }
 }
 
@@ -777,6 +734,11 @@ function Resolve-InstallationMediaPaths {
 function Prepare-Build {
     Test-BuildConfiguration
     Test-BuildEnvironment
+    if ((Get-VM -Name $VMName -ErrorAction SilentlyContinue) -and -not $Force) {
+        Write-LogWarning "Virtual machine '$VMName' already exists. Use -f to recreate it."
+        exit 0
+    }
+    Test-WindowsSetupPrerequisites
     if ($GPUEnabled) {
         $script:SelectedGPU = Select-IasiGpu -Selector $GPUSelector
         Write-LogInfo "GPU selected: $($SelectedGPU.FriendlyName)"
@@ -785,12 +747,31 @@ function Prepare-Build {
         Write-LogInfo "GPU-P device path: $($SelectedGPU.Name)"
         Write-LogInfo "GPU guest driver / CUDA support remains unverified."
     }
+    # If recreating a Windows VM, release ISO file handles held by its old DVD drives
+    # before replacing the shared temporary installation media.
+    if ($Force -and $OSType -eq "windows" -and $Installer -eq "interactive") {
+        $ExistingVM = Get-VM -Name $VMName -ErrorAction SilentlyContinue
+        if ($ExistingVM) {
+            if ($ExistingVM.State -ne 'Off') { Stop-VM -Name $VMName -Force -TurnOff -ErrorAction Stop }
+            Get-VMDvdDrive -VMName $VMName -ErrorAction Stop | Where-Object {
+                $_.Path -and ($_.Path -eq (Join-Path $env:TEMP 'iasi\os.iso') -or $_.Path -eq (Join-Path $env:TEMP 'iasi\setup.iso'))
+            } | Set-VMDvdDrive -Path $null -ErrorAction Stop
+        }
+    }
+    # Validate toolchain before potentially destructive -f operations.
+    # Stage media before destructive -f. Failure here preserves any existing VM.
+    if ($OSType -eq "windows" -and $Installer -eq "interactive") {
+        Write-LogInfo "Generando ISOs..."
+        Resolve-InstallationMediaPaths
+    }
     Resolve-ExistingVMForBuild
     Resolve-Paths
     if ($GPUEnabled -and $Installer -eq "subiquity") {
         Copy-IasiGpuGuestResources -GPU $SelectedGPU -ConfigPath $ConfigPath
     }
-    Resolve-InstallationMediaPaths
+    if ($OSType -ne "windows" -or $Installer -ne "interactive") {
+        Resolve-InstallationMediaPaths
+    }
 
     if ($Installer -eq "subiquity") {
         Test-IsoEnvironment
@@ -811,7 +792,8 @@ function Set-VirtualMachineResources {
 
     Set-VMProcessor `
         -VMName $Name `
-        -Count $ProcessorCount
+        -Count $ProcessorCount `
+        -ErrorAction Stop
 
     if ($UseDynamicMemory) {
         Set-VMMemory `
@@ -819,13 +801,15 @@ function Set-VirtualMachineResources {
             -DynamicMemoryEnabled $true `
             -MinimumBytes $MemoryMinimumBytes `
             -StartupBytes $MemoryStartupBytes `
-            -MaximumBytes $MemoryMaximumBytes
+            -MaximumBytes $MemoryMaximumBytes `
+            -ErrorAction Stop
     }
     else {
         Set-VMMemory `
             -VMName $Name `
             -DynamicMemoryEnabled $false `
-            -StartupBytes $MemoryStartupBytes
+            -StartupBytes $MemoryStartupBytes `
+            -ErrorAction Stop
     }
 }
 
@@ -840,18 +824,19 @@ function New-VirtualMachine {
         -NewVHDPath $VHDPath `
         -NewVHDSizeBytes $DiskSizeBytes `
         -Path $VMPath `
-        -SwitchName $SwitchName | Out-Null
+        -SwitchName $SwitchName -ErrorAction Stop | Out-Null
 
     Add-VMNetworkAdapter `
         -VMName $VMName `
         -SwitchName $InternetSwitchName `
-        -Name "Internet" | Out-Null
+        -Name "Internet" -ErrorAction Stop | Out-Null
 
     Set-VirtualMachineResources -Name $VMName
 
     Set-VM `
         -Name $VMName `
-        -AutomaticCheckpointsEnabled $false
+        -AutomaticCheckpointsEnabled $false `
+        -ErrorAction Stop
 
     if ($GPUEnabled) {
         Add-IasiGpuPartition `
@@ -867,38 +852,74 @@ function Add-InstallationMedia {
     $InstallDVD = Add-VMDvdDrive `
         -VMName $VMName `
         -Path $InstallISO `
-        -Passthru
+        -Passthru `
+        -ErrorAction Stop
 
     if ($SeedISO) {
         Add-VMDvdDrive `
             -VMName $VMName `
-            -Path $SeedISO | Out-Null
+            -Path $SeedISO `
+            -ErrorAction Stop | Out-Null
     }
 
-    if ($Generation -eq 2) {
-        # IASI labs default to Secure Boot off to avoid interactive MOK enrollment.
-        # Node configuration can explicitly set $SecureBootEnabled = $true.
-        $SecureBootState = if ($SecureBootEnabled -eq $true) { "On" } else { "Off" }
+    if ($Generation -ne 2) { return }
+
+    if ($OSType -eq "windows") {
+        # The VM already uses the MicrosoftWindows template by default.
+        # Some hosts reject explicitly reapplying that template, even though
+        # enabling Secure Boot alone succeeds. Preserve the existing template.
+        $Firmware = Get-VMFirmware -VMName $VMName -ErrorAction Stop
+        if ($Firmware.SecureBootTemplate -ne "MicrosoftWindows") {
+            throw "Windows VM '$VMName' has unexpected Secure Boot template '$($Firmware.SecureBootTemplate)'. Refusing to change it implicitly."
+        }
 
         Set-VMFirmware `
             -VMName $VMName `
-            -EnableSecureBoot $SecureBootState `
-            -FirstBootDevice $InstallDVD
+            -EnableSecureBoot On `
+            -FirstBootDevice $InstallDVD `
+            -ErrorAction Stop
 
-        if ($SecureBootState -eq "On") {
-            Set-VMFirmware `
-                -VMName $VMName `
-                -SecureBootTemplate MicrosoftUEFICertificateAuthority
+        $Firmware = Get-VMFirmware -VMName $VMName -ErrorAction Stop
+        if ($Firmware.SecureBoot -ne "On") {
+            throw "Secure Boot verification failed for '$VMName' (current: $($Firmware.SecureBoot))."
         }
 
-        Write-LogInfo "Secure Boot: $SecureBootState"
+        Set-VMKeyProtector `
+            -VMName $VMName `
+            -NewLocalKeyProtector `
+            -ErrorAction Stop
+
+        Enable-VMTPM `
+            -VMName $VMName `
+            -ErrorAction Stop
+
+        Write-LogInfo "Secure Boot: On (MicrosoftWindows); virtual TPM: enabled"
+        return
     }
+
+    # Linux: default off for disposable labs; allow UEFI CA when enabled.
+    $SecureBootState = if ($SecureBootEnabled -eq $true) { "On" } else { "Off" }
+    if ($SecureBootState -eq "On") {
+        Set-VMFirmware `
+            -VMName $VMName `
+            -EnableSecureBoot On `
+            -SecureBootTemplate "MicrosoftUEFICertificateAuthority" `
+            -FirstBootDevice $InstallDVD `
+            -ErrorAction Stop
+    }
+    else {
+        Set-VMFirmware `
+            -VMName $VMName `
+            -EnableSecureBoot Off `
+            -FirstBootDevice $InstallDVD `
+            -ErrorAction Stop
+    }
+    Write-LogInfo "Secure Boot: $SecureBootState"
 }
 
-
 function Deploy-Build {
-    if ($Installer -eq "calamares") {
-        Write-LogInfo "Preparing Calamares live environment..."
+    if ($Installer -in @("calamares", "interactive")) {
+        Write-LogInfo "Preparing direct ISO installation ($Installer)..."
 
         New-VirtualMachine
         Add-InstallationMedia
@@ -936,54 +957,9 @@ function Deploy-Build {
 
 
 # =====================================================================
-# Mode change
+# Build completion
 # =====================================================================
 
-function Stop-VirtualMachineForModeChange {
-    param($VM)
-
-    if ($VM.State -eq "Off") { return }
-
-    Write-LogInfo "Stopping virtual machine '$VMName' before applying mode '$EffectiveMode'..."
-
-    Stop-VM `
-        -Name $VMName `
-        -Force `
-        -Confirm:$false
-
-    $Deadline = (Get-Date).AddMinutes(6)
-
-    do {
-        Start-Sleep -Milliseconds 500
-        $VM = Get-VM -Name $VMName
-    }
-    while ($VM.State -ne "Off" -and (Get-Date) -lt $Deadline)
-
-    if ($VM.State -ne "Off") {
-        throw "Virtual machine '$VMName' did not reach the Off state."
-    }
-}
-
-
-function Apply-ModeToExistingVirtualMachine {
-    Test-HyperVEnvironment
-
-    $VM = Get-VM -Name $VMName -ErrorAction SilentlyContinue
-
-    if (-not $VM) {
-        throw "Virtual machine '$VMName' does not exist. --mode never creates a virtual machine."
-    }
-
-    Stop-VirtualMachineForModeChange -VM $VM
-
-    Write-LogInfo "Applying mode '$EffectiveMode' to '$VMName'..."
-    Set-VirtualMachineResources -Name $VMName
-
-    Write-LogSuccess "Mode '$EffectiveMode' applied to '$VMName'."
-}
-
-
-# =====================================================================
 # Complete
 # =====================================================================
 
@@ -1003,7 +979,6 @@ function Start-VirtualMachine {
 
 function Show-BuildSummary {
     Write-LogInfo "Virtual machine: $VMName"
-    Write-LogInfo "Mode:            $(if ($EffectiveMode) { $EffectiveMode } else { 'fixed' })"
     Write-LogInfo "CPU:             $ProcessorCount"
 
     if ($UseDynamicMemory) {
@@ -1016,6 +991,7 @@ function Show-BuildSummary {
     Write-LogInfo "GPU:             $(if ($GPUEnabled) { $SelectedGPU.FriendlyName } else { 'disabled' })"
     Write-LogInfo "Path:            $VMPath"
     Write-LogInfo "VHDX:            $VHDPath"
+    Write-LogInfo "OS type:         $OSType"
     Write-LogInfo "Installer:       $Installer"
     Write-LogInfo "Source ISO:      $SourceISO"
     Write-LogInfo "Install ISO:     $InstallISO"
@@ -1032,38 +1008,16 @@ function Show-BuildSummary {
 }
 
 
-function Show-ModeSummary {
-    Write-LogInfo "Virtual machine: $VMName"
-    Write-LogInfo "Mode:            $EffectiveMode"
-    Write-LogInfo "CPU:             $ProcessorCount"
-    Write-LogInfo "Memory:          $($MemoryMinimumBytes / 1GB) / $($MemoryStartupBytes / 1GB) / $($MemoryMaximumBytes / 1GB) GB"
-    Write-LogInfo "Log:             $LogFile"
-}
-
-
 function Complete-Build {
-    if (-not $NoLaunch) {
-        Start-VirtualMachine
+    # Provisioning only: VM remains off regardless of installer or OS.
+    # No guest installation, startup, operator pause or readiness check here.
+    $state = (Get-VM -Name $VMName -ErrorAction Stop).State
+    if ($state -ne 'Off') {
+        throw "Provisioning must leave VM '$VMName' powered off; actual state: $state"
     }
-    else {
-        Write-LogInfo "Virtual machine '$VMName' left powered off."
-    }
-
+    Write-LogInfo "VM '$VMName' provisioned and powered off. Guest setup occurs at first manual boot."
     Show-BuildSummary
 }
-
-
-function Complete-ModeChange {
-    if (-not $NoLaunch) {
-        Start-VirtualMachine
-    }
-    else {
-        Write-LogInfo "Virtual machine '$VMName' left powered off."
-    }
-
-    Show-ModeSummary
-}
-
 
 # =====================================================================
 # Main
@@ -1072,15 +1026,9 @@ function Complete-ModeChange {
 try {
     Initialize
 
-    if ($ModeSpecified) {
-        Apply-ModeToExistingVirtualMachine
-        Complete-ModeChange
-    }
-    else {
-        Prepare-Build
-        Deploy-Build
-        Complete-Build
-    }
+    Prepare-Build
+    Deploy-Build
+    Complete-Build
 }
 catch {
     Write-RawLog $_

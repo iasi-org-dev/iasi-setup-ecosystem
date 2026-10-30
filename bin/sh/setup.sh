@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
-
-echo "IASI Ecosystem Setup"
-echo "Preparing the IASI ecosystem environment..."
+set -euo pipefail
+printf '%s\n' 'IASI setup.sh: Linux orchestration is not implemented yet.' >&2
+printf '%s\n' 'Use bin/ps/setup.ps1 on the Windows Hyper-V host.' >&2
+exit 2

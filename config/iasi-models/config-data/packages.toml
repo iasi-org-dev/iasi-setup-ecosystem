@@ -1,12 +1,13 @@
-$Packages = @(
+[packages]
+items = [
     "ca-certificates",
     "curl",
     "git",
     "jq",
     "unzip",
     "vim",
-	"build-essential",
-	"dkms",
+    "build-essential",
+    "dkms",
     "docker.io",
-    "docker-compose-v2"
-)
+    "docker-compose-v2",
+]

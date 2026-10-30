@@ -1,0 +1,11 @@
+# IASI node configuration
+[vm]
+name = "iasi-dev2"
+os = "windows"
+installer = "interactive"
+generation = 2
+disk_size_gb = 120
+processors = 2
+memory_startup_gb = 4
+switch = "iasi-net"
+source_iso = 'C:\discos\Windows11_Client_x64_es-es_26300_9457.iso'

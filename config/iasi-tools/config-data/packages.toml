@@ -1,4 +1,5 @@
-$Packages = @(
+[packages]
+items = [
     "ca-certificates",
     "curl",
     "git",
@@ -6,5 +7,5 @@ $Packages = @(
     "unzip",
     "vim",
     "docker.io",
-    "docker-compose-v2"
-)
+    "docker-compose-v2",
+]

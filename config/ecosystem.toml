@@ -1,0 +1,17 @@
+# Declarative execution order for the IASI ecosystem.
+# New component types must have an explicitly implemented adapter in setup.ps1.
+[[components]]
+name = 'iasi-dev2'
+type = 'hyper-v'
+config = 'iasi-dev2'
+
+[[components]]
+name = 'iasi-tools'
+type = 'hyper-v'
+config = 'iasi-tools'
+
+[[components]]
+name = 'iasi-models'
+type = 'hyper-v'
+config = 'iasi-models'
+# iasi-work is deliberately excluded until its configuration is reviewed.

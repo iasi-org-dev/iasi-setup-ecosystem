@@ -1,0 +1,20 @@
+# Fase 1: catálogo declarativo para iasi-dev2.
+[paths]
+sdk = 'C:\SDK'
+machines = 'C:\Machines'
+
+[SDK]
+"Microsoft.VisualStudioCode" = true
+"GoLang.Go" = true
+"Python.Python.3.13" = true
+"EclipseAdoptium.Temurin.21.JDK" = true
+"RProject.R" = true
+"Posit.RStudio" = true
+"JohnMacFarlane.Pandoc" = true
+"MiKTeX.MiKTeX" = true
+
+[software]
+"Notepad++.Notepad++" = true
+
+[custom]
+# Activa procedimientos específicos cuando exista su implementacion.

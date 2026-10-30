@@ -1,0 +1,18 @@
+# FASE 2 - complementos y configuracion, una vez instalada toda la fase 1.
+[vscode]
+extensions = ['golang.go', 'ms-python.python', 'ms-vscode.powershell', 'REditorSupport.r', 'ms-vscode-remote.remote-wsl']
+
+[r]
+packages = ['languageserver', 'renv', 'rmarkdown']
+repository = 'https://cloud.r-project.org'
+
+[wsl]
+# Solo tras la creacion de IASI. Sin paquetes adicionales por ahora.
+packages = []
+
+# Fase 2: repositorios de la organizacion. NO ejecutar en fase 1.
+[github]
+organization = "iasi-org-dev"
+target = 'C:\PRJ\iasi-dev'
+public_only = true
+update = "ff-only"

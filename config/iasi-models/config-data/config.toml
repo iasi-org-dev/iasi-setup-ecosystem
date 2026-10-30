@@ -1,0 +1,15 @@
+# IASI node configuration
+[vm]
+name = "iasi-models"
+os = "linux"
+installer = "subiquity"
+generation = 2
+disk_size_gb = 160
+processors = 8
+memory_minimum_gb = 16
+memory_startup_gb = 16
+memory_maximum_gb = 32
+gpu_enabled = true
+gpu_selector = "auto"
+switch = "iasi-net"
+source_iso = 'C:\discos\ubuntu-24.04.5-live-server-amd64.iso'

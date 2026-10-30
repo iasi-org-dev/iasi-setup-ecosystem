@@ -1,0 +1,10 @@
+# IASI node configuration
+[vm]
+name = "vm-iasi-work"
+os = "linux"
+installer = "calamares"
+generation = 2
+disk_size_gb = 120
+processors = 4
+memory_startup_gb = 8
+source_iso = 'C:\discos\kubuntu-24.04.4-desktop-amd64.iso'

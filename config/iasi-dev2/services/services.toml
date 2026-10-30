@@ -1,0 +1,18 @@
+# Preparacion de la maquina; sin instalacion de paquetes ni extensiones.
+[[install]]
+action = "directories"
+root = 'C:\PRJ'
+sdk = 'C:\SDK'
+
+[[install]]
+action = "drives"
+root = 'C:\PRJ'
+
+[[install]]
+action = "git-install"
+
+[[install]]
+action = "git"
+repository = "https://github.com/iasi-org-dev/iasi-setup-ecosystem.git"
+target = 'C:\PRJ\iasi-dev\iasi-setup-ecosystem'
+update = "ff-only"

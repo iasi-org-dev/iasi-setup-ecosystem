@@ -94,6 +94,13 @@ future infrastructure consumers share one source of truth.
 #>
 
 
+# -f recreates only IASI-owned networking resources. Without it, reconcile in place.
+$ForceNetwork = $false
+foreach ($Argument in $args) {
+    if ([string]$Argument -eq '-f') { $ForceNetwork = $true }
+    else { throw "Unknown iasi-net.ps1 argument: $Argument" }
+}
+
 . "$PSScriptRoot\common\log.ps1"
 . "$PSScriptRoot\common\messages.ps1"
 . "$PSScriptRoot\common\toml.ps1"
@@ -604,6 +611,28 @@ function Resolve-HostsFile {
 
 
 # =====================================================================
+# Explicit recreation of IASI-owned network resources (-f)
+# =====================================================================
+function Reset-IasiNetwork {
+    Write-LogWarning "FORCE (-f): recreating IASI network '$SwitchName' and NAT '$NatName'. Existing VM adapters on this switch may be disconnected."
+
+    $ExistingSwitch = Get-VMSwitch -Name $SwitchName -ErrorAction SilentlyContinue
+    if ($ExistingSwitch -and $ExistingSwitch.SwitchType -ne 'Internal') {
+        throw "Refusing to remove non-internal switch '$SwitchName'."
+    }
+    $ExistingNat = Get-NetNat -Name $NatName -ErrorAction SilentlyContinue
+    if ($ExistingNat) {
+        Write-LogInfo "Removing owned NAT '$NatName'."
+        Remove-NetNat -Name $NatName -Confirm:$false -ErrorAction Stop
+    }
+    if ($ExistingSwitch) {
+        Write-LogInfo "Removing owned internal switch '$SwitchName'."
+        Remove-VMSwitch -Name $SwitchName -Force -ErrorAction Stop
+    }
+}
+
+
+# =====================================================================
 # Result
 # =====================================================================
 
@@ -633,6 +662,7 @@ try {
     Test-Environment
     Test-Configuration
 
+    if ($ForceNetwork) { Reset-IasiNetwork }
     Resolve-VirtualSwitch
     Resolve-VirtualAdapter | Out-Null
     Resolve-HostAddresses
