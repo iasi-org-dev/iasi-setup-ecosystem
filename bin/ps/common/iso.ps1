@@ -40,7 +40,7 @@ function Test-IsoOutputDirectory {
 }
 
 function New-UnattendedUbuntuISO {
-    param([string]$UbuntuISO, [string]$InstallISO, [string]$VMName)
+    param([string]$UbuntuISO, [string]$InstallISO, [string]$VMName, [string]$SeedContentPath)
     Write-LogInfo 'Creating unattended Ubuntu ISO...'
     if ([IO.Path]::GetFullPath($UbuntuISO) -eq [IO.Path]::GetFullPath($InstallISO)) {
         throw 'Generated ISO cannot overwrite the Ubuntu source ISO.'
@@ -61,14 +61,51 @@ function New-UnattendedUbuntuISO {
             'sed', '-i', '-E', '-e', 's/^set timeout=.*/set timeout=0/',
             '-e', 's|^([[:space:]]*linux[[:space:]]+[^[:space:]]+[[:space:]]+)---[[:space:]]*$|\1autoinstall ---|', $WslGrub
         ) -ErrorMessage 'Unable to set autoinstall boot entry.'
+        $GrubText = [IO.File]::ReadAllText($Grub)
+        $GrubText = $GrubText.Replace('autoinstall ---', 'autoinstall ds="nocloud;s=/cdrom/" ---')
+        [IO.File]::WriteAllText($Grub, $GrubText, [Text.UTF8Encoding]::new($false))
         Invoke-IasiIsoCommand -Directory $Work -Arguments @(
-            'grep', '-Eq', '^[[:space:]]*linux[[:space:]]+[^[:space:]]+[[:space:]]+autoinstall[[:space:]]+---[[:space:]]*$', $WslGrub
+            'grep', '-Fq', 'autoinstall', $WslGrub
         ) -ErrorMessage 'autoinstall was not added to grub.cfg.'
-        Invoke-IasiIsoCommand -Directory $Work -Arguments @(
-            'xorriso', '-indev', $InputISO, '-outdev', $OutputISO,
-            '-boot_image', 'any', 'replay', '-map', $WslGrub, '/boot/grub/grub.cfg'
-        ) -ErrorMessage 'Unable to create unattended Ubuntu ISO.'
-        Write-LogSuccess "Unattended Ubuntu ISO created: $InstallISO"
+        $Arguments = @('xorriso', '-indev', $InputISO, '-outdev', $OutputISO,
+            '-boot_image', 'any', 'replay', '-map', $WslGrub, '/boot/grub/grub.cfg')
+        if ($SeedContentPath) {
+            # Map seed entries to ISO root, matching the late-command mountpoint.
+            # NoCloud files are expected directly at /cdrom/.
+            foreach ($Required in @('user-data', 'meta-data', 'network-config')) {
+                if (-not (Test-Path -LiteralPath (Join-Path $SeedContentPath $Required) -PathType Leaf)) {
+                    throw "Expected NoCloud file missing: $Required"
+                }
+            }
+            if (-not (Test-Path -LiteralPath (Join-Path $SeedContentPath 'iasi/install.sh') -PathType Leaf)) {
+                throw 'Expected iasi/install.sh missing from seed.'
+            }
+            foreach ($Entry in (Get-ChildItem -LiteralPath $SeedContentPath -Force)) {
+                $EntryLinux = Convert-ToWslPath $Entry.FullName
+                $Arguments += @('-map', $EntryLinux, "/$($Entry.Name)")
+            }
+        }
+        Invoke-IasiIsoCommand -Directory $Work -Arguments $Arguments -ErrorMessage 'Unable to create unattended Ubuntu ISO.'
+        # Inspect the built ISO and require regular files at exact paths.
+        if ($SeedContentPath) {
+            $Probe = Join-Path $Work 'probe'
+            New-Item -ItemType Directory -Path $Probe -Force | Out-Null
+            foreach ($Relative in @('user-data', 'meta-data', 'network-config', 'iasi/install.sh')) {
+                $Target = Join-Path $Probe ($Relative.Replace('/', [IO.Path]::DirectorySeparatorChar))
+                New-Item -ItemType Directory -Path (Split-Path -Parent $Target) -Force | Out-Null
+                Invoke-IasiIsoCommand -Directory $Work -Arguments @(
+                    'xorriso', '-osirrox', 'on', '-indev', $OutputISO,
+                    '-extract', "/$Relative", (Convert-ToWslPath $Target)
+                ) -ErrorMessage "ISO verification failed for /$Relative."
+                if (-not (Test-Path -LiteralPath $Target -PathType Leaf)) {
+                    throw "ISO verification found a directory instead of file: /$Relative"
+                }
+            }
+            if ((Get-Item -LiteralPath (Join-Path $Probe 'user-data')).Length -eq 0) {
+                throw 'ISO verification found empty user-data.'
+            }
+        }
+        Write-LogSuccess "Unattended Ubuntu ISO created and structurally verified: $InstallISO"
     }
     finally { if (Test-Path $Work) { Remove-Item $Work -Recurse -Force } }
 }
@@ -113,7 +150,8 @@ function New-NoCloudNetworkConfig {
 function New-SeedISO {
     param([string]$ConfigPath, [string]$SeedISO, [string]$VMName, [object[]]$Packages,
         [string]$IPAddress, [int]$PrefixLength, [string]$Gateway, [object[]]$DnsServers,
-        [string]$NetworkInterface, [string]$InternetNetworkInterface, [hashtable]$ServicePorts)
+        [string]$NetworkInterface, [string]$InternetNetworkInterface, [hashtable]$ServicePorts,
+        [string]$SeedContentPath)
     Write-LogInfo 'Creating seed ISO...'
     $Stage = Join-Path ([IO.Path]::GetTempPath()) "$VMName-seed-$([guid]::NewGuid().ToString('N'))"
     New-Item -ItemType Directory -Path $Stage -Force | Out-Null
@@ -122,8 +160,30 @@ function New-SeedISO {
         $UserData = Join-Path $Stage 'user-data'
         Test-AutoinstallNetworkNotDefined -UserDataPath $UserData
         Set-AutoinstallPackages -UserDataPath $UserData -Packages $Packages
+        # QA gate: packages declared by the VM must appear in the generated YAML.
+        $GeneratedYaml = Get-Content -LiteralPath $UserData -Raw -Encoding UTF8
+        foreach ($Package in @($Packages)) {
+            if ($GeneratedYaml -notmatch ('(?m)^    - ' + [regex]::Escape([string]$Package) + '\s*$')) {
+                throw "ISO QA failed: declared package '$Package' is missing from user-data."
+            }
+        }
+        if (@($Packages).Count -gt 0 -and $GeneratedYaml -notmatch '(?m)^  packages:\s*$') {
+            throw 'ISO QA failed: no packages section in generated user-data.'
+        }
         Set-AutoinstallServices -StagePath $Stage -UserDataPath $UserData -ServicePorts $ServicePorts
         New-NoCloudNetworkConfig -Path (Join-Path $Stage 'network-config') -IPAddress $IPAddress -PrefixLength $PrefixLength -NetworkInterface $NetworkInterface -InternetNetworkInterface $InternetNetworkInterface
+        if ($SeedContentPath) {
+            # Copy contents, not the Stage directory itself.
+            New-Item -ItemType Directory -Path $SeedContentPath -Force | Out-Null
+            Get-ChildItem -LiteralPath $Stage -Force | ForEach-Object {
+                Copy-Item -LiteralPath $_.FullName -Destination $SeedContentPath -Recurse -Force
+            }
+            foreach ($Name in @('user-data', 'meta-data', 'network-config')) {
+                if (-not (Test-Path -LiteralPath (Join-Path $SeedContentPath $Name) -PathType Leaf)) {
+                    throw "Expected NoCloud file missing: $Name"
+                }
+            }
+        }
         Invoke-IasiIsoCommand -Directory $Stage -Arguments @(
             'xorriso', '-as', 'mkisofs', '-V', 'CIDATA', '-J', '-R', '-o',
             (Convert-ToWslPath $SeedISO), (Convert-ToWslPath $Stage)
@@ -142,8 +202,9 @@ function New-InstallationMediaStage {
     $InstallISO = Join-Path $Stage "$VMName.iso"
     $SeedISO = Join-Path $Stage "$VMName-seed.iso"
     try {
-        New-UnattendedUbuntuISO -UbuntuISO $UbuntuISO -InstallISO $InstallISO -VMName $VMName
-        New-SeedISO -ConfigPath $ConfigPath -SeedISO $SeedISO -VMName $VMName -Packages $Packages -IPAddress $IPAddress -PrefixLength $PrefixLength -Gateway $Gateway -DnsServers $DnsServers -NetworkInterface $NetworkInterface -InternetNetworkInterface $InternetNetworkInterface -ServicePorts $ServicePorts
+        $SeedContentPath = Join-Path $Stage 'seed-content'
+        New-SeedISO -ConfigPath $ConfigPath -SeedISO $SeedISO -VMName $VMName -Packages $Packages -IPAddress $IPAddress -PrefixLength $PrefixLength -Gateway $Gateway -DnsServers $DnsServers -NetworkInterface $NetworkInterface -InternetNetworkInterface $InternetNetworkInterface -ServicePorts $ServicePorts -SeedContentPath $SeedContentPath
+        New-UnattendedUbuntuISO -UbuntuISO $UbuntuISO -InstallISO $InstallISO -VMName $VMName -SeedContentPath $SeedContentPath
         return [pscustomobject]@{ Path = $Stage; InstallISO = $InstallISO; SeedISO = $SeedISO }
     }
     catch { if (Test-Path $Stage) { Remove-Item $Stage -Recurse -Force }; throw }

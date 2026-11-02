@@ -1,8 +1,6 @@
 # IASI tools services: ordered operations for installation and first boot.
-
-[[install]]
-action = "run"
-command = "usermod -aG docker iasi"
+# Docker and docker-compose-v2 are declared in config-data/packages.toml
+# and must be installed by Subiquity before these install operations.
 
 [[install]]
 action = "copy"
@@ -13,6 +11,11 @@ target = "/opt/iasi/iasi-tools-compose.yml"
 action = "copy"
 source = "iasi-services.env"
 target = "/opt/iasi/iasi-services.env"
+
+# Last install step: verify Docker, then grant the iasi user group access.
+[[install]]
+action = "run"
+command = "dpkg-query -W -f='${Status}' docker.io | grep -qx 'install ok installed' && getent group docker >/dev/null && usermod -aG docker iasi"
 
 [[startup]]
 action = "run"

@@ -113,13 +113,31 @@ function Import-Configuration {
     if ($VM.Contains('switch')) { $script:SwitchName = [string]$VM['switch'] }
     if ($VM.Contains('path')) { $script:Path = [string]$VM['path'] }
 
+    # Linux packages must be passed to the Subiquity ISO builder.
+    # Windows package sections are deliberately kept separate.
+    $script:Packages = @()
     $PackagesFile = Join-Path $ConfigDataPath 'packages.toml'
-    if (Test-Path -LiteralPath $PackagesFile) {
+    if (Test-Path -LiteralPath $PackagesFile -PathType Leaf) {
         $Pkg = Read-IasiToml -Path $PackagesFile
-        foreach ($category in @('SDK', 'software', 'custom')) {
-            if ($Pkg.Contains($category)) {
-                foreach ($entry in $Pkg[$category].GetEnumerator()) {
-                    if ($entry.Value -isnot [bool]) { throw "Invalid package flag $category / $($entry.Key): boolean required." }
+        if ($OSType -eq 'linux' -and $Installer -eq 'subiquity') {
+            if (-not $Pkg.Contains('packages') -or -not $Pkg['packages'].Contains('items')) {
+                throw "Expected [packages].items in $PackagesFile for Subiquity."
+            }
+            $Items = @($Pkg['packages']['items'])
+            foreach ($Item in $Items) {
+                if ($Item -isnot [string] -or $Item -cnotmatch '^[a-z0-9][a-z0-9+.-]*$') {
+                    throw "Invalid Ubuntu package name in ${PackagesFile}: '$Item'"
+                }
+            }
+            $script:Packages = @($Items | Select-Object -Unique)
+            Write-LogInfo "Ubuntu packages declared: $($script:Packages -join ', ')"
+        }
+        else {
+            foreach ($category in @('SDK', 'software', 'custom')) {
+                if ($Pkg.Contains($category)) {
+                    foreach ($entry in $Pkg[$category].GetEnumerator()) {
+                        if ($entry.Value -isnot [bool]) { throw "Invalid package flag $category / $($entry.Key): boolean required." }
+                    }
                 }
             }
         }

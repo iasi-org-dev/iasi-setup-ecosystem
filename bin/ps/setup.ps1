@@ -63,10 +63,7 @@ if (Test-Path -LiteralPath $manifest -PathType Leaf) {
     $componentType = 'hyper-v'
     if ($details['vm'].Contains('type')) { $componentType = [string]$details['vm']['type'] }
     # Standalone Hyper-V VM also needs the shared network before deployment.
-    $items = @(
-        @{ name = 'iasi-net'; type = 'network'; config = (Join-Path $root 'config\iasi-net.toml') },
-        @{ name = $name; type = $componentType; config = $cpath }
-    )
+    $items = @(@{ name = $name; type = $componentType; config = $cpath })
     $baseDir = $null
 } else {
     throw "No setup.toml or config-data/config.toml found at $cpath"
@@ -105,10 +102,12 @@ foreach ($item in $items) {
     Write-Host "`n========== IASI component: $name ($type) ==========" -ForegroundColor Cyan
     switch ($type) {
         'network' {
-            $call = @()
-            if ($force) { $call += '-f' }
-            & (Join-Path $PSScriptRoot 'iasi-net.ps1') @call
-            if (-not $?) { throw "iasi-net.ps1 failed for $name" }
+            if (-not $configuration -or $configuration -match '(?i)iasi-net') {
+                $call = @()
+                if ($force) { $call += '-f' }
+                & (Join-Path $PSScriptRoot 'iasi-net.ps1') @call
+                if (-not $?) { throw "iasi-net.ps1 failed for $name" }
+            }
         }
         'hyper-v' { Invoke-IasiHyperVComponent -Name $name -ConfigDir $dir -Recreate $force }
         default { throw "Unregistered setup component adapter: $type ($name)" }

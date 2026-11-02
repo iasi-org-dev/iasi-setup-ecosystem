@@ -110,7 +110,7 @@ function Add-IasiAutoinstallHooks {
     }
     $Lines = @(
         '  late-commands:',
-        "    - 'mkdir -p /mnt/iasi-seed && mount -L CIDATA /mnt/iasi-seed && sh /mnt/iasi-seed/iasi/install.sh'"
+        "    - 'mkdir -p /mnt/iasi-seed && mount -o ro /dev/sr0 /mnt/iasi-seed && test -f /mnt/iasi-seed/iasi/install.sh && sh /mnt/iasi-seed/iasi/install.sh'"
     )
     if ($HasStartup) {
         $Lines += @(

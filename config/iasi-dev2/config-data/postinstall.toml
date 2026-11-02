@@ -4,6 +4,9 @@ extensions = ['golang.go', 'ms-python.python', 'ms-vscode.powershell', 'REditorS
 
 [r]
 packages = ['languageserver', 'renv', 'rmarkdown']
+# bootstrap: solo generar la primera linea base. restore: reconstrucciones normales.
+mode = 'bootstrap'
+lockfile = 'renv.lock'
 repository = 'https://cloud.r-project.org'
 
 [wsl]
