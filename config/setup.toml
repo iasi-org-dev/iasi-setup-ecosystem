@@ -1,5 +1,19 @@
-# Declarative execution order for the IASI ecosystem.
-# New component types must have an explicitly implemented adapter in setup.ps1.
+# Common VM credentials (lab only). Do not commit production passwords.
+[identity]
+user = 'iasi'
+password = 'iasi'
+
+# The order below is the actual provisioning order.
+[[components]]
+name = 'hyperv'
+type = 'host'
+config = 'hyperv.toml'
+
+[[components]]
+name = 'wsl'
+type = 'wsl'
+config = 'wsl.toml'
+
 [[components]]
 name = 'iasi-net'
 type = 'network'
@@ -19,4 +33,3 @@ config = 'iasi-tools'
 name = 'iasi-models'
 type = 'hyper-v'
 config = 'iasi-models'
-# iasi-work is deliberately excluded until its configuration is reviewed.

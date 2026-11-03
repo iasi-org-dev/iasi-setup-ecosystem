@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
 Produces the bootable Subiquity ISO and NoCloud seed ISO for an IASI node.
 #>
@@ -147,11 +147,26 @@ function New-NoCloudNetworkConfig {
     Write-LogInfo "NoCloud network-config created: $NetworkInterface=$IPAddress/$PrefixLength, $InternetNetworkInterface=DHCP."
 }
 
+function Set-AutoinstallIdentity {
+    param([string]$UserDataPath, [string]$User, [string]$Password)
+    if ([string]::IsNullOrEmpty($User) -or [string]::IsNullOrEmpty($Password)) { throw 'Missing resolved Linux identity.' }
+    # Pass password over stdin, not through process arguments.
+    $Hash = ($Password | & wsl.exe --exec openssl passwd -6 -stdin | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0 -or $Hash -notmatch '^\$6\$') { throw 'Could not generate Linux password hash (WSL openssl).' }
+    $Text = [IO.File]::ReadAllText($UserDataPath)
+    $UserPattern = '(?m)^(    username:).*$'
+    $PasswordPattern = '(?m)^(    password:).*$'
+    if ([regex]::Matches($Text,$UserPattern).Count -ne 1 -or [regex]::Matches($Text,$PasswordPattern).Count -ne 1) { throw 'Expected exactly one cloud-init identity.' }
+    $Text = [regex]::Replace($Text,$UserPattern, { param($m) $m.Groups[1].Value + ' ' + $User })
+    $Text = [regex]::Replace($Text,$PasswordPattern, { param($m) $m.Groups[1].Value + ' "' + $Hash + '"' })
+    [IO.File]::WriteAllText($UserDataPath,$Text,[Text.UTF8Encoding]::new($false))
+}
+
 function New-SeedISO {
     param([string]$ConfigPath, [string]$SeedISO, [string]$VMName, [object[]]$Packages,
         [string]$IPAddress, [int]$PrefixLength, [string]$Gateway, [object[]]$DnsServers,
         [string]$NetworkInterface, [string]$InternetNetworkInterface, [hashtable]$ServicePorts,
-        [string]$SeedContentPath)
+        [string]$SeedContentPath, [string]$IdentityUser, [string]$IdentityPassword)
     Write-LogInfo 'Creating seed ISO...'
     $Stage = Join-Path ([IO.Path]::GetTempPath()) "$VMName-seed-$([guid]::NewGuid().ToString('N'))"
     New-Item -ItemType Directory -Path $Stage -Force | Out-Null
@@ -159,6 +174,7 @@ function New-SeedISO {
         Get-ChildItem -LiteralPath $ConfigPath | Where-Object { $_.Name -ne 'logs' } | Copy-Item -Destination $Stage -Recurse -Force
         $UserData = Join-Path $Stage 'user-data'
         Test-AutoinstallNetworkNotDefined -UserDataPath $UserData
+        Set-AutoinstallIdentity -UserDataPath $UserData -User $IdentityUser -Password $IdentityPassword
         Set-AutoinstallPackages -UserDataPath $UserData -Packages $Packages
         # QA gate: packages declared by the VM must appear in the generated YAML.
         $GeneratedYaml = Get-Content -LiteralPath $UserData -Raw -Encoding UTF8
@@ -196,14 +212,15 @@ function New-SeedISO {
 function New-InstallationMediaStage {
     param([string]$UbuntuISO, [string]$ConfigPath, [string]$VMName, [object[]]$Packages,
         [string]$IPAddress, [int]$PrefixLength, [string]$Gateway, [object[]]$DnsServers,
-        [string]$NetworkInterface, [string]$InternetNetworkInterface, [hashtable]$ServicePorts)
+        [string]$NetworkInterface, [string]$InternetNetworkInterface, [hashtable]$ServicePorts,
+        [string]$IdentityUser, [string]$IdentityPassword)
     $Stage = Join-Path ([IO.Path]::GetTempPath()) "$VMName-media-$([guid]::NewGuid().ToString('N'))"
     New-Item -ItemType Directory -Path $Stage -Force | Out-Null
     $InstallISO = Join-Path $Stage "$VMName.iso"
     $SeedISO = Join-Path $Stage "$VMName-seed.iso"
     try {
         $SeedContentPath = Join-Path $Stage 'seed-content'
-        New-SeedISO -ConfigPath $ConfigPath -SeedISO $SeedISO -VMName $VMName -Packages $Packages -IPAddress $IPAddress -PrefixLength $PrefixLength -Gateway $Gateway -DnsServers $DnsServers -NetworkInterface $NetworkInterface -InternetNetworkInterface $InternetNetworkInterface -ServicePorts $ServicePorts -SeedContentPath $SeedContentPath
+        New-SeedISO -ConfigPath $ConfigPath -SeedISO $SeedISO -VMName $VMName -Packages $Packages -IPAddress $IPAddress -PrefixLength $PrefixLength -Gateway $Gateway -DnsServers $DnsServers -NetworkInterface $NetworkInterface -InternetNetworkInterface $InternetNetworkInterface -ServicePorts $ServicePorts -SeedContentPath $SeedContentPath -IdentityUser $IdentityUser -IdentityPassword $IdentityPassword
         New-UnattendedUbuntuISO -UbuntuISO $UbuntuISO -InstallISO $InstallISO -VMName $VMName -SeedContentPath $SeedContentPath
         return [pscustomobject]@{ Path = $Stage; InstallISO = $InstallISO; SeedISO = $SeedISO }
     }

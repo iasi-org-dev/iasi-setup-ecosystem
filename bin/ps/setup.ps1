@@ -1,116 +1,82 @@
-﻿#requires -RunAsAdministrator
-<#
-.SYNOPSIS
-IASI ecosystem orchestrator. Run without --config from the repo root to load config/setup.toml.
-.EXAMPLE
-.\bin\ps\setup.ps1 --config .\config --path C:\Maquinas
-.EXAMPLE
-.\bin\ps\setup.ps1 --config .\config\iasi-dev2 --path C:\Maquinas -f
-.NOTES
--f deliberately recreates ALL selected Hyper-V VMs. Without --config, this includes the entire ecosystem. DESTRUCTIVE.
-#>
+#requires -RunAsAdministrator
+# IASI component orchestrator. Components execute in TOML declaration order.
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'common\toml.ps1')
 $root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
-$configuration = $null
-$vmPath = (Get-Location).Path
-$force = $false
+$configuration = $null; $overridePath = $null; $force = $false
 for ($i=0; $i -lt $args.Count; $i++) {
     switch ([string]$args[$i]) {
         '--config' { if (++$i -ge $args.Count) { throw 'Missing --config value' }; $configuration = [string]$args[$i] }
-        '--path'   { if (++$i -ge $args.Count) { throw 'Missing --path value' }; $vmPath = [string]$args[$i] }
-        '-f'       { $force = $true }
-        '-l'       { } # Legacy compatibility: all VM provisioning is now no-launch.
-        default    { throw "Unknown argument: $($args[$i])" }
+        '--path' { if (++$i -ge $args.Count) { throw 'Missing --path value' }; $overridePath = [string]$args[$i] }
+        '-f' { $force = $true }
+        '-l' { } # Legacy compatibility
+        default { throw "Unknown argument: $($args[$i])" }
     }
 }
-if ($force) { Write-Warning 'DESTRUCTIVE MODE (-f): each selected Hyper-V VM and its disks may be deleted and recreated.' }
-# Resolve either a single VM configuration or an ordered setup.toml directory.
-# Defaults to the current working directory; a repository root may contain ./config/setup.toml.
-$workingDir = (Get-Location).ProviderPath
-$configInput = if ($configuration) { $configuration } else { $workingDir }
-# Resolve-Path uses the current PowerShell location (unlike .NET's process cwd).
-try {
-    $cpath = (Resolve-Path -LiteralPath $configInput -ErrorAction Stop).ProviderPath
-} catch {
-    throw "Unknown configuration directory: $configInput (PowerShell cwd: $workingDir)"
-}
-if (-not (Test-Path -LiteralPath $cpath -PathType Container)) {
-    throw "Configuration must be a directory: $cpath"
-}
-# --path describes the destination, not the configuration root.
-# Resolve relative paths against the caller's PowerShell location.
-if (-not [IO.Path]::IsPathRooted($vmPath)) {
-    $vmPath = [IO.Path]::GetFullPath((Join-Path $workingDir $vmPath))
-}
-$manifestDir = $cpath
-$manifest = Join-Path $manifestDir 'setup.toml'
-$single = Join-Path $cpath 'config-data\config.toml'
-if (-not (Test-Path -LiteralPath $manifest -PathType Leaf) -and -not (Test-Path -LiteralPath $single -PathType Leaf) -and -not $configuration) {
-    $manifestDir = Join-Path $cpath 'config'
-    $manifest = Join-Path $manifestDir 'setup.toml'
-}
-if (Test-Path -LiteralPath $manifest -PathType Leaf) {
-    $plan = Read-IasiToml -Path $manifest
-    if (-not $plan.Contains('components') -or @($plan['components']).Count -eq 0) { throw "setup.toml requires [[components]]: $manifest" }
-    $items = @($plan['components'])
-    $baseDir = $manifestDir
-} elseif (Test-Path -LiteralPath $single -PathType Leaf) {
-    $details = Read-IasiToml -Path $single
-    if (-not $details.Contains('vm')) { throw "Missing [vm] in $single" }
-    $name = [string]$details['vm']['name']
-    if (-not $name) { throw "Missing [vm].name in $single" }
-    $componentType = 'hyper-v'
-    if ($details['vm'].Contains('type')) { $componentType = [string]$details['vm']['type'] }
-    # Standalone Hyper-V VM also needs the shared network before deployment.
-    $items = @(@{ name = $name; type = $componentType; config = $cpath })
-    $baseDir = $null
-} else {
-    throw "No setup.toml or config-data/config.toml found at $cpath"
-}
-
-function Invoke-IasiHyperVComponent {
-    param([string]$Name, [string]$ConfigDir, [bool]$Recreate)
-    $conf = Read-IasiToml -Path (Join-Path $ConfigDir 'config-data\config.toml')
-    $vm = $conf['vm']; $vmName = [string]$vm['name']
-    if (-not $vmName) { throw "Missing VM name for component $Name" }
-    $existing = Get-VM -Name $vmName -ErrorAction SilentlyContinue
-    if ($existing -and -not $Recreate) {
-        Write-Host "IASI: existing VM $vmName preserved (no -f)." -ForegroundColor DarkYellow
-        return
+$cwd = (Get-Location).ProviderPath
+$entry = if ($configuration) { (Resolve-Path -LiteralPath $configuration -ErrorAction Stop).ProviderPath } else { Join-Path $root 'config\setup.toml' }
+if (-not (Test-Path -LiteralPath $entry)) { throw "Configuration missing: $entry" }
+$items = @(); $baseDir = $null
+if (Test-Path -LiteralPath $entry -PathType Container) {
+    $candidate = Join-Path $entry 'setup.toml'
+    if (Test-Path $candidate -PathType Leaf) { $entry = $candidate }
+    else {
+        $single = Join-Path $entry 'config-data\config.toml'
+        if (-not (Test-Path $single -PathType Leaf)) { throw "No setup.toml or config-data/config.toml: $entry" }
+        $vm = (Read-IasiToml -Path $single)['vm']
+        $items = @(@{name=[string]$vm['name']; type='hyper-v'; config=$entry})
     }
-    $call = @('--config', $ConfigDir, '--path', $vmPath, '-l')
-    if ($Recreate) { $call += '-f' }
-    & (Join-Path $PSScriptRoot 'hyper-v.ps1') @call
-    if (-not $?) { throw "hyper-v.ps1 failed for $vmName" }
-    Write-Host "IASI: $vmName provisioned; VM left powered off." -ForegroundColor Green
 }
-
+if (Test-Path -LiteralPath $entry -PathType Leaf) {
+    $baseDir = Split-Path -Parent $entry
+    $manifest = Read-IasiToml -Path $entry
+    if ($manifest.Contains('components')) { $items = @($manifest['components']) }
+    elseif ($manifest.Contains('hyperv')) { $items = @(@{name='hyperv';type='host';config=$entry}) }
+    elseif ($manifest.Contains('wsl')) { $items = @(@{name='wsl';type='wsl';config=$entry}) }
+    elseif ($manifest.Contains('network')) { $items = @(@{name='iasi-net';type='network';config=$entry}) }
+    elseif ($manifest.Contains('vm')) { $items = @(@{name=[string]$manifest['vm']['name'];type='hyper-v';config=(Split-Path -Parent (Split-Path -Parent $entry))}) }
+    else { throw "Unknown configuration format: $entry" }
+}
+if (-not $items.Count) { throw 'No components selected.' }
+# Path can be declared in hyperv.toml; CLI override takes precedence.
+$hypervFile = Join-Path $root 'config\hyperv.toml'
+$vmPath = 'C:\Machines'
+if (Test-Path -LiteralPath $hypervFile) {
+    $h = (Read-IasiToml -Path $hypervFile)['hyperv']
+    if ($h -and $h.Contains('path')) { $vmPath = [string]$h['path'] }
+}
+if ($overridePath) { $vmPath = $overridePath }
+if (-not [IO.Path]::IsPathRooted($vmPath)) { $vmPath = [IO.Path]::GetFullPath((Join-Path $cwd $vmPath)) }
+if ($force) { Write-Warning '-f: selected VMs and network may be destructively recreated; existing WSL instances are NEVER overwritten.' }
 foreach ($item in $items) {
-    $name = [string]$item['name']
-    $type = [string]$item['type']
-    if (-not $name -or -not $type -or -not $item['config']) { throw 'Each component requires name, type and config.' }
-    $relative = [string]$item['config']
-    $dir = if ([IO.Path]::IsPathRooted($relative)) { $relative } elseif ($baseDir) { Join-Path $baseDir $relative } else { $relative }
-    if (-not [IO.Path]::IsPathRooted($dir)) { $dir = Join-Path $workingDir $dir }
-    $dir = (Resolve-Path -LiteralPath $dir -ErrorAction Stop).ProviderPath
-    if ($type -eq 'network') {
-        if (-not (Test-Path -LiteralPath $dir -PathType Leaf)) { throw "Network configuration missing: $dir" }
-    } elseif (-not (Test-Path -LiteralPath $dir -PathType Container)) {
-        throw "Component '$name' configuration missing: $dir"
-    }
-    Write-Host "`n========== IASI component: $name ($type) ==========" -ForegroundColor Cyan
+    if ($item.Contains('enabled') -and -not [bool]$item['enabled']) { continue }
+    $name=[string]$item['name']; $type=[string]$item['type']; $rel=[string]$item['config']
+    if (-not $name -or -not $type -or -not $rel) { throw 'Each component requires name, type and config.' }
+    $path = if ([IO.Path]::IsPathRooted($rel)) { $rel } elseif ($baseDir) { Join-Path $baseDir $rel } else { Join-Path $cwd $rel }
+    $path = (Resolve-Path -LiteralPath $path -ErrorAction Stop).ProviderPath
+    Write-Host "`n========== IASI: $name ($type) ==========" -ForegroundColor Cyan
     switch ($type) {
+        'host' { & (Join-Path $PSScriptRoot 'hyperv-host.ps1') --config $path; if (-not $?) { throw "Host failed: $name" } }
+        'wsl'  { & (Join-Path $PSScriptRoot 'wsl.ps1') --config $path; if (-not $?) { throw "WSL failed: $name" } }
         'network' {
-            if (-not $configuration -or $configuration -match '(?i)iasi-net') {
-                $call = @()
-                if ($force) { $call += '-f' }
-                & (Join-Path $PSScriptRoot 'iasi-net.ps1') @call
-                if (-not $?) { throw "iasi-net.ps1 failed for $name" }
-            }
+            if (-not (Test-Path $path -PathType Leaf)) { throw 'Network requires a TOML file.' }
+            $call=@(); if ($force) { $call+='-f' }
+            & (Join-Path $PSScriptRoot 'iasi-net.ps1') @call
+            if (-not $?) { throw "Network failed: $name" }
         }
-        'hyper-v' { Invoke-IasiHyperVComponent -Name $name -ConfigDir $dir -Recreate $force }
-        default { throw "Unregistered setup component adapter: $type ($name)" }
+        'hyper-v' {
+            if (-not (Test-Path $path -PathType Container)) { throw 'VM component requires configuration directory.' }
+            $vm=(Read-IasiToml -Path (Join-Path $path 'config-data\config.toml'))['vm']
+            $vmName=[string]$vm['name']
+            if (-not $vmName) { throw "Missing VM name: $path" }
+            $existing=Get-VM -Name $vmName -ErrorAction SilentlyContinue
+            if ($existing -and -not $force) { Write-Host "IASI: existing VM preserved: $vmName"; continue }
+            $call=@('--config',$path,'--path',$vmPath,'-l'); if ($force) { $call+='-f' }
+            & (Join-Path $PSScriptRoot 'hyper-v.ps1') @call
+            if (-not $?) { throw "VM provisioning failed: $vmName" }
+            Write-Host "IASI: VM provisioned: $vmName (startup independent)." -ForegroundColor Green
+        }
+        default { throw "Unregistered component adapter: $type ($name)" }
     }
 }
-Write-Host "`nIASI infrastructure provisioned. VM startup and guest installation are independent." -ForegroundColor Green
+Write-Host 'IASI: selected provisioning phases completed.' -ForegroundColor Green

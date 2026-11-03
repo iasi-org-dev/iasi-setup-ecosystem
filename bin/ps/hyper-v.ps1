@@ -1,4 +1,4 @@
-﻿#requires -RunAsAdministrator
+#requires -RunAsAdministrator
 <#
 .SYNOPSIS
 Creates an IASI Hyper-V virtual machine from declarative TOML configuration.
@@ -18,6 +18,7 @@ Creates an IASI Hyper-V virtual machine from declarative TOML configuration.
 . "$PSScriptRoot\common\log.ps1"
 . "$PSScriptRoot\common\messages.ps1"
 . "$PSScriptRoot\common\toml.ps1"
+. "$PSScriptRoot\common\identity.ps1"
 . "$PSScriptRoot\common\gpu.ps1"
 . "$PSScriptRoot\common\iso.ps1"
 
@@ -113,6 +114,12 @@ function Import-Configuration {
     if ($VM.Contains('switch')) { $script:SwitchName = [string]$VM['switch'] }
     if ($VM.Contains('path')) { $script:Path = [string]$VM['path'] }
 
+    $account = Resolve-IasiIdentity -RepositoryRoot $IASIRoot -VmConfigFile (Join-Path $ConfigDataPath 'config.toml')
+    $script:IdentityUser = $account.user
+    $script:IdentityPassword = $account.password
+    $script:SetupUser = $IdentityUser
+    $script:SetupPassword = $IdentityPassword
+
     # Linux packages must be passed to the Subiquity ISO builder.
     # Windows package sections are deliberately kept separate.
     $script:Packages = @()
@@ -149,8 +156,7 @@ function Import-Configuration {
         if (-not $Data.Contains('setup')) { throw 'Expected [setup] in setup.toml.' }
         $Setup = $Data['setup']
         if ($Setup.Contains('profile')) { $script:SetupProfile = [string]$Setup['profile'] }
-        if ($Setup.Contains('user')) { $script:SetupUser = [string]$Setup['user'] }
-        if ($Setup.Contains('password')) { $script:SetupPassword = [string]$Setup['password'] }
+        # Identity comes from shared [identity] with per-VM override.
     }
 }
 
@@ -951,6 +957,8 @@ function Deploy-Build {
             -UbuntuISO $SourceISO `
             -ConfigPath $ConfigPath `
             -VMName $VMName `
+            -IdentityUser $IdentityUser `
+            -IdentityPassword $IdentityPassword `
             -Packages $Packages `
             -ServicePorts $ServicePorts `
             -IPAddress $IPAddress `

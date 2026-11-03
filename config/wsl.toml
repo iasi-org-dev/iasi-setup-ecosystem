@@ -1,0 +1,8 @@
+[wsl]
+enabled = true
+distribution = 'Ubuntu-24.04'
+name = 'IASI'
+path = 'C:\Machines\WSL'
+user = 'auto'
+default = true
+packages = ['xorriso']

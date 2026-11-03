@@ -10,3 +10,4 @@ release/
 .Rproj.user
 
 /config/iasi-models/gpu/
+/config/iasi-models/services/gpu/
