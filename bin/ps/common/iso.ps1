@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Produces the bootable Subiquity ISO and NoCloud seed ISO for an IASI node.
 #>
@@ -149,17 +149,57 @@ function New-NoCloudNetworkConfig {
 
 function Set-AutoinstallIdentity {
     param([string]$UserDataPath, [string]$User, [string]$Password)
-    if ([string]::IsNullOrEmpty($User) -or [string]::IsNullOrEmpty($Password)) { throw 'Missing resolved Linux identity.' }
-    # Pass password over stdin, not through process arguments.
-    $Hash = ($Password | & wsl.exe --exec openssl passwd -6 -stdin | Out-String).Trim()
-    if ($LASTEXITCODE -ne 0 -or $Hash -notmatch '^\$6\$') { throw 'Could not generate Linux password hash (WSL openssl).' }
-    $Text = [IO.File]::ReadAllText($UserDataPath)
-    $UserPattern = '(?m)^(    username:).*$'
-    $PasswordPattern = '(?m)^(    password:).*$'
-    if ([regex]::Matches($Text,$UserPattern).Count -ne 1 -or [regex]::Matches($Text,$PasswordPattern).Count -ne 1) { throw 'Expected exactly one cloud-init identity.' }
-    $Text = [regex]::Replace($Text,$UserPattern, { param($m) $m.Groups[1].Value + ' ' + $User })
-    $Text = [regex]::Replace($Text,$PasswordPattern, { param($m) $m.Groups[1].Value + ' "' + $Hash + '"' })
-    [IO.File]::WriteAllText($UserDataPath,$Text,[Text.UTF8Encoding]::new($false))
+    if ([string]::IsNullOrEmpty($User) -or [string]::IsNullOrEmpty($Password)) {
+        throw 'Missing resolved Linux identity.'
+    }
+    if ($User -notmatch '^[a-z_][a-z0-9_-]*$') {
+        throw 'Invalid Linux account name in resolved identity.'
+    }
+
+    # Windows PowerShell native pipelines add CRLF. Do not pipe the password.
+    # Write precisely its UTF-8 bytes, WITHOUT a BOM or newline, to a temporary file.
+    # The file is removed even if OpenSSL or the QA check fails.
+    $SecretFile = Join-Path ([IO.Path]::GetTempPath()) ('iasi-secret-' + [guid]::NewGuid().ToString('N'))
+    try {
+        [IO.File]::WriteAllBytes($SecretFile, [Text.Encoding]::UTF8.GetBytes($Password))
+        $LinuxSecret = Convert-ToWslPath -WindowsPath $SecretFile
+        # The shell receives only the temporary FILE PATH, never the password.
+        $HashLines = @(& wsl.exe --exec sh -c 'openssl passwd -6 -stdin < "$1"' sh $LinuxSecret)
+        $HashExit = $LASTEXITCODE
+        if ($HashExit -ne 0 -or $HashLines.Count -ne 1) {
+            throw 'OpenSSL failed to generate the Ubuntu password hash.'
+        }
+        $Hash = [string]$HashLines[0]
+        if ($Hash -notmatch '^\$6\$([A-Za-z0-9./]+)\$[A-Za-z0-9./]+$') {
+            throw 'Unexpected SHA-512 crypt password hash format.'
+        }
+        $Salt = $Matches[1]
+
+        # QA Gate: recompute from the same exact bytes and require a perfect match.
+        # No secret or hash is written to logs.
+        $CheckLines = @(& wsl.exe --exec sh -c 'openssl passwd -6 -salt "$1" -stdin < "$2"' sh $Salt $LinuxSecret)
+        $CheckExit = $LASTEXITCODE
+        if ($CheckExit -ne 0 -or $CheckLines.Count -ne 1 -or [string]$CheckLines[0] -cne $Hash) {
+            throw 'IASI identity QA FAIL: generated hash does not match the declared password.'
+        }
+
+        $Text = [IO.File]::ReadAllText($UserDataPath)
+        $UserPattern = '(?m)^(    username:).*$'
+        $PasswordPattern = '(?m)^(    password:).*$'
+        if ([regex]::Matches($Text, $UserPattern).Count -ne 1 -or
+            [regex]::Matches($Text, $PasswordPattern).Count -ne 1) {
+            throw 'Expected exactly one Ubuntu autoinstall identity.'
+        }
+        $Text = [regex]::Replace($Text, $UserPattern, { param($m) $m.Groups[1].Value + ' ' + $User })
+        $Text = [regex]::Replace($Text, $PasswordPattern, { param($m) $m.Groups[1].Value + ' "' + $Hash + '"' })
+        [IO.File]::WriteAllText($UserDataPath, $Text, [Text.UTF8Encoding]::new($false))
+        Write-LogInfo 'IASI identity QA PASS: Ubuntu credentials generated and checked.'
+    }
+    finally {
+        if (Test-Path -LiteralPath $SecretFile) {
+            Remove-Item -LiteralPath $SecretFile -Force -ErrorAction Stop
+        }
+    }
 }
 
 function New-SeedISO {

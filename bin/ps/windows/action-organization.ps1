@@ -4,6 +4,12 @@ param([hashtable]$Task)
 $ErrorActionPreference = 'Stop'
 $organization = [string]$Task['organization']
 $targetRoot = [string]$Task['target']
+if ($organization -cnotmatch '^[A-Za-z0-9-]+$') { throw 'Invalid GitHub organization.' }
+if ([string]$Task['update'] -ne 'ff-only') { throw 'Only ff-only updates are supported.' }
+if ($Task['public_only'] -ne $true) { throw 'Only public-only synchronization is supported.' }
+if (-not [IO.Path]::IsPathRooted($targetRoot)) { throw 'GitHub target must be absolute.' }
+$skipDirty = ($Task['skip_dirty'] -eq $true)
+$skipped = 0
 $git = Join-Path $env:ProgramFiles 'Git\cmd\git.exe'
 if (-not (Test-Path -LiteralPath $git)) { throw 'Git missing before organization sync.' }
 New-Item -ItemType Directory -Path $targetRoot -Force | Out-Null
@@ -44,10 +50,17 @@ while ($true) {
             $origin = & $git -C $destination remote get-url origin
             if ($LASTEXITCODE -ne 0 -or ([string]($origin | Select-Object -First 1)).Trim() -ne $url) { throw "Unexpected remote: $repoName" }
             $dirty = & $git -C $destination status --porcelain
-            if ($LASTEXITCODE -ne 0 -or $dirty) { throw "Local changes or status failure: $repoName" }
-            Write-Host "IASI org update: $repoName"
-            & $git -C $destination -c credential.interactive=never pull --ff-only
-            if ($LASTEXITCODE -ne 0) { throw "Pull failed: $repoName ($LASTEXITCODE)" }
+            if ($LASTEXITCODE -ne 0) { throw "Git status failed: $repoName" }
+            if ($dirty) {
+                if (-not $skipDirty) { throw "Local changes: $repoName" }
+                Write-Warning "IASI QA UNKNOWN: local changes in $repoName, skipping update without modifying files."
+                $skipped++
+            }
+            else {
+                Write-Host "IASI org update: $repoName"
+                & $git -C $destination -c credential.interactive=never pull --ff-only
+                if ($LASTEXITCODE -ne 0) { throw "Pull failed: $repoName ($LASTEXITCODE)" }
+            }
         }
         else { throw "Non-repository directory in target: $destination" }
         $count++
@@ -57,3 +70,5 @@ while ($true) {
 }
 if ($count -eq 0) { throw "No public repositories discovered for $organization; refusing silent success." }
 Write-Host "IASI public organization $organization synchronized: $count repositories."
+
+if ($skipped -gt 0) { Write-Warning "IASI QA UNKNOWN: $skipped existing repositories were not updated due to local modifications." }

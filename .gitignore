@@ -11,3 +11,11 @@ release/
 
 /config/iasi-models/gpu/
 /config/iasi-models/services/gpu/
+
+# Hyper-V / generated virtual machines: never track their disks.
+*.vhd
+*.vhdx
+*.avhdx
+/config/iasi-dev2/iasi-dev2/
+/config/iasi-tools/iasi-tools/
+/config/iasi-models/iasi-models/

@@ -1,17 +1,35 @@
-# Generic two-phase catalogue executor. Invoke in the real user's elevated session.
+# IASI Windows user phases. Run INSIDE iasi-dev2 as its interactive administrator.
+# Does not create/recreate Hyper-V virtual machines and never runs WSL implicitly.
 #requires -RunAsAdministrator
 param([Parameter(Mandatory)][string]$ConfigDir)
 $ErrorActionPreference = 'Stop'
+$ConfigDir = (Resolve-Path -LiteralPath $ConfigDir -ErrorAction Stop).ProviderPath
 $catalog = Join-Path $ConfigDir 'config-data'
-$software = Join-Path $PSScriptRoot 'install-software.ps1'
-$postinstall = Join-Path $PSScriptRoot 'install-postinstall.ps1'
-& $software -Manifest (Join-Path $catalog 'packages.toml')
-if (-not $?) { throw 'IASI software phase failed' }
-$wslScript = Join-Path $ConfigDir 'services\wsl.ps1'
-if (Test-Path -LiteralPath $wslScript) {
-    & $wslScript
-    if (-not $?) { throw 'IASI WSL phase failed' }
+$softwareManifest = Join-Path $catalog 'packages.toml'
+$postManifest = Join-Path $catalog 'postinstall.toml'
+foreach ($p in @($softwareManifest, $postManifest)) {
+    if (-not (Test-Path -LiteralPath $p -PathType Leaf)) { throw "Missing manifest: $p" }
 }
-& $postinstall -Manifest (Join-Path $catalog 'postinstall.toml')
-if (-not $?) { throw 'IASI postinstall phase failed' }
-Write-Host 'IASI software and postinstall phases verified.'
+$logDir = Join-Path $env:ProgramData 'IASI'
+New-Item -ItemType Directory -Path $logDir -Force | Out-Null
+$log = Join-Path $logDir 'user-phases.log'
+Start-Transcript -Path $log -Append | Out-Null
+try {
+    Write-Host 'IASI PHASE 1: declared Windows software (winget)'
+    & (Join-Path $PSScriptRoot 'install-software.ps1') -Manifest $softwareManifest
+    if (-not $?) { throw 'Windows software phase failed' }
+
+    Write-Host 'IASI PHASE 2: declared post-install (VS Code / optional R / GitHub)'
+    & (Join-Path $PSScriptRoot 'install-postinstall.ps1') -Manifest $postManifest
+    if (-not $?) { throw 'IASI postinstall failed' }
+
+    Write-Host 'IASI phases completed. Review WARN/UNKNOWN notices before declaring QA PASS.'
+}
+catch {
+    Write-Error "IASI user phases FAIL: $_"
+    throw
+}
+finally {
+    Stop-Transcript | Out-Null
+    Write-Host "IASI log: $log"
+}

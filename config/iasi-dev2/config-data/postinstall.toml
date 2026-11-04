@@ -1,21 +1,20 @@
-# FASE 2 - complementos y configuracion, una vez instalada toda la fase 1.
+# IASI DEV2 - Phase 2 declarative catalog.
+# Catalog entries are not automatically installed. Enable explicit samples.
 [vscode]
-extensions = ['golang.go', 'ms-python.python', 'ms-vscode.powershell', 'REditorSupport.r', 'ms-vscode-remote.remote-wsl']
+extensions = ['golang.go', 'ms-python.python', 'ms-vscode.powershell', 'REditorSupport.r']
+enabled = ['ms-vscode.powershell']
 
 [r]
+enabled = false
 packages = ['languageserver', 'renv', 'rmarkdown']
-# bootstrap: solo generar la primera linea base. restore: reconstrucciones normales.
+# Bootstrap only once, then commit renv.lock and switch to restore.
 mode = 'bootstrap'
 lockfile = 'renv.lock'
 repository = 'https://cloud.r-project.org'
 
-[wsl]
-# Solo tras la creacion de IASI. Sin paquetes adicionales por ahora.
-packages = []
-
-# Fase 2: repositorios de la organizacion. NO ejecutar en fase 1.
+# No WSL installation on iasi-dev2.
 [github]
-organization = "iasi-org-dev"
+organization = 'iasi-org-dev'
 target = 'C:\PRJ\iasi-dev'
 public_only = true
-update = "ff-only"
+update = 'ff-only'

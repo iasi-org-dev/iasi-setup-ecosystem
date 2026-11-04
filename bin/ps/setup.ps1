@@ -1,4 +1,4 @@
-#requires -RunAsAdministrator
+﻿#requires -RunAsAdministrator
 # IASI component orchestrator. Components execute in TOML declaration order.
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'common\toml.ps1')
@@ -40,38 +40,49 @@ if (Test-Path -LiteralPath $entry -PathType Leaf) {
 if (-not $items.Count) { throw 'No components selected.' }
 # Path can be declared in hyperv.toml; CLI override takes precedence.
 $hypervFile = Join-Path $root 'config\hyperv.toml'
-$vmPath = 'C:\Machines'
+$vmPath = 'C:\Maquinas'
 if (Test-Path -LiteralPath $hypervFile) {
     $h = (Read-IasiToml -Path $hypervFile)['hyperv']
     if ($h -and $h.Contains('path')) { $vmPath = [string]$h['path'] }
 }
 if ($overridePath) { $vmPath = $overridePath }
-if (-not [IO.Path]::IsPathRooted($vmPath)) { $vmPath = [IO.Path]::GetFullPath((Join-Path $cwd $vmPath)) }
+if (-not [IO.Path]::IsPathRooted($vmPath)) { throw "VM storage path must be absolute: $vmPath" }
+$vmPath = [IO.Path]::GetFullPath($vmPath).TrimEnd('\')
+$repoCanonical = [IO.Path]::GetFullPath($root).TrimEnd('\')
+if ($vmPath.Equals($repoCanonical,[StringComparison]::OrdinalIgnoreCase) -or
+    $vmPath.StartsWith($repoCanonical + '\',[StringComparison]::OrdinalIgnoreCase)) {
+    throw "IASI QA FAIL: VM storage path is inside source repository: $vmPath"
+}
+Write-Host "IASI VM storage root: $vmPath" -ForegroundColor Cyan
 if ($force) { Write-Warning '-f: selected VMs and network may be destructively recreated; existing WSL instances are NEVER overwritten.' }
 foreach ($item in $items) {
     if ($item.Contains('enabled') -and -not [bool]$item['enabled']) { continue }
     $name=[string]$item['name']; $type=[string]$item['type']; $rel=[string]$item['config']
     if (-not $name -or -not $type -or -not $rel) { throw 'Each component requires name, type and config.' }
-    $path = if ([IO.Path]::IsPathRooted($rel)) { $rel } elseif ($baseDir) { Join-Path $baseDir $rel } else { Join-Path $cwd $rel }
-    $path = (Resolve-Path -LiteralPath $path -ErrorAction Stop).ProviderPath
+    # CRITICAL: do not use a variable named $path here. PowerShell scripts invoked
+    # with & can see caller-scope variables, and hyper-v.ps1 historically reads $Path.
+    # That caused it to mistake a node config directory for the VM storage root.
+    $componentConfigPath = if ([IO.Path]::IsPathRooted($rel)) { $rel } elseif ($baseDir) { Join-Path $baseDir $rel } else { Join-Path $cwd $rel }
+    $componentConfigPath = (Resolve-Path -LiteralPath $componentConfigPath -ErrorAction Stop).ProviderPath
     Write-Host "`n========== IASI: $name ($type) ==========" -ForegroundColor Cyan
     switch ($type) {
-        'host' { & (Join-Path $PSScriptRoot 'hyperv-host.ps1') --config $path; if (-not $?) { throw "Host failed: $name" } }
-        'wsl'  { & (Join-Path $PSScriptRoot 'wsl.ps1') --config $path; if (-not $?) { throw "WSL failed: $name" } }
+        'host' { & (Join-Path $PSScriptRoot 'hyperv-host.ps1') --config $componentConfigPath; if (-not $?) { throw "Host failed: $name" } }
+        'wsl'  { & (Join-Path $PSScriptRoot 'wsl.ps1') -config $componentConfigPath; if (-not $?) { throw "WSL failed: $name" } }
         'network' {
-            if (-not (Test-Path $path -PathType Leaf)) { throw 'Network requires a TOML file.' }
-            $call=@(); if ($force) { $call+='-f' }
-            & (Join-Path $PSScriptRoot 'iasi-net.ps1') @call
+            if (-not (Test-Path $componentConfigPath -PathType Leaf)) { throw 'Network requires a TOML file.' }
+            # A network shared with existing VMs must not be destroyed just because
+            # selected VMs are being reprovisioned with -f.
+            & (Join-Path $PSScriptRoot 'iasi-net.ps1')
             if (-not $?) { throw "Network failed: $name" }
         }
         'hyper-v' {
-            if (-not (Test-Path $path -PathType Container)) { throw 'VM component requires configuration directory.' }
-            $vm=(Read-IasiToml -Path (Join-Path $path 'config-data\config.toml'))['vm']
+            if (-not (Test-Path $componentConfigPath -PathType Container)) { throw 'VM component requires configuration directory.' }
+            $vm=(Read-IasiToml -Path (Join-Path $componentConfigPath 'config-data\config.toml'))['vm']
             $vmName=[string]$vm['name']
-            if (-not $vmName) { throw "Missing VM name: $path" }
+            if (-not $vmName) { throw "Missing VM name: $componentConfigPath" }
             $existing=Get-VM -Name $vmName -ErrorAction SilentlyContinue
             if ($existing -and -not $force) { Write-Host "IASI: existing VM preserved: $vmName"; continue }
-            $call=@('--config',$path,'--path',$vmPath,'-l'); if ($force) { $call+='-f' }
+            $call=@('--config',$componentConfigPath,'--path',$vmPath,'-l'); if ($force) { $call+='-f' }
             & (Join-Path $PSScriptRoot 'hyper-v.ps1') @call
             if (-not $?) { throw "VM provisioning failed: $vmName" }
             Write-Host "IASI: VM provisioned: $vmName (startup independent)." -ForegroundColor Green

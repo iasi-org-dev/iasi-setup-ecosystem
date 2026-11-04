@@ -1,4 +1,4 @@
 # Host Hyper-V and shared VM storage configuration.
 [hyperv]
 enabled = false  # verify only; set true to authorize feature activation
-path = 'C:\Machines'
+path = 'C:\Maquinas'
