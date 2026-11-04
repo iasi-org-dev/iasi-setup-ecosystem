@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
 Produces the bootable Subiquity ISO and NoCloud seed ISO for an IASI node.
 #>
@@ -70,8 +70,6 @@ function New-UnattendedUbuntuISO {
         $Arguments = @('xorriso', '-indev', $InputISO, '-outdev', $OutputISO,
             '-boot_image', 'any', 'replay', '-map', $WslGrub, '/boot/grub/grub.cfg')
         if ($SeedContentPath) {
-            # Map seed entries to ISO root, matching the late-command mountpoint.
-            # NoCloud files are expected directly at /cdrom/.
             foreach ($Required in @('user-data', 'meta-data', 'network-config')) {
                 if (-not (Test-Path -LiteralPath (Join-Path $SeedContentPath $Required) -PathType Leaf)) {
                     throw "Expected NoCloud file missing: $Required"
@@ -86,7 +84,6 @@ function New-UnattendedUbuntuISO {
             }
         }
         Invoke-IasiIsoCommand -Directory $Work -Arguments $Arguments -ErrorMessage 'Unable to create unattended Ubuntu ISO.'
-        # Inspect the built ISO and require regular files at exact paths.
         if ($SeedContentPath) {
             $Probe = Join-Path $Work 'probe'
             New-Item -ItemType Directory -Path $Probe -Force | Out-Null
@@ -120,7 +117,7 @@ function Test-AutoinstallNetworkNotDefined {
 
 function Set-AutoinstallPackages {
     param([string]$UserDataPath, [object[]]$Packages)
-    $Names = @($Packages | ForEach-Object { "$($_)".Trim() } | Where-Object { $_ })
+    $Names = @($Packages | ForEach-Object { "$_".Trim() } | Where-Object { $_ })
     if (-not $Names.Count) { return }
     Write-LogInfo "Adding autoinstall packages: $($Names -join ', ')"
     $Text = Get-Content -LiteralPath $UserDataPath -Raw -Encoding UTF8
@@ -147,6 +144,30 @@ function New-NoCloudNetworkConfig {
     Write-LogInfo "NoCloud network-config created: $NetworkInterface=$IPAddress/$PrefixLength, $InternetNetworkInterface=DHCP."
 }
 
+# The separate NoCloud network-config controls installer networking. The
+# installed system must also receive network settings via autoinstall.network.
+function Set-AutoinstallNetwork {
+    param([string]$UserDataPath, [string]$NetworkConfigPath)
+    $Text = [IO.File]::ReadAllText($UserDataPath)
+    if ([regex]::Matches($Text, '(?m)^autoinstall:\s*$').Count -ne 1) {
+        throw 'Expected exactly one autoinstall mapping.'
+    }
+    if ($Text -match '(?m)^  network:\s*$') {
+        throw 'Refusing to overwrite preexisting autoinstall.network.'
+    }
+    $NetworkLines = [IO.File]::ReadAllLines($NetworkConfigPath)
+    if ($NetworkLines.Count -eq 0) { throw 'Generated NoCloud network-config is empty.' }
+    $IndentedNetwork = ($NetworkLines | ForEach-Object { '    ' + $_ }) -join "`n"
+    $Replacement = "autoinstall:`n  network:`n$IndentedNetwork"
+    $Text = [regex]::Replace($Text, '(?m)^autoinstall:\s*$', [System.Text.RegularExpressions.MatchEvaluator]{ param($m) $Replacement })
+    [IO.File]::WriteAllText($UserDataPath, $Text, [Text.UTF8Encoding]::new($false))
+    $Check = [IO.File]::ReadAllText($UserDataPath)
+    if ($Check -notmatch '(?m)^  network:\s*$' -or $Check -notmatch '(?m)^    ethernets:\s*$') {
+        throw 'ISO QA failed: installed-system network configuration missing.'
+    }
+    Write-LogInfo 'Subiquity autoinstall.network generated for installed system.'
+}
+
 function Set-AutoinstallIdentity {
     param([string]$UserDataPath, [string]$User, [string]$Password)
     if ([string]::IsNullOrEmpty($User) -or [string]::IsNullOrEmpty($Password)) {
@@ -155,15 +176,10 @@ function Set-AutoinstallIdentity {
     if ($User -notmatch '^[a-z_][a-z0-9_-]*$') {
         throw 'Invalid Linux account name in resolved identity.'
     }
-
-    # Windows PowerShell native pipelines add CRLF. Do not pipe the password.
-    # Write precisely its UTF-8 bytes, WITHOUT a BOM or newline, to a temporary file.
-    # The file is removed even if OpenSSL or the QA check fails.
     $SecretFile = Join-Path ([IO.Path]::GetTempPath()) ('iasi-secret-' + [guid]::NewGuid().ToString('N'))
     try {
         [IO.File]::WriteAllBytes($SecretFile, [Text.Encoding]::UTF8.GetBytes($Password))
         $LinuxSecret = Convert-ToWslPath -WindowsPath $SecretFile
-        # The shell receives only the temporary FILE PATH, never the password.
         $HashLines = @(& wsl.exe --exec sh -c 'openssl passwd -6 -stdin < "$1"' sh $LinuxSecret)
         $HashExit = $LASTEXITCODE
         if ($HashExit -ne 0 -or $HashLines.Count -ne 1) {
@@ -174,15 +190,11 @@ function Set-AutoinstallIdentity {
             throw 'Unexpected SHA-512 crypt password hash format.'
         }
         $Salt = $Matches[1]
-
-        # QA Gate: recompute from the same exact bytes and require a perfect match.
-        # No secret or hash is written to logs.
         $CheckLines = @(& wsl.exe --exec sh -c 'openssl passwd -6 -salt "$1" -stdin < "$2"' sh $Salt $LinuxSecret)
         $CheckExit = $LASTEXITCODE
         if ($CheckExit -ne 0 -or $CheckLines.Count -ne 1 -or [string]$CheckLines[0] -cne $Hash) {
             throw 'IASI identity QA FAIL: generated hash does not match the declared password.'
         }
-
         $Text = [IO.File]::ReadAllText($UserDataPath)
         $UserPattern = '(?m)^(    username:).*$'
         $PasswordPattern = '(?m)^(    password:).*$'
@@ -216,7 +228,6 @@ function New-SeedISO {
         Test-AutoinstallNetworkNotDefined -UserDataPath $UserData
         Set-AutoinstallIdentity -UserDataPath $UserData -User $IdentityUser -Password $IdentityPassword
         Set-AutoinstallPackages -UserDataPath $UserData -Packages $Packages
-        # QA gate: packages declared by the VM must appear in the generated YAML.
         $GeneratedYaml = Get-Content -LiteralPath $UserData -Raw -Encoding UTF8
         foreach ($Package in @($Packages)) {
             if ($GeneratedYaml -notmatch ('(?m)^    - ' + [regex]::Escape([string]$Package) + '\s*$')) {
@@ -228,8 +239,8 @@ function New-SeedISO {
         }
         Set-AutoinstallServices -StagePath $Stage -UserDataPath $UserData -ServicePorts $ServicePorts
         New-NoCloudNetworkConfig -Path (Join-Path $Stage 'network-config') -IPAddress $IPAddress -PrefixLength $PrefixLength -NetworkInterface $NetworkInterface -InternetNetworkInterface $InternetNetworkInterface
+        Set-AutoinstallNetwork -UserDataPath $UserData -NetworkConfigPath (Join-Path $Stage 'network-config')
         if ($SeedContentPath) {
-            # Copy contents, not the Stage directory itself.
             New-Item -ItemType Directory -Path $SeedContentPath -Force | Out-Null
             Get-ChildItem -LiteralPath $Stage -Force | ForEach-Object {
                 Copy-Item -LiteralPath $_.FullName -Destination $SeedContentPath -Recurse -Force
