@@ -16,6 +16,3 @@ release/
 *.vhd
 *.vhdx
 *.avhdx
-/config/iasi-dev2/iasi-dev2/
-/config/iasi-tools/iasi-tools/
-/config/iasi-models/iasi-models/
