@@ -62,7 +62,6 @@ if ($c.Contains('distribution') -and -not [string]::IsNullOrWhiteSpace([string]$
 
 $distros = @(Get-Distros)
 $target = $null
-$new = $false
 if ($distros -contains $winUser) {
     $target = $winUser
     Write-Host "IASI WSL: reusing user distribution '$target'."
@@ -83,7 +82,6 @@ if (-not $target) {
     }
     if (-not (Test-Path -LiteralPath $basePath)) { New-Item -ItemType Directory -Path $basePath -Force | Out-Null }
     $archive = Join-Path $env:TEMP ('iasi-wsl-' + [guid]::NewGuid().ToString('N') + '.tar')
-    $imported = $false
     $temporaryCreated = $false
     try {
         Write-Host "IASI WSL: installing temporary $source..."
@@ -96,7 +94,6 @@ if (-not $target) {
         Write-Host "IASI WSL: importing $target at $destination..."
         & wsl.exe --import $target $destination $archive --version 2
         Assert-Exit 'WSL import'
-        $imported = $true
         & wsl.exe -d $target -u root --exec /bin/sh -c 'id -u >/dev/null'
         Assert-Exit 'imported distro verification'
 
@@ -109,7 +106,7 @@ if (-not $target) {
         Assert-Exit 'WSL default Linux user'
         & wsl.exe --terminate $target
         Assert-Exit 'WSL terminate after account setup'
-        & wsl.exe -d $target --exec /usr/bin/id -un | ForEach-Object { $actual = ($_ -replace "`0", '').Trim() }
+        $actual = (& wsl.exe -d $target --exec /usr/bin/id -un | ForEach-Object { ($_ -replace "`0", "").Trim() }) -join ""
         Assert-Exit 'default account validation'
         if ($actual -ne $winUser) { throw "QA FAIL: expected Linux user '$winUser', got '$actual'" }
 

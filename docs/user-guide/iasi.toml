@@ -1,8 +1,8 @@
 type = "quarto"
 
 [publication]
-strategy = "outlined"
-content-dir = "docs"
+strategy = "regular"
+content-dir = "chapters"
 back-matter = "back-matter"
 numbered = true
 

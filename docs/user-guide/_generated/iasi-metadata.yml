@@ -1,0 +1,6 @@
+book:
+  chapters:
+    - "index.qmd"
+    - "chapters/10-intro/index.qmd"
+    - "chapters/20-installation/index.qmd"
+    - "back-matter/903-licenses.qmd"

@@ -1,0 +1,23 @@
+# IASI Ecosystem User Guide
+
+Esta guía explica cómo utilizar, instalar, configurar y validar el ecosistema
+IASI a partir del repositorio `iasi-setup-ecosystem`.
+
+La guía separa tres aspectos:
+
+1. qué es el ecosistema que queremos materializar;
+2. cómo se configura ese ecosistema;
+3. qué plataforma concreta utilizamos para materializarlo.
+
+Empieza por la [introducción](chapters/10-intro/index.qmd) y continúa con la
+[instalación](chapters/20-installation/index.qmd).
+
+## Principio de validación
+
+Si durante una instalación limpia es necesario recordar un paso que no aparece
+en esta guía, la guía está incompleta. Si un paso documentado no funciona, el
+procedimiento debe corregirse. Si aparece un requisito no declarado, debe
+incorporarse a la documentación.
+
+![](resources/images/iasi-banner.png){.iasi-subproducts-banner fig-alt="Ecosistema de herramientas de inteligencia artificial"}
+

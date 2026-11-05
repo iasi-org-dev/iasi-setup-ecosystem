@@ -1,0 +1,6 @@
+project:
+  type: book
+lang: es
+book:
+  title: "IASI Developer Guide"
+  chapters: []

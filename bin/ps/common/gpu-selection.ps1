@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
     IASI GPU-P discovery and explainable interactive selection.
 .DESCRIPTION
@@ -105,11 +105,11 @@ function Select-IasiGpu {
     $reason = ''
 
     if ($Selector -ne 'auto') {
-        $matches = @($inventory | Where-Object {
+        $selectedMatches = @($inventory | Where-Object {
             $_.Name -ieq $Selector -or $_.PnpId -ieq $Selector -or $_.FriendlyName -ieq $Selector
         })
-        if ($matches.Count -ne 1) {
-            throw ("Explicit selector matches {0} devices; expected exactly one." -f $matches.Count)
+        if ($selectedMatches.Count -ne 1) {
+            throw ("Explicit selector matches {0} devices; expected exactly one." -f $selectedMatches.Count)
         }
         $chosen = $matches[0]
         $reason = 'Explicit GPU selection validated against the discovered inventory.'
@@ -178,3 +178,4 @@ function Select-IasiGpu {
     # The ONE pipeline result of this function.
     return $chosen
 }
+

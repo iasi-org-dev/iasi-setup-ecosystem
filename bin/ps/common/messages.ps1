@@ -1,3 +1,10 @@
+<#
+PSScriptAnalyzer exception: Write-Host is intentional in this file.
+Write-LogMessage writes to the configured log file and uses Write-Host for the
+interactive, color-coded console output. Do not replace these calls with
+Write-Output because that would change the script output contract.
+#>
+
 function Write-LogMessage {
     param(
         [ValidateSet("Info", "Success", "Warning", "Error")]
@@ -40,3 +47,4 @@ function Write-LogError {
     param([string]$Message)
     Write-LogMessage -Type "Error" -Message $Message
 }
+

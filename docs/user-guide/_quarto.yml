@@ -15,16 +15,16 @@ profile:
 lang: es
 
 metadata-files:
-  - _generated/iasi-metadata.yml
+  - _book-structure.yml
 
 resource-path:
   - resources
 
 book:
-  title: "IASI Ecosystem Installation Guide"
-  subtitle: "Instalación, configuración y validación del ecosistema IASI"
+  title: "IASI Ecosystem User Guide"
+  subtitle: "Uso, instalación, configuración y validación del ecosistema IASI"
   author: "Javier G. Grandez"
-  output-file: "IASI_Ecosystem_Installation_Guide"
+  output-file: "IASI_Ecosystem_User_Guide"
 
 copyright:
   holder: "Javier G. Grandez"

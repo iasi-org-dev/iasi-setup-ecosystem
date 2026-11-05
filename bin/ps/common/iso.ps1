@@ -216,7 +216,7 @@ function Set-AutoinstallIdentity {
 
 function New-SeedISO {
     param([string]$ConfigPath, [string]$SeedISO, [string]$VMName, [object[]]$Packages,
-        [string]$IPAddress, [int]$PrefixLength, [string]$Gateway, [object[]]$DnsServers,
+        [string]$IPAddress, [int]$PrefixLength,
         [string]$NetworkInterface, [string]$InternetNetworkInterface, [hashtable]$ServicePorts,
         [string]$SeedContentPath, [string]$IdentityUser, [string]$IdentityPassword)
     Write-LogInfo 'Creating seed ISO...'
@@ -262,7 +262,7 @@ function New-SeedISO {
 
 function New-InstallationMediaStage {
     param([string]$UbuntuISO, [string]$ConfigPath, [string]$VMName, [object[]]$Packages,
-        [string]$IPAddress, [int]$PrefixLength, [string]$Gateway, [object[]]$DnsServers,
+        [string]$IPAddress, [int]$PrefixLength,
         [string]$NetworkInterface, [string]$InternetNetworkInterface, [hashtable]$ServicePorts,
         [string]$IdentityUser, [string]$IdentityPassword)
     $Stage = Join-Path ([IO.Path]::GetTempPath()) "$VMName-media-$([guid]::NewGuid().ToString('N'))"
@@ -271,7 +271,7 @@ function New-InstallationMediaStage {
     $SeedISO = Join-Path $Stage "$VMName-seed.iso"
     try {
         $SeedContentPath = Join-Path $Stage 'seed-content'
-        New-SeedISO -ConfigPath $ConfigPath -SeedISO $SeedISO -VMName $VMName -Packages $Packages -IPAddress $IPAddress -PrefixLength $PrefixLength -Gateway $Gateway -DnsServers $DnsServers -NetworkInterface $NetworkInterface -InternetNetworkInterface $InternetNetworkInterface -ServicePorts $ServicePorts -SeedContentPath $SeedContentPath -IdentityUser $IdentityUser -IdentityPassword $IdentityPassword
+        New-SeedISO -ConfigPath $ConfigPath -SeedISO $SeedISO -VMName $VMName -Packages $Packages -IPAddress $IPAddress -PrefixLength $PrefixLength -NetworkInterface $NetworkInterface -InternetNetworkInterface $InternetNetworkInterface -ServicePorts $ServicePorts -SeedContentPath $SeedContentPath -IdentityUser $IdentityUser -IdentityPassword $IdentityPassword
         New-UnattendedUbuntuISO -UbuntuISO $UbuntuISO -InstallISO $InstallISO -VMName $VMName -SeedContentPath $SeedContentPath
         return [pscustomobject]@{ Path = $Stage; InstallISO = $InstallISO; SeedISO = $SeedISO }
     }
@@ -292,3 +292,4 @@ function Remove-InstallationMediaStage {
     param([object]$Stage)
     if ($Stage -and $Stage.Path -and (Test-Path $Stage.Path)) { Remove-Item $Stage.Path -Recurse -Force }
 }
+

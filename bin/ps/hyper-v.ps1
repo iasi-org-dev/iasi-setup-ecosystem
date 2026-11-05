@@ -963,8 +963,6 @@ function Deploy-Build {
             -ServicePorts $ServicePorts `
             -IPAddress $IPAddress `
             -PrefixLength $PrefixLength `
-            -Gateway $Gateway `
-            -DnsServers $DnsServers `
             -NetworkInterface $NetworkInterface `
             -InternetNetworkInterface $InternetNetworkInterface
 
@@ -1066,3 +1064,4 @@ catch {
 
     exit 1
 }
+

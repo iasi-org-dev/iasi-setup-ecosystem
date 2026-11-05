@@ -26,14 +26,14 @@ foreach ($sectionName in @('SDK','software')) {
         if ($enabled -isnot [bool]) { throw "Expected boolean for ${sectionName}:$id" }
         if (-not $enabled) { continue }
         if ($id -notmatch '^[A-Za-z0-9_.-]+$') { throw "Invalid winget package ID: $id" }
-        $args = @('install', '--id', $id, '--exact', '--silent', '--disable-interactivity', '--accept-package-agreements', '--accept-source-agreements')
+        $wingetArgs = @('install', '--id', $id, '--exact', '--silent', '--disable-interactivity', '--accept-package-agreements', '--accept-source-agreements')
         if ($sectionName -eq 'SDK') {
             # Request a location; the installer may ignore this. No false guarantee.
             $location = Join-Path $sdk $id
-            $args += @('--location', $location)
+            $wingetArgs += @('--location', $location)
         }
         Write-Host "IASI install [$sectionName]: $id"
-        & $winget.Source @args
+        & $winget.Source @wingetArgs
         if ($LASTEXITCODE -ne 0) { throw "winget failed for $id ($LASTEXITCODE)" }
         Write-Host "IASI installed: $id"
     }
@@ -46,3 +46,4 @@ if ($cfg.Contains('custom')) {
     }
 }
 Write-Host 'IASI Phase 1 completed (winget returned success; install paths still require verification).'
+

@@ -1,4 +1,4 @@
-#requires -RunAsAdministrator
+﻿#requires -RunAsAdministrator
 <#
 .SYNOPSIS
 Materializes the IASI private Hyper-V network on the Windows host.
@@ -680,3 +680,4 @@ catch {
 
     exit 1
 }
+
