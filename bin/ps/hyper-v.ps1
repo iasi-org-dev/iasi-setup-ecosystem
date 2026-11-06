@@ -345,22 +345,21 @@ function Import-NetworkConfiguration {
 
 function Import-ServicePorts {
     $script:ServicePorts = @{}
-    $Path = Join-Path $IASIRoot "config\\ports.toml"
+    $Path = Join-Path $ConfigDataPath "ports.toml"
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
-        throw "Missing shared service port configuration '$Path'."
+        throw "Missing VM-local service port configuration '$Path'."
     }
     $Ports = Read-IasiToml -Path $Path
     foreach ($Service in @($Ports.Keys)) {
         $Entry = $Ports[$Service]
-        if (-not $Entry.Contains('node') -or -not $Entry.Contains('host') -or -not $Entry.Contains('container')) {
-            throw "Service '$Service' must declare node, host and container in ports.toml."
+        if (-not $Entry.Contains('host') -or -not $Entry.Contains('container')) {
+            throw "Service '$Service' must declare host and container in '$Path'."
         }
         $HostPort = [int]$Entry['host']
         $ContainerPort = [int]$Entry['container']
         if ($HostPort -lt 1 -or $HostPort -gt 65535 -or $ContainerPort -lt 1 -or $ContainerPort -gt 65535) {
             throw "Invalid ports for '$Service'."
         }
-        if ([string]$Entry['node'] -ne $NodeName) { continue }
         $Key = 'IASI_' + ($Service.ToUpperInvariant() -replace '[^A-Z0-9]', '_') + '_PORT'
         if ($ServicePorts.ContainsKey($Key)) { throw "Duplicate service port variable '$Key'." }
         if (@($ServicePorts.Values) -contains $HostPort) { throw "Duplicate published port $HostPort on node '$NodeName'." }

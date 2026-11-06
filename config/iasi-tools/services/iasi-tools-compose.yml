@@ -1,7 +1,6 @@
 services:
-
   plantuml:
-    image: plantuml/plantuml-server:jetty
+    image: plantuml/plantuml-server:jetty-v1.2026.9
     container_name: iasi-plantuml
     ports:
       - "${IASI_PLANTUML_PORT}:8080"
@@ -9,6 +8,16 @@ services:
       - iasi
     restart: unless-stopped
 
+  drawio:
+    image: jgraph/drawio:32.3.0
+    container_name: iasi-drawio
+    ports:
+      - "${IASI_DRAWIO_PORT}:8080"
+    networks:
+      - iasi
+    restart: unless-stopped
+
 networks:
   iasi:
     name: iasi
+

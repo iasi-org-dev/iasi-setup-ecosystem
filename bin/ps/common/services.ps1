@@ -88,11 +88,19 @@ function ConvertTo-IasiServiceCommands {
 }
 
 function New-IasiServiceScripts {
-    param([string]$StagePath, $Manifest)
+    param([string]$StagePath, $Manifest, [hashtable]$ServicePorts)
     $Directory = Join-Path $StagePath 'iasi'
     New-Item -ItemType Directory -Path $Directory -Force | Out-Null
     $Install = @(ConvertTo-IasiServiceCommands -Steps $Manifest['install'] -Phase 'install')
     $Startup = @(ConvertTo-IasiServiceCommands -Steps $Manifest['startup'] -Phase 'startup')
+    if ($ServicePorts -and $ServicePorts.Count -gt 0) {
+        $Exports = @('# Ports generated from this VM''s config-data/ports.toml.')
+        foreach ($Key in @($ServicePorts.Keys | Sort-Object)) {
+            $Value = [string]$ServicePorts[$Key]
+            $Exports += "export $Key=$Value"
+        }
+        $Startup = $Exports + $Startup
+    }
     if ($Manifest.Contains('startup') -and $Manifest['startup'].Count -gt 0) {
         $Install += 'mkdir -p /target/usr/local/sbin'
         $Install += 'cp /mnt/iasi-seed/iasi/startup.sh /target/usr/local/sbin/iasi-startup.sh'
@@ -127,21 +135,14 @@ function Set-AutoinstallServices {
     param([string]$StagePath, [string]$UserDataPath, [hashtable]$ServicePorts)
     $ServicesPath = Join-Path $StagePath 'services'
     if (-not (Test-Path -LiteralPath (Join-Path $ServicesPath "services.toml"))) { return }
-    if ($ServicePorts -and $ServicePorts.Count -gt 0) {
-        $Lines = @()
-        foreach ($Key in @($ServicePorts.Keys | Sort-Object)) {
-            if ($Key -cnotmatch '^[A-Z][A-Z0-9_]*$') { throw "Invalid service port variable '$Key'." }
-            $Value = [string]$ServicePorts[$Key]
-            if ($Value -notmatch '^[0-9]+$' -or [int]$Value -lt 1 -or [int]$Value -gt 65535) {
-                throw "Invalid port for '$Key': $Value."
-            }
-            $Lines += "$Key=$Value"
-            Write-LogInfo "Service port: $Key=$Value"
-        }
-        Write-IasiUtf8File -Path (Join-Path $ServicesPath 'iasi-services.env') -Lines $Lines
+    foreach ($Key in @($ServicePorts.Keys)) {
+        if ($Key -cnotmatch '^[A-Z][A-Z0-9_]*$') { throw "Invalid service port variable '$Key'." }
+        $Value = [string]$ServicePorts[$Key]
+        if ($Value -notmatch '^[0-9]+$' -or [int]$Value -lt 1 -or [int]$Value -gt 65535) { throw "Invalid port for '$Key': $Value." }
+        Write-LogInfo "Service port: $Key=$Value"
     }
     $Manifest = Read-IasiServices -ServicesPath $ServicesPath
     Write-LogInfo 'Adding services.toml install/startup provisioning...'
-    New-IasiServiceScripts -StagePath $StagePath -Manifest $Manifest
+    New-IasiServiceScripts -StagePath $StagePath -Manifest $Manifest -ServicePorts $ServicePorts
     Add-IasiAutoinstallHooks -UserDataPath $UserDataPath -HasStartup ($Manifest.Contains('startup') -and $Manifest['startup'].Count -gt 0)
 }

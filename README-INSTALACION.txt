@@ -1,6 +1,6 @@
 IASI Models V1 - integrating common ports config
 Extract to root of J:\iasi-setup-ecosystem preserving paths.
-- config/ports.toml is shared across tools and models.
+- Each VM has its own config-data/ports.toml under its configuration directory.
 - User-provided services and Compose are configured from shared ports TOML.
 - GPU selection and Hyper-V assignment come from the prior integration bundle.
 - Ollama container is started with CPU configuration initially; guest NVIDIA support

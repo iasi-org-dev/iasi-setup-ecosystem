@@ -1,0 +1,4 @@
+# Published ports for iasi-models. Values are local to this VM.
+[ollama]
+host = 10434
+container = 11434

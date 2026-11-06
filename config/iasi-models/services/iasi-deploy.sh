@@ -21,6 +21,5 @@ log 'GPU-P verified. Preparing NVIDIA Container Toolkit...'
 /bin/sh /opt/iasi/setup-nvidia.sh
 log 'NVIDIA Docker runtime verified.'
 [ -f /opt/iasi/iasi-models-compose.yml ] || fail 'Missing compose file'
-[ -f /opt/iasi/iasi-services.env ] || fail 'Missing env file'
-docker compose --env-file /opt/iasi/iasi-services.env -f /opt/iasi/iasi-models-compose.yml up -d
+docker compose -f /opt/iasi/iasi-models-compose.yml up -d
 log 'IASI-Models services started.'

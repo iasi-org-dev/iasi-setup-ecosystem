@@ -29,11 +29,6 @@ action = "copy"
 source = "iasi-models-compose.yml"
 target = "/opt/iasi/iasi-models-compose.yml"
 
-[[install]]
-action = "copy"
-source = "iasi-services.env"
-target = "/opt/iasi/iasi-services.env"
-
 # Stage de GPU: conservar los tres conjuntos completos en el Ubuntu destino.
 # setup-gpu.sh NO instala drivers ni crea enlaces simbolicos.
 [[install]]

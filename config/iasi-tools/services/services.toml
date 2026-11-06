@@ -7,11 +7,6 @@ action = "copy"
 source = "iasi-tools-compose.yml"
 target = "/opt/iasi/iasi-tools-compose.yml"
 
-[[install]]
-action = "copy"
-source = "iasi-services.env"
-target = "/opt/iasi/iasi-services.env"
-
 # Last install step: verify Docker, then grant the iasi user group access.
 [[install]]
 action = "run"
@@ -19,4 +14,4 @@ command = "dpkg-query -W -f='${Status}' docker.io | grep -qx 'install ok install
 
 [[startup]]
 action = "run"
-command = "systemctl start docker && docker compose --env-file /opt/iasi/iasi-services.env -f /opt/iasi/iasi-tools-compose.yml up -d"
+command = "systemctl start docker && docker compose -f /opt/iasi/iasi-tools-compose.yml up -d"

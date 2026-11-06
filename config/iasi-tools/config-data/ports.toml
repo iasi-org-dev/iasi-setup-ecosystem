@@ -1,0 +1,8 @@
+# Published ports for iasi-tools. Values are local to this VM.
+[plantuml]
+host = 10025
+container = 8080
+
+[drawio]
+host = 10026
+container = 8080
