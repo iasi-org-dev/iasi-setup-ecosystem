@@ -1,0 +1,34 @@
++++
+schema = "iasi/specification/v1"
+status = "draft"
+version = "0.1.0"
+created = 2026-11-14
+scope = "corporate"
+category = "language"
+language = "java"
+origin = "derived-from-inputs"
+id = "specifications.language.java.build-dependencies"
+title = "Java: compilación y dependencias"
++++
+
+# Construcción, dependencias y distribución Java
+
+## Tecnología de construcción
+- Maven y Gradle están permitidos; la herramienta concreta se decide por proyecto.
+- El proceso de build MUST ser repetible, automatizado y ejecutable en un entorno limpio.
+- La versión de JDK MUST quedar declarada y controlada; la compatibilidad MUST validarse mediante compilación y pruebas.
+- Las dependencias MUST tener versión o política de resolución reproducible.
+
+## Seguridad de la cadena de suministro
+- MUST evitarse introducir dependencias sin necesidad justificada.
+- Las dependencias MUST someterse a análisis de vulnerabilidades y revisión de licencias según las políticas aplicables.
+- Credenciales, claves y tokens MUST quedar fuera del código fuente y de los paquetes distribuidos.
+- Los artefactos SHOULD incluir trazabilidad a revisión, versión, herramienta y fecha de construcción.
+
+## Recursos empaquetados
+- Un JAR MAY contener scripts y recursos internos portables.
+- Cuando un recurso necesite ejecución o modificación, SHOULD extraerse a una ruta de trabajo controlada, validando integridad, permisos y limpieza.
+- La configuración operativa MUST mantenerse externa al JAR cuando deba personalizarse por entorno.
+
+## Entregable
+La construcción MUST publicar resultado, logs de verificación y evidencias suficientes para el QA Gate.

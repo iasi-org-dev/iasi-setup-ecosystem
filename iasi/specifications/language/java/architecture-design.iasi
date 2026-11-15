@@ -1,0 +1,34 @@
++++
+schema = "iasi/specification/v1"
+status = "draft"
+version = "0.1.0"
+created = 2026-11-14
+scope = "corporate"
+category = "language"
+language = "java"
+origin = "derived-from-inputs"
+id = "specifications.language.java.architecture-design"
+title = "Java: diseño y arquitectura"
++++
+
+# Diseño y arquitectura de software Java
+
+## Separación de responsabilidades
+- La lógica de negocio SHOULD ser independiente de frameworks, persistencia, transporte y UI.
+- Las dependencias entre módulos MUST ser explícitas y evitar ciclos.
+- Los límites arquitectónicos MUST definirse mediante contratos verificables.
+- MUST aplicarse inversión de dependencias cuando reduzca el acoplamiento relevante.
+
+## Interfaces y componentes
+- Las interfaces SHOULD expresar capacidades útiles, no duplicar cada clase por rutina.
+- La inyección de dependencias MAY implementarse con o sin framework.
+- Los objetos de transferencia y los modelos de dominio SHOULD diferenciarse si sus ciclos de cambio son distintos.
+- La configuración modificable MUST residir fuera del artefacto distribuido cuando cambie entre despliegues.
+
+## Concurrencia y estado
+- El acceso concurrente a estado compartido MUST diseñarse explícitamente.
+- Los recursos de sistema MUST tener ciclo de vida, errores y limpieza definidos.
+- Los timeouts, reintentos e idempotencia MUST evaluarse en operaciones externas.
+
+## Decisiones
+Toda elección arquitectónica significativa SHOULD documentarse con contexto, alternativas, decisión y consecuencias. La arquitectura reutilizable se trata como producto documentable y verificable.

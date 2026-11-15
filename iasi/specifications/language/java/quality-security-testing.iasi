@@ -1,0 +1,37 @@
++++
+schema = "iasi/specification/v1"
+status = "draft"
+version = "0.1.0"
+created = 2026-11-14
+scope = "corporate"
+category = "language"
+language = "java"
+origin = "derived-from-inputs"
+id = "specifications.language.java.quality-security-testing"
+title = "Java: pruebas, seguridad y QA Gate"
++++
+
+# Pruebas, seguridad y aseguramiento de calidad Java
+
+## Validación obligatoria
+- Los cambios MUST superar las verificaciones automáticas definidas para su línea base antes de progresar a la siguiente fase.
+- MUST mantenerse evidencia de compilación, análisis estático, pruebas y revisión de dependencias.
+- SonarQube MAY centralizar métricas y reglas; el proyecto MUST definir su perfil de calidad y umbrales antes de ejecutar el gate.
+- Las alertas MUST resolverse o registrarse como excepciones justificadas y aprobadas; no se asume que toda alerta sea un defecto.
+
+## Pruebas
+- MUST existir un conjunto automatizado de pruebas adecuado al riesgo y comportamiento de cada componente.
+- Las pruebas unitarias SHOULD ser deterministas, rápidas y aisladas.
+- Las integraciones externas SHOULD verificarse con pruebas de integración o contratos.
+- Los errores y casos límite MUST estar representados cuando sean relevantes.
+- La cobertura es un indicador, no una sustitución de pruebas útiles; los mínimos se fijan en la configuración del proyecto.
+
+## Seguridad por diseño
+- Entradas externas MUST validarse en sus límites de confianza.
+- Las consultas MUST parametrizarse cuando incorporen datos variables; MUST evitarse la concatenación insegura de SQL.
+- MUST aplicarse privilegio mínimo y manejo seguro de secretos.
+- Las rutas, ficheros, comandos y deserialización MUST analizarse según superficie de ataque.
+- Las incidencias críticas de seguridad MUST bloquear el avance salvo excepción autorizada por el proceso corporativo.
+
+## Resultado del gate
+El gate registra: controles ejecutados, versión de reglas, resultado, evidencias, incidencias, excepciones y decisión final (`pass`, `fail` o `exception-approved`).

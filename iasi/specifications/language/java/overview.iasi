@@ -1,0 +1,34 @@
++++
+schema = "iasi/specification/v1"
+status = "draft"
+version = "0.1.0"
+created = 2026-11-14
+scope = "corporate"
+category = "language"
+language = "java"
+origin = "derived-from-inputs"
+id = "specifications.language.java.overview"
+title = "Java: ámbito y principios"
++++
+
+# Especificación de lenguaje Java
+
+## Propósito
+Establecer una línea base de programación Java para proyectos IASI. Esta especificación es corporativa y debe recuperarse automáticamente en proyectos que utilicen Java. No sustituye los requisitos particulares del proyecto.
+
+## Principios normativos
+- **MUST**: requisito obligatorio; **SHOULD**: recomendación salvo excepción documentada; **MAY**: opción permitida.
+- El código MUST favorecer claridad, cohesión, bajo acoplamiento y comportamiento verificable.
+- La arquitectura MUST mantenerse independiente de la tecnología de construcción (Maven, Gradle u otra).
+- Los componentes MUST tener responsabilidades explícitas y contratos definidos.
+- Las excepciones a reglas corporativas MUST estar justificadas, aprobadas y registradas como evidencia del QA Gate.
+
+## Aplicabilidad y precedencia
+1. Normativa corporativa vigente.
+2. Normativa departamental compatible.
+3. Especificaciones del proyecto y su configuración tecnológica.
+
+Los requisitos particulares pueden especializar reglas generales, pero no debilitarlas sin excepción formal. Las especificaciones se versionan y se fijan para cada línea base del proyecto.
+
+## Criterio de aceptación
+El proyecto identifica versión Java, estilo, herramientas, evidencia de análisis y pruebas, y las excepciones admitidas.

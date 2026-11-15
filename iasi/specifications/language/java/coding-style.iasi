@@ -1,0 +1,37 @@
++++
+schema = "iasi/specification/v1"
+status = "draft"
+version = "0.1.0"
+created = 2026-11-14
+scope = "corporate"
+category = "language"
+language = "java"
+origin = "derived-from-inputs"
+id = "specifications.language.java.coding-style"
+title = "Java: convenciones de código"
++++
+
+# Convenciones de programación Java
+
+## Nombres y estructura
+- Los paquetes MUST escribirse en minúsculas y expresar una organización estable.
+- Tipos y enums MUST usar `UpperCamelCase`; métodos y variables, `lowerCamelCase`; constantes, `UPPER_SNAKE_CASE`.
+- Los nombres MUST reflejar intención y dominio, evitando abreviaturas ambiguas.
+- Las clases SHOULD tener una responsabilidad principal; los métodos SHOULD ser pequeños y legibles.
+- MUST evitarse código muerto, duplicación injustificada y efectos laterales ocultos.
+
+## API y encapsulación
+- La visibilidad MUST ser la mínima necesaria.
+- Las APIs públicas MUST documentar contrato, parámetros, resultados, errores y condiciones relevantes.
+- MUST preferirse inmutabilidad cuando resulte práctica.
+- Los valores nulos MUST tratarse de manera deliberada; `Optional` MAY usarse en valores de retorno, sin imponer su uso en campos o parámetros.
+- Los recursos cerrables MUST gestionarse con `try-with-resources` cuando proceda.
+
+## Manejo de errores y registro
+- Las excepciones MUST preservar la causa y aportar contexto relevante sin revelar secretos.
+- MUST evitarse capturar excepciones solo para ignorarlas.
+- MUST usarse el mecanismo de logging corporativo/proyecto, nunca `System.out` como diagnóstico de producción.
+- Los mensajes de log MUST evitar datos personales, contraseñas, tokens y material sensible.
+
+## Formato
+El proyecto MUST fijar un formateador y validarlo automáticamente. No se impone aquí una longitud de línea universal ni una herramienta concreta.
