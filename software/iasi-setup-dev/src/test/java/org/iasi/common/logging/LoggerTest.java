@@ -1,5 +1,7 @@
 package org.iasi.common.logging;
 
+import org.iasi.base.Verbosity;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayOutputStream;
@@ -94,6 +96,7 @@ class LoggerTest {
             for (Path file : files.filter(path -> path.toString().endsWith(".java")).toList()) {
                 String text = Files.readString(file);
                 assertFalse(text.contains("org.iasi.setupdev"), file.toString());
+                assertFalse(text.contains("org.iasisetupdev"), file.toString());
                 assertFalse(text.contains("import org.apache.logging"), file.toString());
                 assertFalse(text.contains("iasi-setup-dev"), file.toString());
             }

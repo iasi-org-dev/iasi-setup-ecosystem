@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.iasi.common.logging.Verbosity;
+import org.iasi.base.Verbosity;
 
 record Options(boolean help, boolean force, Verbosity verbosity, Map<String, String> parameters, List<String> words) {
     private static final Set<String> PARAMETERS = Set.of("--config", "--definitions", "--machines", "--logs");

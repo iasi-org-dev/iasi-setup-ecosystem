@@ -1,0 +1,29 @@
+{
+  "status": "pass",
+  "candidate_sha256": "4ad95a37782462157ea0207357421e291bad75022c3d00523f507f356327fb07",
+  "tests": {
+    "tests": 112,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "smoke_cases": 16,
+  "rc_process_cases": 15,
+  "context_process_cases": 5,
+  "maxima": {
+    "effectiveLines": 31,
+    "nesting": 3,
+    "cyclomatic": 9,
+    "cognitive": 11
+  },
+  "scored_callables": 225,
+  "effective_packages": 144,
+  "osv_findings": 0,
+  "reproducible": true,
+  "governance_unchanged": true,
+  "task_0001_unchanged": true,
+  "task_0002_unchanged": true,
+  "release_unchanged": true,
+  "output_isolation": true,
+  "utf8_lf": true
+}

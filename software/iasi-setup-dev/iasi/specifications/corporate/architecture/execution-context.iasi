@@ -1,0 +1,260 @@
++++
+id = "COR-ARC-CTX-001"
+type = "standard"
+title = "Execution Context (ctx)"
+scope = "corporate"
+category = "architecture"
+status = "draft"
+version = "0.1.1"
+created = 2026-11-17
+related = ["COR-MSG-RC-001"]
++++
+
+# Execution Context (`ctx`)
+
+## 1. Objeto
+
+Esta norma define el **contexto de ejecución de IASI** como el espacio único de información operativa compartida por los componentes de una aplicación. Su nombre de clase convencional es `ExecutionContext`, y su referencia habitual se denomina **`ctx`**.
+
+La norma es corporativa y conceptualmente independiente del lenguaje. Los ejemplos utilizan Java y una presentación **compatible con Markdown/R Markdown**: exposición, fragmentos de código y casos verificables.
+
+El objetivo es compartir configuración, recursos operativos y resultados sin transmitir largas listas de parámetros ni construir un almacén global indiscriminado.
+
+> **Principio:** una ejecución tiene un contexto; un contexto no es el modelo de dominio.
+
+## 2. Identidad y ciclo de vida
+
+### 2.1. Singleton
+
+Para la aplicación IASI ordinaria, `ExecutionContext` será un **Singleton thread-safe**, único **dentro del proceso**.
+
+- **Unicidad:** todos los componentes de una misma ejecución observan la misma instancia.
+- **Publicación segura:** los demás hilos nunca ven una instancia a medio construir.
+- **Identidad estable:** la instancia no cambia a lo largo de la ejecución.
+- **No confundir unicidad con inmutabilidad:** algunos datos que contiene sí evolucionan.
+
+El contexto no es un Singleton entre procesos diferentes ni constituye almacenamiento distribuido.
+
+### 2.2. Fases
+
+1. **Bootstrap:** lectura inicial de argumentos, resolución de fuentes de configuración y validación; todavía no se publica un contexto operativo incompleto.
+2. **Inicialización:** creación y publicación segura del contexto con su configuración efectiva.
+3. **Ejecución:** consulta de datos estables y modificación controlada del estado operativo.
+4. **Cierre:** finalización ordenada de servicios, lectura del RC acumulado y devolución del RC por el punto de entrada.
+
+La estrategia exacta de inicialización se resolverá en el diseño Java. Una inicialización «perezosa» no debe ocultar fallos ni introducir configuraciones parciales.
+
+## 3. Qué contiene
+
+### 3.1. Información inmutable durante la ejecución
+
+| Elemento | Ejemplos | Observaciones |
+|:--|:--|:--|
+| Configuración efectiva | opciones resueltas y validadas | Puede proceder de varias fuentes de precedencia |
+| Directorios y rutas efectivos | definiciones, máquinas, logs, directorio de trabajo | Se establecen al inicializar |
+| Identidad | ID de ejecución, instante de inicio | Un valor por ejecución |
+| Entorno de referencia | sistema operativo y capacidades detectadas | Instantánea estable |
+| Referencias a servicios | mensajería, logging | Referencia estable; el servicio puede tener estado |
+
+La inmutabilidad debe ser **real**, no meramente sintáctica: declarar una referencia `final` no convierte automáticamente en inmutable el objeto al que apunta. Se preferirán objetos de valor, copias defensivas y vistas de solo lectura.
+
+### 3.2. Información mutable durante la ejecución
+
+| Elemento | Ejemplos | Responsabilidad |
+|:--|:--|:--|
+| RC acumulado | `0x00`, `0x02`, `0x06`, etc. | Acumular mediante OR |
+| Estado operativo | fase actual, indicadores de ejecución | Cambios válidos y controlados |
+| Contadores | tareas completadas, avisos | Actualización consistente |
+| Estadísticas | tiempos y resultados agregados | No reemplazan al log |
+
+No es obligatorio introducir todos esos campos desde el principio. **Solo se incorpora un dato cuando su uso transversal está justificado.**
+
+## 4. Qué NO contiene: objetos de dominio
+
+El contexto no sustituye al modelo de dominio ni al almacenamiento de negocio.
+
+Por ejemplo, una colección de objetos recuperados de una base de datos puede crecer, modificarse o desaparecer durante la ejecución. Esa colección **no pertenece a `ctx`** por el mero hecho de que varios métodos la usen.
+
+Sí puede conservarse una referencia estable a un **servicio de persistencia** si es transversal. No deben depositarse sin criterio en el contexto:
+
+- Entidades y colecciones de negocio.
+- Resultados particulares de consultas.
+- Transacciones propias de una operación.
+- Estados locales de algoritmos.
+- Objetos temporales de una tarea.
+
+**Regla de decisión:** si la información pertenece al ciclo de vida de un objeto de dominio o de una operación, permanece allí. Si pertenece al ciclo de vida transversal de la ejecución, puede pertenecer a `ctx`.
+
+## 5. Por qué Singleton y thread-safe
+
+### Singleton: justificación
+
+- Configuración efectiva única para todos los componentes.
+- RC agregado único.
+- Identidad y servicios de ejecución coherentes.
+- Evitar pasar continuamente configuración, logging, RC y referencias transversales como parámetros.
+
+### Thread-safe: justificación
+
+Aunque el orquestador actual ejecute secuencialmente sus tareas, la aplicación puede incorporar servicios o trabajos concurrentes.
+
+El contexto debe garantizar:
+
+1. **Publicación segura** de la instancia y sus valores iniciales.
+2. **Visibilidad** de los cambios mutables entre hilos.
+3. **Atomicidad** de las operaciones que combinan cambios, en particular la acumulación de RC.
+4. **Ausencia de pérdidas de actualizaciones** si varios hilos escriben simultáneamente.
+
+La seguridad entre hilos **no exige** que toda la aplicación ejecute varios hilos, ni colas o consumidores asíncronos innecesarios. La implementación debe ser proporcional a la concurrencia efectiva. Si un estado solo lo modifica un hilo, la operación nativa basta; si se comparte para escritura entre hilos, se protege esa operación. El contrato de `ExecutionContext` exige que su estado mutable sea seguro cuando exista concurrencia.
+
+## 6. RC dentro del contexto
+
+Los **valores y significados de los RC** los determina la norma `specifications/corporate/runtime/messages-return-codes.iasi`. Este documento **no los redefine**.
+
+`ctx` permite acumular el RC global de la ejecución.
+
+- El valor inicial es `RC.OK`.
+- `setRC(valor)` significa **OR bit a bit**, nunca sustitución.
+- `setRC(RC.OK)` no limpia bits anteriores.
+- Escribir un mensaje ordinario en consola no modifica automáticamente el RC.
+- Cambiar el RC **no provoca** saltos, interrupciones ni terminación de la ejecución.
+- El programa continúa por su flujo funcional; solo el punto de entrada decide el cierre y devuelve el RC final.
+
+### 6.1. Ejemplo: acumulación (Java)
+
+```java
+ctx.setRC(RC.INFO);
+ctx.setRC(RC.WARNING);
+
+int result = ctx.getRC(); // 0x06
+```
+
+Aquí `0x06` **no es otro RC definido**. Es la combinación de dos constantes.
+
+### 6.2. Ejemplo: una función que detecta una incidencia
+
+```java
+void processDefinition(Path definition) {
+    if (Files.notExists(definition)) {
+        // Incidencia informativa relevante: no hay trabajo para esta definición.
+        ctx.setRC(RC.INFO);
+        messages.info("Se omite la definición: no existe");
+        return;
+    }
+
+    process(definition);
+}
+```
+
+La función **registra la incidencia** y sigue sus reglas funcionales. `setRC` no equivale a `throw`, `return` ni `System.exit`.
+
+### 6.3. Ejemplo: implementación secuencial
+
+Si no existe escritura concurrente sobre el RC, la acumulación es una operación nativa y directa:
+
+```java
+private int rc = RC.OK;
+
+public void setRC(int value) {
+    rc |= value;
+}
+
+public int getRC() {
+    return rc;
+}
+```
+
+No se incorporan lambdas, objetos atómicos ni sincronización sin necesidad real.
+
+### 6.4. Ejemplo: cuando existe escritura concurrente
+
+Si varios hilos pueden actualizar el mismo RC, la operación debe ser atómica. Una implementación sencilla es:
+
+```java
+private int rc = RC.OK;
+
+public synchronized void setRC(int value) {
+    rc |= value;
+}
+
+public synchronized int getRC() {
+    return rc;
+}
+```
+
+Las dos operaciones sincronizadas aseguran la acumulación y la visibilidad entre hilos. No se exige el uso de lambdas ni de `AtomicInteger`; podrán elegirse otros mecanismos equivalentes si existe una necesidad demostrable. **La interfaz y la semántica de `setRC()` no cambian** entre implementaciones.
+
+La decisión de implementación debe respetar el contrato de seguridad de `ExecutionContext`: no se publicará una variante de acceso no protegido cuando pueda usarse concurrentemente.
+
+## 7. Ejemplo completo de uso, estilo R Markdown
+
+El ejemplo siguiente se presenta como una pequeña sección de un documento técnico IASI: contexto, código y resultado esperado. Los bloques Java usan cercas de Markdown, tal como pueden incorporarse a un documento R Markdown/Quarto.
+
+### Escenario
+
+Una aplicación carga sus opciones, inicializa un único contexto y procesa varias definiciones. Una definición opcional no existe; ese hecho modifica el RC informativo, pero **no detiene** el trabajo de las demás.
+
+```java
+// Fragmento ilustrativo del programa principal.
+ExecutionContext ctx = ExecutionContext.getInstance();
+
+processDefinitions(ctx);  // El componente acumula las incidencias.
+completeRemainingWork(); // El flujo continúa.
+
+int rc = ctx.getRC();
+// El punto de entrada devolverá el RC conforme a la norma corporativa.
+```
+
+**Resultado esperado:** si solo se detectó una incidencia informativa, el resultado final es `0x02`; la ejecución es correcta con información relevante. Si otra función detecta además una advertencia, el resultado será `0x06`.
+
+En un documento ejecutable de Quarto o R Markdown, los ejemplos podrán convertirse más adelante en bloques evaluables o verificaciones automatizadas; **no se exige ejecutar Java dentro de la documentación**.
+
+### Escenario de concurrencia
+
+Dos hilos llaman casi al mismo tiempo:
+
+```java
+ctx.setRC(RC.INFO);
+ctx.setRC(RC.WARNING);
+```
+
+El valor final debe conservar **ambos** bits, cualquiera que sea el orden de ejecución. Una implementación no atómica (`rc |= value` sobre un `int` compartido sin sincronización) **no garantiza** este resultado.
+
+## 8. Contrato de acceso y límites
+
+La interfaz pública debe ser pequeña y tipada. Debería permitir:
+
+- Acceder a la instancia única.
+- Consultar la configuración efectiva y atributos estables.
+- Obtener los servicios transversales que realmente hagan falta.
+- Consultar y acumular RC con `getRC()` y `setRC()`.
+- Modificar los escasos campos operativos mutables mediante operaciones que preserven invariantes.
+
+Se evitará expresamente transformar `ctx` en un `Map<String, Object>` global, agregar setters arbitrarios, usarlo como contenedor de entidades de base de datos o añadir funcionalidades que correspondan a otra capa.
+
+La clase lógica Java propuesta es `org.iasi.base.context.ExecutionContext`. El nombre convencional de su referencia es **`ctx`**.
+
+Una referencia a un servicio thread-safe **no convierte** automáticamente en thread-safe a todos los objetos que este servicio maneja.
+
+## 9. Criterios de aceptación y QA
+
+Una implementación conforme deberá acreditar:
+
+1. Que existe **una sola instancia por proceso** y no aparecen duplicados ante accesos concurrentes.
+2. Que otros hilos no acceden a una instancia **parcialmente inicializada**.
+3. Que la configuración efectiva no puede modificarse accidentalmente desde un consumidor.
+4. Que se distinguen claramente datos **inmutables** y estado **mutable**.
+5. Que `setRC` siempre acumula mediante OR y nunca borra bits anteriores.
+6. Que la acumulación concurrente de RC no pierde actualizaciones.
+7. Que registrar un mensaje ordinario no modifica automáticamente el RC.
+8. Que modificar el RC no altera por sí solo el flujo de ejecución.
+9. Que las entidades y colecciones del dominio no se guardan en el contexto sin responsabilidad transversal.
+10. Que no se introducen hilos, lambdas, tipos atómicos o sincronización sin necesidad justificada, manteniendo en todo caso la seguridad concurrente del contexto.
+
+## 10. Límites y evolución
+
+No forman parte de esta norma inicial la recarga dinámica de configuración, los contextos distribuidos, la persistencia del contexto, los contextos anidados ni la coexistencia de varias ejecuciones independientes dentro de una misma JVM.
+
+Tampoco prescribe el diseño interno del motor de mensajería, ni obliga a implementar servicios asíncronos. Las nuevas necesidades se introducirán mediante especificaciones y tareas independientes.
+
+**Resumen normativo:** `ctx` es **único, compartido, estable en su identidad, thread-safe en sus accesos y explícito en su mutabilidad**. No es un almacén global del dominio ni un mecanismo de control del flujo.

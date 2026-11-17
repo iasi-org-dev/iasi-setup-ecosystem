@@ -1,0 +1,182 @@
+[
+  {
+    "arguments": [
+      "OK",
+      "platform"
+    ],
+    "exit_code": 0,
+    "stdout": "20:15:04 - SYS01001 - Starting platform.\n20:15:04 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:15:04 - SYS01005 - Host OS identification verified. No virtualization capability tested.\n20:15:04 - SYS01007 - Execution finished; exit code=0.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\0",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": false
+  },
+  {
+    "arguments": [
+      "NOTHING_TO_DO",
+      "platform"
+    ],
+    "exit_code": 1,
+    "stdout": "20:15:04 - SYS01001 - Starting platform.\n20:15:04 - SYS01007 - Execution finished; exit code=1.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\1",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": false
+  },
+  {
+    "arguments": [
+      "INFO",
+      "platform"
+    ],
+    "exit_code": 2,
+    "stdout": "20:15:04 - SYS01001 - Starting platform.\n20:15:04 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:15:04 - SYS01005 - Host OS identification verified. No virtualization capability tested.\n20:15:04 - SYS01007 - Execution finished; exit code=2.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\2",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": false
+  },
+  {
+    "arguments": [
+      "WARNING",
+      "platform"
+    ],
+    "exit_code": 4,
+    "stdout": "20:15:04 - SYS01001 - Starting platform.\n20:15:04 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:15:04 - SYS01005 - Host OS identification verified. No virtualization capability tested.\n20:15:04 - SYS01007 - Execution finished; exit code=4.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\3",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": false
+  },
+  {
+    "arguments": [
+      "ATTENTION",
+      "platform"
+    ],
+    "exit_code": 8,
+    "stdout": "20:15:04 - SYS01001 - Starting platform.\n20:15:04 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:15:04 - SYS01005 - Host OS identification verified. No virtualization capability tested.\n20:15:04 - SYS01007 - Execution finished; exit code=8.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\4",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": false
+  },
+  {
+    "arguments": [
+      "ERROR",
+      "platform"
+    ],
+    "exit_code": 16,
+    "stdout": "20:15:04 - SYS01001 - Starting platform.\n20:15:04 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:15:04 - SYS01007 - Execution finished; exit code=16.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\5",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": true
+  },
+  {
+    "arguments": [
+      "SEVERE",
+      "platform"
+    ],
+    "exit_code": 32,
+    "stdout": "20:15:04 - SYS01001 - Starting platform.\n20:15:04 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:15:04 - SYS01007 - Execution finished; exit code=32.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\6",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": true
+  },
+  {
+    "arguments": [
+      "FATAL",
+      "platform"
+    ],
+    "exit_code": 64,
+    "stdout": "20:15:05 - SYS01001 - Starting platform.\n20:15:05 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:15:05 - SYS01007 - Execution finished; exit code=64.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\7",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": true
+  },
+  {
+    "arguments": [
+      "INFO+WARNING",
+      "platform"
+    ],
+    "exit_code": 6,
+    "stdout": "20:15:05 - SYS01001 - Starting platform.\n20:15:05 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:15:05 - SYS01005 - Host OS identification verified. No virtualization capability tested.\n20:15:05 - SYS01007 - Execution finished; exit code=6.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\8",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": false
+  },
+  {
+    "arguments": [
+      "WARNING+ATTENTION",
+      "platform"
+    ],
+    "exit_code": 12,
+    "stdout": "20:15:05 - SYS01001 - Starting platform.\n20:15:05 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:15:05 - SYS01005 - Host OS identification verified. No virtualization capability tested.\n20:15:05 - SYS01007 - Execution finished; exit code=12.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\9",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": false
+  },
+  {
+    "arguments": [
+      "ERROR+WARNING",
+      "platform"
+    ],
+    "exit_code": 20,
+    "stdout": "20:15:05 - SYS01001 - Starting platform.\n20:15:05 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:15:05 - SYS01007 - Execution finished; exit code=20.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\10",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": true
+  },
+  {
+    "arguments": [
+      "INFO+ERROR",
+      "platform"
+    ],
+    "exit_code": 18,
+    "stdout": "20:15:05 - SYS01001 - Starting platform.\n20:15:05 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:15:05 - SYS01007 - Execution finished; exit code=18.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\11",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": true
+  },
+  {
+    "arguments": [
+      "INFO+INFO",
+      "platform"
+    ],
+    "exit_code": 2,
+    "stdout": "20:15:05 - SYS01001 - Starting platform.\n20:15:05 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:15:05 - SYS01005 - Host OS identification verified. No virtualization capability tested.\n20:15:05 - SYS01007 - Execution finished; exit code=2.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\12",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": false
+  },
+  {
+    "arguments": [
+      "NOTHING_TO_DO+INFO+WARNING+ATTENTION+ERROR+SEVERE+FATAL",
+      "platform"
+    ],
+    "exit_code": 127,
+    "stdout": "20:15:05 - SYS01001 - Starting platform.\n20:15:05 - SYS01007 - Execution finished; exit code=127.\n",
+    "stderr": "",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\13",
+    "jar": "build\\rc-process-harness.jar",
+    "is_error": true
+  },
+  {
+    "arguments": [
+      "platform",
+      "--config",
+      "missing.toml"
+    ],
+    "exit_code": 16,
+    "stdout": "",
+    "stderr": "21:15:05 - SYS01009 - No se puede leer la configuración, acceder a un directorio o escribir el log. La ejecución ha fallado.\n",
+    "cwd": "qa\\rc-processes\\3bd93986-d638-459f-9679-c9eec7ec86c6\\missing-config",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  }
+]

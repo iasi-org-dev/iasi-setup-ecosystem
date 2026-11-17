@@ -7,33 +7,37 @@ import java.nio.file.Path;
 import java.time.Clock;
 import java.util.Locale;
 import java.util.function.Supplier;
+import org.iasi.base.RC;
+import org.iasisetupdev.core.ExecutionConfiguration;
+import org.iasisetupdev.core.Context;
 import org.iasi.common.i18n.MessageCatalog;
 import org.iasi.common.logging.Logger;
 import org.iasi.common.logging.Loggers;
+import org.iasi.common.operation.OperationResult;
 import org.iasi.common.platform.Platform;
 
 public final class Main {
     /**
-     * Punto de entrada estático; los colaboradores se inyectan en run para
-     * verificar el comportamiento.
+     * Entrada estática de una sola ejecución por JVM; las pruebas de otras
+     * ejecuciones utilizan procesos aislados.
      */
     private Main() {
     }
 
     /**
-     * Captura el contexto inicial, configura salida UTF-8 y entrega al proceso el
-     * código final de la ejecución.
+     * Termina una única vez, después del cierre de recursos y con el RC final
+     * acumulado.
      */
     public static void main(String[] arguments) {
         PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         PrintStream err = new PrintStream(System.err, true, StandardCharsets.UTF_8);
-        int result = run(arguments, Path.of(System.getProperty("user.dir")), out, err, Locale.getDefault(), Clock.systemDefaultZone(), consoleColors(),
-                Platform::detect);
-        System.exit(result);
+        int rc = runOperation(arguments, Path.of(System.getProperty("user.dir")), out, err, Locale.getDefault(), Clock.systemDefaultZone(), consoleColors(),
+                Platform::identify);
+        System.exit(rc);
     }
 
     /**
-     * Habilita ANSI solo cuando hay consola e indicios de soporte, respetando
+     * Decide soporte ANSI en el límite del ejecutable, respetando la consola y
      * NO_COLOR.
      */
     private static boolean consoleColors() {
@@ -44,63 +48,90 @@ public final class Main {
     }
 
     /**
-     * Coordina análisis, ayuda o configuración y ejecución; traduce errores de
-     * entrada e IO en códigos sin efectos parciales.
+     * Resuelve bootstrap antes de publicar ctx; los fallos previos utilizan un RC
+     * local, no un contexto parcial.
      */
-    static int run(String[] arguments, Path cwd, PrintStream out, PrintStream err, Locale locale, Clock clock, boolean colors, Supplier<Platform> detector) {
+    static int runOperation(String[] arguments, Path cwd, PrintStream out, PrintStream err, Locale locale, Clock clock, boolean colors,
+            Supplier<OperationResult<Platform>> detector) {
+        Context ctx = null;
+        int bootstrapRC = RC.OK;
         MessageCatalog catalog = new MessageCatalog("org.iasi.setupdev.messages", locale);
         try {
             Options options = Options.parse(arguments);
             Command command = Command.resolve(options.words());
             if (command.help(options)) {
                 Help.show(command, catalog, out);
-                return 0;
+                return bootstrapRC;
             }
             var internal = Main.class.getResourceAsStream("/org/iasi/setupdev/defaults.toml");
-            Settings settings = Configuration.resolve(options, cwd, internal);
-            return execute(command, settings, catalog, clock, out, err, colors, detector);
+            ExecutionConfiguration configuration = Configuration.resolve(options, cwd, internal);
+            ctx = Context.initialize(configuration);
+            execute(ctx, command, catalog, clock, out, err, colors, detector);
         } catch (InputException exception) {
+            bootstrapRC |= RC.ERROR;
+            if (ctx != null) ctx.setRC(RC.ERROR);
             Logger.earlyError(catalog, err, clock, Event.INPUT_ERROR, catalog.text(exception.getMessage()));
-            return 2;
         } catch (IOException | SecurityException exception) {
+            bootstrapRC |= RC.ERROR;
+            if (ctx != null) ctx.setRC(RC.ERROR);
             Logger.earlyError(catalog, err, clock, Event.IO_ERROR);
-            return 1;
+        } catch (RuntimeException exception) {
+            bootstrapRC |= RC.FATAL;
+            if (ctx != null) ctx.setRC(RC.FATAL);
+            Logger.earlyError(catalog, err, clock, Event.UNEXPECTED_FAILURE);
         }
+        return ctx == null ? bootstrapRC : ctx.getRC();
     }
 
     /**
-     * Abre el servicio común, registra inicio y rutas, ejecuta el diagnóstico y
-     * resume el resultado antes del cierre.
+     * Abre los servicios locales y utiliza ctx como fuente única de configuración y
+     * RC durante la operación.
      */
-    private static int execute(Command command, Settings settings, MessageCatalog catalog, Clock clock, PrintStream out, PrintStream err, boolean colors,
-            Supplier<Platform> detector) throws IOException {
-        try (Logger messages = Loggers.open(catalog, clock, settings.verbosity(), out, err, colors, Boolean.getBoolean("iasi.log.trace"), settings.logs(),
-                "iasi-setup-dev", "launcher")) {
+    private static void execute(Context ctx, Command command, MessageCatalog catalog, Clock clock, PrintStream out, PrintStream err, boolean colors,
+            Supplier<OperationResult<Platform>> detector) throws IOException {
+        ExecutionConfiguration configuration = ctx.configuration();
+        try (Logger messages = Loggers.open(catalog, clock, configuration.verbosity(), out, err, colors, Boolean.getBoolean("iasi.log.trace"),
+                configuration.logs(), "iasi-setup-dev", "launcher")) {
             messages.emit(Event.START, command.syntax());
-            messages.emit(Event.PATHS, settings.cwd(), settings.definitions(), settings.machines(), settings.logs(), settings.force());
-            int result = dispatch(command, messages, detector);
-            messages.emit(Event.FINISH, result);
-            return result;
+            reportPaths(ctx, messages);
+            dispatch(ctx, command, messages, detector);
+            messages.emit(Event.FINISH, ctx.getRC());
         }
     }
 
     /**
-     * Ejecuta únicamente capacidades implementadas; SO desconocido o acciones
-     * futuras producen error sin SUCCESS.
+     * Presenta atributos estables del contexto sin convertir un mensaje de
+     * diagnóstico en una incidencia RC.
      */
-    private static int dispatch(Command command, Logger messages, Supplier<Platform> detector) throws IOException {
+    private static void reportPaths(Context ctx, Logger messages) throws IOException {
+        ExecutionConfiguration configuration = ctx.configuration();
+        messages.emit(Event.PATHS, configuration.cwd(), configuration.definitions(), configuration.machines(), configuration.logs(), configuration.force());
+    }
+
+    /**
+     * Agrega incidencias donde se detectan; continuar, retornar y presentar éxitos
+     * son decisiones funcionales separadas.
+     */
+    private static void dispatch(Context ctx, Command command, Logger messages, Supplier<OperationResult<Platform>> detector) throws IOException {
         if (!command.executable()) {
+            ctx.setRC(RC.ERROR);
             messages.emit(Event.UNAVAILABLE, command.syntax());
-            return 2;
+            return;
         }
-        Platform platform = detector.get();
+        OperationResult<Platform> result = detector.get();
+        ctx.setRC(result.status());
+        if (result.value().isEmpty()) {
+            ctx.setRC(RC.NOTHING_TO_DO);
+            return;
+        }
+        Platform platform = result.value().orElseThrow();
         messages.emit(Event.PLATFORM, platform.family(), platform.name(), platform.version(), platform.architecture());
         messages.emit(Event.RUNTIME, platform.runtime(), platform.vendor());
         if (platform.family() == Platform.Family.UNKNOWN) {
+            ctx.setRC(RC.ERROR);
             messages.emit(Event.UNKNOWN_HOST);
-            return 3;
+            return;
         }
-        messages.emit(Event.VERIFIED);
-        return 0;
+        if (!RC.isError(ctx.getRC())) messages.emit(Event.VERIFIED);
     }
 }

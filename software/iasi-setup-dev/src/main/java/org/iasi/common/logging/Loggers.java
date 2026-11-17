@@ -1,5 +1,7 @@
 package org.iasi.common.logging;
 
+import org.iasi.base.Verbosity;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;

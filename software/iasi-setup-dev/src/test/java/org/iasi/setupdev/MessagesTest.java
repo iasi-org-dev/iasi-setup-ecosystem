@@ -21,7 +21,7 @@ import org.iasi.common.logging.ConsoleSink;
 import org.iasi.common.logging.FileLogSink;
 import org.iasi.common.logging.Logger;
 import org.iasi.common.logging.Severity;
-import org.iasi.common.logging.Verbosity;
+import org.iasi.base.Verbosity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -77,7 +77,7 @@ class MessagesTest {
         String console = out.toString(StandardCharsets.UTF_8) + err.toString(StandardCharsets.UTF_8);
         String persisted = Files.readString(log);
         for (Event event : Event.values()) {
-            assertEquals(verbosity.includes(event.severity()), console.contains(event.code()), event.code());
+            assertEquals(visible(verbosity, event.severity()), console.contains(event.code()), event.code());
             assertEquals(event.severity() != Severity.TRACE, persisted.contains(event.code()));
         }
         assertFalse(console.contains("\u001b"));
@@ -159,4 +159,18 @@ class MessagesTest {
                 colors);
         return new Logger(new MessageCatalog("org.iasi.setupdev.messages", Locale.ENGLISH), CLOCK, "launcher", file, console);
     }
+    /**
+     * Oráculo de visibilidad independiente de la implementación del destino de
+     * consola.
+     */
+    private boolean visible(Verbosity verbosity, Severity severity) {
+        java.util.Set<Severity> visible = switch (verbosity) {
+            case NORMAL -> java.util.Set.of(Severity.INFO, Severity.SUCCESS, Severity.WARNING, Severity.ERROR);
+            case VERBOSE -> java.util.EnumSet.complementOf(java.util.EnumSet.of(Severity.TRACE));
+            case VERY_VERBOSE -> java.util.EnumSet.allOf(Severity.class);
+            case SILENT -> java.util.Set.of(Severity.ERROR);
+        };
+        return visible.contains(severity);
+    }
+
 }

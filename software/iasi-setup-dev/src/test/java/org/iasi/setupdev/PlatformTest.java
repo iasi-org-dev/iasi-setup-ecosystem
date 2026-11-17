@@ -44,4 +44,16 @@ class PlatformTest {
                 "test-vendor");
         return Platform.detect(key -> properties.getOrDefault(key, "unknown"));
     }
+
+    /**
+     * Verifica que el productor común marca Error solo para familias desconocidas y
+     * nunca deduce Info de sus datos.
+     */
+    @ParameterizedTest
+    @CsvSource({"Windows 11,0", "Linux,0", "Darwin,0", "FreeBSD,16", "unknown,16"})
+    void platformOperationProducesExplicitRc(String name, int expected) {
+        var result = Platform.identify(key -> key.equals("os.name") ? name : "test");
+        assertEquals(expected, result.status());
+        assertEquals(name, result.value().orElseThrow().name());
+    }
 }

@@ -5,9 +5,10 @@ import org.iasi.common.logging.Severity;
 
 enum Event implements MessageDefinition {
     START("SYS01001", Severity.INFO, "start"), PATHS("SYS01002", Severity.DEBUG, "paths"), PLATFORM("SYS01003", Severity.INFO, "platform"), RUNTIME("SYS01004",
-            Severity.TRACE, "runtime"), VERIFIED("SYS01005", Severity.SUCCESS, "verified"), UNKNOWN_HOST("SYS01006", Severity.ERROR, "unknownHost"), FINISH(
-                    "SYS01007", Severity.INFO, "finish"), WARNING("SYS01008", Severity.WARNING, "warning"), INPUT_ERROR("CLI01001", Severity.ERROR,
-                            "inputError"), UNAVAILABLE("CLI01002", Severity.ERROR, "unavailable"), IO_ERROR("SYS01009", Severity.ERROR, "ioError");
+            Severity.TRACE, "runtime"), VERIFIED("SYS01005", Severity.SUCCESS, "verified"), UNKNOWN_HOST("SYS01006", Severity.ERROR,
+                    "unknownHost"), FINISH("SYS01007", Severity.INFO, "finish"), WARNING("SYS01008", Severity.WARNING, "warning"), INPUT_ERROR("CLI01001",
+                            Severity.ERROR, "inputError"), UNAVAILABLE("CLI01002", Severity.ERROR, "unavailable"), IO_ERROR("SYS01009", Severity.ERROR,
+                                    "ioError"), UNEXPECTED_FAILURE("SYS01010", Severity.ERROR, "unexpectedFailure");
 
     private final String code;
     private final Severity severity;

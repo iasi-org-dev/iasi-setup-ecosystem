@@ -48,7 +48,7 @@ def snapshot(directory):
 def maven(goals, debug, log_name):
     switches = ["-B", "-ntp"] + (["-X"] if debug else [])
     command = [os.environ.get("COMSPEC", "cmd.exe"), "/d", "/c", "mvn", *switches, *goals]
-    child = subprocess.Popen(command, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+    child = subprocess.Popen(command, cwd=PROJECT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                              text=True, encoding="utf-8", errors="replace")
     realms, log = [], []
     for line in child.stdout:
@@ -77,7 +77,7 @@ def maven(goals, debug, log_name):
 
 
 def inventory(realms):
-    pom = ET.parse(ROOT / "pom.xml")
+    pom = ET.parse(PROJECT / "pom.xml")
     active = {p.findtext("m:groupId", namespaces=NS) + ":" + p.findtext("m:artifactId", namespaces=NS)
               for p in pom.findall("m:build/m:plugins/m:plugin", NS)}
     items = {}
@@ -144,10 +144,10 @@ def smoke_tests():
     commands = [(["help"], 0), (["workflow", "help"], 0), (["create", "-h"], 0),
                 (["workflow", "release", "-h"], 0),
                 (["platform", "-h", "--config", "missing.toml", "--logs", "unused"], 0),
-                (["--help"], 2), (["help", "workflow"], 2), (["platform"], 0),
+                (["--help"], 16), (["help", "workflow"], 16), (["platform"], 0),
                 (["platform", "-v", "-s", "-V"], 0), (["platform", "-V", "-s"], 0),
                 (["platform", "-vsVf", "--machines", "unused-machines"], 0),
-                (["create"], 2), (["workflow", "release"], 2)]
+                (["create"], 16), (["workflow", "release"], 16)]
     for index, (arguments, expected) in enumerate(commands):
         directory = base / str(index)
         case = process_case(directory, arguments, expected)
@@ -191,12 +191,48 @@ def smoke_tests():
     return len(cases)
 
 
+
+def return_code_tests():
+    base = ROOT / "qa/rc-processes" / str(uuid.uuid4())
+    harness = ROOT / "build/rc-process-harness.jar"
+    entry = "org/iasi/setupdev/ReturnCodeProcessMain.class"
+    with zipfile.ZipFile(JAR) as source, zipfile.ZipFile(harness, "w") as target:
+        for item in source.infolist():
+            data = source.read(item.filename)
+            if item.filename == "META-INF/MANIFEST.MF":
+                data = data.replace(b"Main-Class: org.iasi.setupdev.Main", b"Main-Class: org.iasi.setupdev.ReturnCodeProcessMain")
+            target.writestr(item, data)
+        target.write(ROOT / "build/target/test-classes" / entry, entry)
+    scenarios = [("OK", 0), ("NOTHING_TO_DO", 1), ("INFO", 2), ("WARNING", 4), ("ATTENTION", 8),
+                 ("ERROR", 16), ("SEVERE", 32), ("FATAL", 64), ("INFO+WARNING", 6),
+                 ("WARNING+ATTENTION", 12), ("ERROR+WARNING", 20), ("INFO+ERROR", 18),
+                 ("INFO+INFO", 2), ("NOTHING_TO_DO+INFO+WARNING+ATTENTION+ERROR+SEVERE+FATAL", 127)]
+    cases = []
+    for index, (scenario, expected) in enumerate(scenarios):
+        case = process_case(base / str(index), [scenario, "platform"], expected, harness)
+        directory = ROOT / case["cwd"]
+        logs = list(directory.glob("*.log"))
+        assert len(logs) == 1
+        content = logs[0].read_text(encoding="utf-8")
+        assert "exit code=" + str(expected) in content
+        assert ("SUCCESS" in content) == (expected < 16 and "NOTHING_TO_DO" not in scenario)
+        case["is_error"] = expected > 15
+        cases.append(case)
+    # Explicit failure of configuration in the real candidate uses the standard Error bit.
+    missing = process_case(base / "missing-config", ["platform", "--config", "missing.toml"], 16)
+    assert "SYS01009" in missing["stderr"]
+    cases.append(missing)
+    write_json("qa/rc-process-results.json", cases)
+    return len(cases)
+
+
 def artifact_checks():
     with zipfile.ZipFile(JAR) as archive:
         names = archive.namelist()
         assert int.from_bytes(archive.read("org/iasi/setupdev/Main.class")[6:8], "big") == 69
         assert "Main-Class: org.iasi.setupdev.Main" in archive.read("META-INF/MANIFEST.MF").decode()
         assert not any(name.endswith("defaults.toml") or name.startswith("org/junit/") or name.endswith(".java") for name in names)
+        assert "org/iasi/setupdev/ReturnCodeProcessMain.class" not in names
         assert "META-INF/licenses/ANTLR-LICENSE.txt" in names
         assert "META-INF/licenses/CHECKER-QUAL-LICENSE.txt" in names
     assert all(p.suffix == ".jar" for p in (ROOT / "artifacts").iterdir())
@@ -205,8 +241,8 @@ def artifact_checks():
 
 
 def source_bytes():
-    paths = list((ROOT / "src").rglob("*")) + list((ROOT / "qa/tools").glob("*"))
-    paths += list((ROOT / "qa/config").glob("*")) + list(ROOT.glob("*.md")) + [ROOT / "pom.xml"]
+    paths = list((PROJECT / "src").rglob("*")) + list((ROOT / "qa/tools").glob("*"))
+    paths += list((ROOT / "qa/config").glob("*")) + list(ROOT.glob("*.md")) + [PROJECT / "pom.xml"]
     for path in paths:
         if not path.is_file():
             continue
@@ -219,9 +255,10 @@ def main():
     parser.add_argument("--record-baseline", action="store_true")
     args = parser.parse_args()
     governance = snapshot(PROJECT / "iasi")
+    task1 = snapshot(PROJECT / "outputs/TASK-0001")
     releases = [snapshot(PROJECT / "release"), snapshot(ECOSYSTEM / "release")]
     realms = maven(["clean", "verify"], True, "qa/logs/build.log")
-    realms += maven(["org.apache.maven.plugins:maven-dependency-plugin:3.8.1:tree", "-DoutputFile=qa/dependency-tree.txt"],
+    realms += maven(["org.apache.maven.plugins:maven-dependency-plugin:3.8.1:tree", "-DoutputFile=outputs/TASK-0002/qa/dependency-tree.txt"],
                     True, "qa/logs/dependencies.log")
     write("qa/plugin-realms.txt", "\n".join(realms) + "\n")
     packages = inventory(realms)
@@ -230,18 +267,21 @@ def main():
     maven(["clean", "verify"], False, "qa/logs/reproducibility.log")
     assert first == sha(JAR), "Clean builds differ"
     smoke = smoke_tests()
+    rc_cases = return_code_tests()
     artifact_checks()
     source_bytes()
     assert governance == snapshot(PROJECT / "iasi"), "Governance changed"
+    assert task1 == snapshot(PROJECT / "outputs/TASK-0001"), "TASK-0001 changed"
+    write_json("qa/task-0001-preserved.json", task1)
     assert releases == [snapshot(PROJECT / "release"), snapshot(ECOSYSTEM / "release")], "Release changed"
     suites = [ET.parse(p).getroot() for p in (ROOT / "qa/test-results").glob("TEST-*.xml")]
     counts = {key: sum(int(s.attrib[key]) for s in suites) for key in ["tests", "failures", "errors", "skipped"]}
     metrics = list(csv.DictReader((ROOT / "qa/metrics.csv").open(encoding="utf-8")))
     maxima = {key: max(int(row[key]) for row in metrics) for key in ["effectiveLines", "nesting", "cyclomatic", "cognitive"]}
-    evidence = {"status": "pass", "candidate_sha256": first, "tests": counts, "smoke_cases": smoke,
+    evidence = {"status": "pass", "candidate_sha256": first, "tests": counts, "smoke_cases": smoke, "rc_process_cases": rc_cases,
                 "maxima": maxima, "scored_callables": len(metrics), "effective_packages": len(packages),
                 "osv_findings": len(security["findings"]), "reproducible": True,
-                "governance_unchanged": True, "release_unchanged": True, "output_isolation": True, "utf8_lf": True}
+                "governance_unchanged": True, "task_0001_unchanged": True, "release_unchanged": True, "output_isolation": True, "utf8_lf": True}
     write_json("qa/result.json", evidence)
     write("qa/candidate.sha256", first + "  artifacts/iasi-setup-dev-0.1.0.jar\n")
     print(json.dumps(evidence))

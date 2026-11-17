@@ -1,0 +1,35 @@
++++
+id = "TASK-00.01.03"
+title = "Execution Context"
+type = "development"
+status = "pending"
+version = "0.1.0"
+priority = "high"
+
+project = "iasi-setup-dev"
+depends_on = ["TASK-00.02.00"]
+
+specifications = [
+    "specifications/corporate/architecture/execution-context.iasi",
+    "specifications/corporate/runtime/messages-return-codes.iasi"
+]
++++
+
+Codex, hemos incorporado dos especificaciones corporativas que debes aplicar en TASK-0002:
+
+- `specifications/corporate/architecture/execution-context.iasi`
+- `specifications/corporate/runtime/messages-return-codes.iasi`
+
+Implementa `ExecutionContext` en `org.iasi.base.context`, utilizando `ctx` como identificador convencional.
+
+Los RC son constantes enteras, no enumeraciones, y `setRC()` acumula mediante OR sin modificar el flujo de ejecución.
+
+El contexto debe cumplir el contrato Singleton thread-safe descrito en la especificación.
+
+Prioriza implementaciones sencillas y legibles. No introduzcas lambdas, hilos ni mecanismos de sincronización adicionales sin necesidad.
+
+Integra los cambios sobre el código existente de TASK-0001 y conserva su funcionalidad.
+
+Añade pruebas y evidencias QA correspondientes.
+
+No modifiques las especificaciones corporativas. Si encuentras contradicciones, comunícalas antes de implementar.

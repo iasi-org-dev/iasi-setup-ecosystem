@@ -1,0 +1,154 @@
++++
+id = "COR-GOV-TASK-001"
+type = "standard"
+title = "Identificación, nomenclatura y evolución de tareas IASI"
+scope = "corporate"
+category = "governance"
+status = "draft"
+version = "0.1.0"
+date = "2026-11-17"
++++
+
+# Identificación, nomenclatura y evolución de tareas IASI
+
+## 1. Objetivo
+
+Establecer una convención corporativa única y analizable para identificar, nombrar y evolucionar tareas en proyectos IASI, conservando la trazabilidad entre especificaciones, ejecución, validación y código fuente.
+
+Esta norma aplica a todos los proyectos IASI que gestionen tareas mediante documentos `.iasi`, independientemente del lenguaje o tecnología de implementación.
+
+## 2. Nombre de archivo obligatorio
+
+La forma canónica es:
+
+```text
+TASK-VV.MM.RR-Descripcion_con_subrayados.iasi
+```
+
+**Los dos guiones separan exactamente tres campos semánticos:**
+
+1. `TASK`: tipo de elemento, literal fijo, en mayúsculas.
+2. `VV.MM.RR`: identificador estructurado de la tarea, inspirado en Versión.Mantenimiento.Revisión.
+3. `Descripcion_con_subrayados`: descripción breve y legible, con palabras separadas mediante guiones bajos (`_`).
+
+La extensión `.iasi` identifica el formato documental, pero no es un cuarto campo del nombre.
+
+Ejemplos:
+
+```text
+TASK-01.00.00-Initial_Java_Launcher.iasi
+TASK-02.00.00-Application_Return_Codes.iasi
+TASK-02.01.00-Extend_Return_Code_Handling.iasi
+TASK-02.01.01-Fix_Return_Code_Propagation.iasi
+```
+
+Los ejemplos muestran el formato, no renumeran tareas existentes ni imponen una correspondencia concreta con tareas históricas.
+
+### 2.1. Reglas sintácticas
+
+- `VV`, `MM` y `RR` tienen **dos cifras decimales cada uno** (`00` a `99`). Se conservan los ceros iniciales.
+- Los puntos (`.`) separan los tres niveles del identificador.
+- Los guiones (`-`) separan exclusivamente `TASK`, el identificador y la descripción.
+- La descripción contiene palabras o segmentos alfanuméricos en inglés, unidos por `_`; no utiliza guiones.
+- El identificador **no cambia** por actualizar la descripción o el estado de una tarea.
+- El identificador debe ser único dentro del ámbito de tareas del proyecto.
+
+Patrón de validación del nombre de archivo:
+
+```regex
+^TASK-[0-9]{2}\.[0-9]{2}\.[0-9]{2}-[A-Za-z0-9]+(?:_[A-Za-z0-9]+)*\.iasi$
+```
+
+## 3. Semántica de VV.MM.RR
+
+| Campo | Significado aplicado a tareas | Uso |
+|---|---|---|
+| `VV` | Bloque o evolución funcional principal | `01.00.00`, `02.00.00`, etc. |
+| `MM` | Ampliación o mantenimiento funcional dentro del bloque | `01.01.00`, `01.02.00`, etc. |
+| `RR` | Revisión o corrección puntual de un nivel funcional | `01.01.01`, `01.01.02`, etc. |
+
+- `RR = 00` identifica una tarea de alcance principal o de mantenimiento funcional, no un parche puntual.
+- `RR > 00` identifica una tarea de revisión o ajuste menor.
+- La elección del nivel debe reflejar el **alcance del trabajo**, no el número de líneas de código.
+- Pueden existir huecos; no es obligatorio consumir todos los números.
+- Se recomienda una progresión ordenada, sin convertir la numeración en una dependencia técnica ni una versión del producto.
+
+**Importante:** `VV.MM.RR` identifica una **tarea**, no la versión del software. La versión de un artefacto o release se gobierna por sus propias reglas.
+
+## 4. Tareas adicionales, correcciones y trazabilidad
+
+1. Si surge un ajuste pequeño, se crea una nueva tarea con `RR > 00` cuando corresponda, sin sobrescribir la tarea ya ejecutada.
+2. Si surge una ampliación funcional, se usa un nuevo `MM` dentro del mismo `VV`, cuando esa relación funcional esté justificada.
+3. Si se inicia un bloque principal nuevo, se incrementa `VV`.
+4. No se renumeran tareas ya identificadas para cubrir huecos o alterar su posición relativa.
+5. La relación con tareas anteriores debe documentarse explícitamente en los metadatos o en el cuerpo de la tarea (por ejemplo, dependencia de otra tarea), y no deducirse solo del número.
+6. El identificador no implica por sí mismo orden de ejecución, aprobación, validación ni dependencia. La ejecución real y los resultados se trazan mediante el workflow y los commits correspondientes.
+
+## 5. Metadatos del documento
+
+El documento de tarea mantiene un identificador consistente con el campo central del nombre de archivo. Ejemplo:
+
+```toml
++++
+id = "TASK-02.01.01"
+title = "Fix Return Code Propagation"
+status = "pending"
+version = "0.1.0"
++++
+```
+
+- `id` contiene **`TASK-VV.MM.RR`**, sin la descripción ni la extensión.
+- `title` expresa el propósito en lenguaje natural; no sustituye al identificador.
+- `version` indica la revisión del **documento de especificación**, no el identificador de tarea.
+- `status` refleja el estado del workflow. La carpeta donde reside la tarea debe ser coherente con él.
+- En tareas rechazadas, el motivo debe constar como `reason` junto con los datos de decisión definidos por la normativa de aprobación.
+
+## 6. Ubicación y ciclo de vida
+
+La ubicación sigue el workflow acordado:
+
+```text
+tasks/
+├── TASK-02.00.00-Application_Return_Codes.iasi   # pending
+├── approved/
+├── in-progress/
+├── done/
+└── rejected/
+```
+
+El documento permanece con **el mismo nombre** cuando cambia de estado y se mueve entre directorios.
+
+- `tasks/` (raíz): estado `pending` implícito por ubicación, explícito en metadatos.
+- `tasks/approved/`: tarea aprobada para ejecución.
+- `tasks/in-progress/`: tarea en ejecución.
+- `tasks/done/`: tarea finalizada, verificada y aceptada.
+- `tasks/rejected/`: propuesta rechazada; su justificación debe quedar registrada.
+
+Esta norma no define por sí sola los comandos que efectúan las transiciones, ni permite considerar una tarea aprobada simplemente por haber realizado un commit.
+
+## 7. Compatibilidad con tareas históricas
+
+Los documentos existentes con identificadores como `TASK-0001` o `TASK-0002` **no deben renombrarse automáticamente**.
+
+- Se conservan los nombres y referencias históricas hasta adoptar un procedimiento explícito de migración.
+- La convención `TASK-VV.MM.RR-Descripcion_con_subrayados.iasi` aplica a las nuevas tareas una vez aprobada esta norma.
+- Cualquier migración posterior debe preservar trazabilidad, vínculos, referencias a commits y evidencias QA.
+
+## 8. Validaciones de conformidad
+
+Un validador debe comprobar, como mínimo:
+
+1. El nombre cumple el patrón sintáctico y contiene exactamente los tres campos.
+2. `VV.MM.RR` tiene dos dígitos por segmento.
+3. El `id` de metadatos coincide con `TASK-VV.MM.RR` del nombre.
+4. No hay identificadores duplicados en un mismo proyecto.
+5. El estado de metadatos es coherente con el directorio.
+6. Las referencias y dependencias declaradas apuntan a identificadores existentes o expresamente externos.
+7. Los identificadores históricos no se modifican inadvertidamente.
+
+## 9. Responsabilidades
+
+- La **norma corporativa** define el formato y su semántica.
+- El **proyecto** define el contenido, las dependencias y los criterios de aceptación de cada tarea.
+- Las **herramientas IASI** podrán generar, validar y mover documentos sin alterar sus identificadores ni perder información.
+

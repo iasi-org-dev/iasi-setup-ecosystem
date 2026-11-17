@@ -4,12 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Locale;
 import java.util.function.Supplier;
 import org.iasi.common.platform.Platform;
+import org.iasi.common.operation.OperationResult;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -43,7 +42,7 @@ class LauncherTest {
     /** Impide que una acción reservada consulte el host o anuncie éxito. */
     @Test
     void unavailableActionsNeverPretendSuccess() {
-        assertEquals(2, run(() -> {
+        assertEquals(16, run(() -> {
             throw new AssertionError("Unavailable action probed host");
         }, "create"));
         assertTrue(err.toString().contains("CLI01002"));
@@ -60,7 +59,7 @@ class LauncherTest {
         assertTrue(out.toString().contains("s390x"));
         assertTrue(out.toString().contains("test-vendor"));
         out.reset();
-        assertEquals(3, run(() -> PlatformTest.detect("Plan 9"), "platform", "-s"));
+        assertEquals(16, run(() -> PlatformTest.detect("Plan 9"), "platform", "-s"));
         assertEquals("", out.toString());
         assertTrue(err.toString().contains("SYS01006"));
     }
@@ -88,7 +87,7 @@ class LauncherTest {
     @Test
     void configFailureDoesNotPartiallyCreateLogDirectories() throws IOException {
         Files.writeString(cwd.resolve("instance.toml"), "logs='must-not-exist'\nforce=true\n");
-        assertEquals(2, run(() -> PlatformTest.detect("Linux"), "platform", "--config", "instance.toml"));
+        assertEquals(16, run(() -> PlatformTest.detect("Linux"), "platform", "--config", "instance.toml"));
         assertFalse(Files.exists(cwd.resolve("must-not-exist")));
         assertTrue(err.toString().contains("CLI01001"));
     }
@@ -96,7 +95,7 @@ class LauncherTest {
     /** Exige error visible si el usuario selecciona un archivo que no existe. */
     @Test
     void missingExplicitConfigFailsWithoutUsingDefaultsSilently() {
-        assertEquals(1, run(() -> PlatformTest.detect("Linux"), "platform", "--config", "missing.toml"));
+        assertEquals(16, run(() -> PlatformTest.detect("Linux"), "platform", "--config", "missing.toml"));
         assertTrue(err.toString().contains("SYS01009"));
     }
 
@@ -107,7 +106,7 @@ class LauncherTest {
     @Test
     void logFailureIsVisibleInSilentMode() throws IOException {
         Path file = Files.writeString(cwd.resolve("file"), "occupied");
-        assertEquals(1, run(() -> PlatformTest.detect("Linux"), "platform", "-s", "--logs", file.toString()));
+        assertEquals(16, run(() -> PlatformTest.detect("Linux"), "platform", "-s", "--logs", file.toString()));
         assertTrue(err.toString().contains("SYS01009"));
         assertFalse(out.toString().contains("SYS01005"));
     }
@@ -115,7 +114,7 @@ class LauncherTest {
     /** Asegura que el rechazo del comando ocurre antes de abrir el log. */
     @Test
     void invalidCommandHasNoFilesystemEffects() throws IOException {
-        assertEquals(2, run(() -> PlatformTest.detect("Linux"), "help", "workflow"));
+        assertEquals(16, run(() -> PlatformTest.detect("Linux"), "help", "workflow"));
         try (var files = Files.list(cwd)) {
             assertEquals(0, files.count());
         }
@@ -123,6 +122,17 @@ class LauncherTest {
 
     /** Ejecuta el launcher con streams, reloj y detector aislados del host real. */
     private int run(Supplier<Platform> detector, String... arguments) {
-        return Main.run(arguments, cwd, new PrintStream(out), new PrintStream(err), Locale.ENGLISH, MessagesTest.CLOCK, false, detector);
+        OperationResult<Platform> operation = null;
+        try {
+            operation = OperationResult.completed(detector.get());
+        } catch (AssertionError expectedSentinel) {
+            // El proceso hijo debe fallar si la ayuda o una acción no implementada invocan
+            // su detector.
+        }
+        try {
+            return ProcessTestSupport.run(arguments, cwd, out, err, operation);
+        } catch (Exception exception) {
+            throw new AssertionError("Cannot execute isolated launcher", exception);
+        }
     }
 }

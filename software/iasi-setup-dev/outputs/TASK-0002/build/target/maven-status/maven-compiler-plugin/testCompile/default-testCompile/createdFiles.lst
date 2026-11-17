@@ -1,0 +1,14 @@
+org\iasi\setupdev\MessagesTest.class
+org\iasi\setupdev\ConfigurationTest.class
+org\iasi\setupdev\DependencyDirectionTest.class
+org\iasi\common\logging\LoggerTest$Definition.class
+org\iasi\setupdev\ReturnCodeIntegrationTest.class
+org\iasi\setupdev\OptionsTest.class
+org\iasi\common\logging\LoggerTest$TrackingStream.class
+org\iasi\common\logging\LoggerTest.class
+org\iasi\setupdev\ReturnCodeProcessMain.class
+org\iasi\common\logging\LoggerTest$RecordingSink.class
+org\iasi\setupdev\LauncherTest.class
+org\iasi\base\ReturnStatusTest.class
+org\iasi\setupdev\PlatformTest.class
+org\iasi\setupdev\SourceGateTest.class

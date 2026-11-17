@@ -1,0 +1,96 @@
++++
+id = "TASK-00.01.04"
+type = "task"
+title = "Structured Code Refactoring"
+status = "pending"
+priority = "high"
+project = "iasi-setup-dev"
+component = "java"
+version = "0.1.0"
+execution_mode = "interactive"
+refactoring = true
+specifications = [
+  "specifications/corporate/language/java/functional-decomposition.iasi",
+  "specifications/corporate/language/java/source-formatting.iasi",
+  "specifications/corporate/coding/source-physical-structure.iasi"
+]
++++
+
+# TASK-00.01.04: Structured Code Refactoring
+
+## Objective
+
+Refactor the **existing Java implementation** of `software/iasi-setup-dev/` to improve its structured design, clarity and readability, in accordance with the applicable IASI corporate programming standards.
+
+**This is an iterative task:** the developer and Codex will inspect the code together, identify concrete opportunities and agree on each refactoring increment. This document establishes the initial contract; it is not an exhaustive list of changes.
+
+## Starting point
+
+- Work from the code that already exists following TASK-0001 and subsequent work actually present in the repository.
+- Inspect the current implementation and tests before proposing changes.
+- Preserve existing functionality and public contracts unless a change is expressly discussed and approved.
+- Do not restart the application or rebuild its architecture from scratch merely because this is a refactoring task.
+- Record the starting Git commit in the task evidence when execution begins; **a commit is a recoverable baseline, not proof of QA approval**.
+
+## Applicable standards
+
+Read and follow, at minimum:
+
+- `specifications/corporate/language/java/functional-decomposition.iasi` (`CORP-JAVA-STR-001`).
+- `specifications/corporate/language/java/source-formatting.iasi` (`CORP-JAVA-FMT-001`).
+- `specifications/corporate/coding/source-physical-structure.iasi` when present and applicable.
+
+The main program flow must read as a coherent sequence of logical operations. Each level explains **what** happens; subordinate methods explain **how**. Decompose by responsibility, not by an arbitrary line-count target.
+
+Prefer the simplest clear, native language construct. Do not introduce lambdas, abstractions, classes, concurrency or design patterns without a concrete benefit. This preference does not override an applicable approved corporate MUST rule.
+
+## Interactive work protocol
+
+1. **Inspect** the relevant classes, current tests and dependencies.
+2. **Propose** a small, concrete refactoring increment, identifying files, rationale, risks and expected behavior preservation.
+3. **Discuss** the increment with the developer; incorporate feedback before applying any nontrivial design change.
+4. **Implement** the agreed change in small reviewable steps.
+5. **Verify** compilation, relevant tests, formatting checks and behavioral regression after each increment.
+6. **Record** what changed, why, verification evidence and any open issue.
+7. **Repeat** until the developer declares the interactive refactoring complete.
+
+Do not assume that approval of the task is blanket approval of every architectural redesign. When a request is ambiguous, propose an alternative rather than silently altering behavior.
+
+## Initial review criteria
+
+- Entry points and orchestration methods are understandable without inspecting all implementation details.
+- Abstraction levels are coherent, with meaningful method names and cohesive responsibilities.
+- Conditional logic and loops use explicit, structured control flow and avoid unnecessary nesting or side effects.
+- Common services, RC handling and configuration are used according to existing approved specifications; this task does not redefine them.
+- Parameter lists and object responsibilities are reviewed for cohesion, without creating artificial parameter-holder objects.
+- Avoid duplication where an existing common component serves the same purpose.
+- Production and test code follow the same formatting and readability standards.
+
+## Boundaries
+
+- Primary target: `software/iasi-setup-dev/`.
+- Keep generated outputs and QA evidence within the software project's own `outputs/` structure.
+- Do not alter corporate specifications, task identifiers or the shared `release/` area as part of the refactoring.
+- No new product features, unrelated fixes or technology migrations unless separately agreed.
+- Do not replace readable straightforward code with complexity simply to use modern Java syntax.
+
+## Deliverables and evidence
+
+- Refactored Java code and updated tests as needed.
+- A short **change log by increment** including touched files, motivation, decisions made with the developer and relevant commits.
+- Verification evidence, including compilation, automated tests and required code-format checks.
+- Final QA summary recording what was reviewed, what changed, what was intentionally left unchanged and any known limitations.
+
+## Acceptance criteria
+
+1. The developer has reviewed and accepted the completed increments.
+2. Existing expected behavior remains unchanged, except for explicitly approved deviations.
+3. The code is more legible and structurally coherent against the referenced corporate standards.
+4. All relevant automated tests and mandatory QA checks pass; exceptions are documented.
+5. Changes and verification evidence are traceable to this task and the relevant commits.
+
+## Workflow
+
+The task initially resides in `tasks/` with `status = "pending"`. The approval command, not a manual edit to this document, records the approver and date and moves it to `tasks/approved/`. Subsequent transitions follow the IASI task workflow.
+
+This is the **initial definition**, deliberately open to refinement during interactive execution. Any material change to scope or acceptance criteria must be recorded explicitly.

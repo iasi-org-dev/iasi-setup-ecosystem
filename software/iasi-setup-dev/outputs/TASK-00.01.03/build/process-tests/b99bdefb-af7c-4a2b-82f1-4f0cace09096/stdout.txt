@@ -1,0 +1,2 @@
+20:00:56 - SYS01001 - Starting platform.
+20:00:56 - SYS01007 - Execution finished; exit code=1.

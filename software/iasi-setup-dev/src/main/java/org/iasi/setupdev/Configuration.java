@@ -1,5 +1,7 @@
 package org.iasi.setupdev;
 
+import org.iasisetupdev.core.ExecutionConfiguration;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -8,7 +10,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.iasi.common.logging.Verbosity;
+import org.iasi.base.Verbosity;
 import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
 
@@ -25,7 +27,7 @@ final class Configuration {
      * Superpone hardcoded, recurso interno, archivo externo y CLI; devuelve rutas
      * validadas sin crear directorios. El stream interno se consume y cierra.
      */
-    static Settings resolve(Options options, Path originalCwd, InputStream internal) throws IOException {
+    static ExecutionConfiguration resolve(Options options, Path originalCwd, InputStream internal) throws IOException {
         Path cwd = originalCwd.toAbsolutePath().normalize();
         Map<String, Object> values = new HashMap<>(Map.of("definitions", ".", "machines", ".", "logs", ".", "verbose", false));
         if (internal != null) values.putAll(readLayer(internal));
@@ -37,7 +39,7 @@ final class Configuration {
         Path definitions = directory(cwd, values.get("definitions"));
         Path machines = directory(cwd, values.get("machines"));
         Path logs = directory(cwd, values.get("logs"));
-        return new Settings(cwd, definitions, machines, logs, verbosity, options.force());
+        return new ExecutionConfiguration(cwd, definitions, machines, logs, verbosity, options.force());
     }
 
     /**

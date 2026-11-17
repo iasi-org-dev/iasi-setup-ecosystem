@@ -1,0 +1,304 @@
++++
+id = "COR-MSG-RC-001"
+type = "standard"
+title = "Mensajes, diagnóstico y códigos de retorno de IASI"
+scope = "corporate"
+status = "draft"
+version = "0.1.5"
+created = 2026-11-17
+related = ["COR-DOC-001", "COR-QA-001"]
++++
+
+# Mensajes, diagnóstico y códigos de retorno de IASI
+
+## 1. Objetivo y alcance
+
+Establecer un contrato transversal para identificar mensajes, comunicar incidencias y acumular resultados de ejecución en los productos IASI, con independencia del lenguaje de implementación, del sistema operativo y de la interfaz utilizada.
+
+Esta norma distingue **tres conceptos**:
+
+1. **Mensaje**: comunicación de un evento, identificada por un código estable y un texto localizable.
+2. **Severidad del evento**: clasificación de su naturaleza (progreso, aviso, error, diagnóstico, etc.).
+3. **RC (return code)**: máscara acumulativa que resume las circunstancias y el resultado de la operación.
+
+La impresión de texto en consola **no implica por sí misma** modificación del RC.
+
+## 2. Identificador de mensaje
+
+### 2.1. Formato obligatorio
+
+Todo mensaje de aplicación IASI registrado en el catálogo tiene un identificador:
+
+`LLLNNMMM`
+
+- `LLL`: tres letras mayúsculas (`A`-`Z`) que identifican una familia, bloque o ámbito del catálogo.
+- `NN`: dos dígitos decimales (`00`-`99`) que identifican un grupo dentro de la familia.
+- `MMM`: tres dígitos decimales (`000`-`999`) que identifican el mensaje dentro del grupo.
+- Expresión regular: `^[A-Z]{3}[0-9]{5}$`.
+
+Ejemplo **ilustrativo, sin reserva oficial de código**: `CFG01003`.
+
+Las tres letras **no codifican automáticamente la severidad**. La asignación oficial de familias y grupos pertenece a un catálogo corporativo separado; esta norma no inventa una taxonomía que aún no está aprobada.
+
+### 2.2. Catálogo e internacionalización
+
+- Cada identificador representa **un único significado funcional estable**.
+- El catálogo registra como mínimo código, significado, plantilla de texto, parámetros y severidad; también podrá indicar el efecto sobre el RC cuando corresponda.
+- Un código retirado no se reutiliza con otro significado.
+- Los textos se localizan por idioma; el código no cambia entre traducciones.
+- Los parámetros interpolados conservan nombre, significado y compatibilidad entre idiomas.
+- No se registran credenciales, tokens ni secretos.
+- El texto generado por herramientas externas no adquiere un código IASI arbitrario: debe contextualizarse mediante un evento IASI identificable.
+
+## 3. Emisión y presentación
+
+### 3.1. Consola
+
+Formato establecido:
+
+`HH:mm:ss - LLLNNMMM - Mensaje`
+
+Ejemplo ilustrativo:
+
+```text
+18:35:12 - CFG01003 - Se omite la definición porque su directorio no existe
+```
+
+- La hora corresponde al instante del evento.
+- Los colores, cuando existan, son auxiliares: el diagnóstico debe comprenderse sin color.
+- La presentación y el filtrado de mensajes en consola no alteran el RC ni eliminan los eventos que deban persistirse en el log.
+- Los mensajes normales de arranque, progreso o finalización pueden emitirse con **impacto RC = 0**.
+
+### 3.2. Registro persistente
+
+Los eventos registrados conservan al menos fecha, hora, código, severidad, texto y contexto disponible. Los registros no incluyen secuencias ANSI. El detalle de nomenclatura de ficheros, directorios de logs y políticas de retención corresponde a normas o especificaciones complementarias.
+
+## 4. Códigos de retorno (RC)
+
+### 4.1. Modelo
+
+El RC de IASI es una **máscara de bits formada por constantes enteras**, no un número de error secuencial.
+
+**Los RC NO son enumeraciones (`enum`).** Las implementaciones deben declarar valores constantes explícitos, asignados a bits individuales. No se utilizarán ordinales, índices ni conversiones implícitas desde enumeraciones.
+
+Se acumulan mediante OR bit a bit:
+
+`rc = rc | eventRc`
+
+Los valores aprobados para esta versión del contrato son:
+
+| Símbolo | Hexadecimal | Decimal | Semántica |
+|---|---:|---:|---|
+| `OK` | `0x00` | 0 | Finalización sin incidencias marcadas |
+| `NothingToDo` | `0x01` | 1 | No había trabajo aplicable |
+| `Info` | `0x02` | 2 | Circunstancia informativa relevante |
+| `Warning` | `0x04` | 4 | Advertencia no bloqueante |
+| `Attention` | `0x08` | 8 | Circunstancia que requiere atención, sin considerarse error |
+| `Error` | `0x10` | 16 | Error |
+| `Severe` | `0x20` | 32 | Error grave |
+| `Fatal` | `0x40` | 64 | Error fatal |
+
+`0x80` queda reservado y sin significado definido. Los RC emitidos por esta versión solo utilizan los bits `0x01` a `0x40`.
+
+### 4.1.1. Representación en los lenguajes
+
+- Cada símbolo RC se representa mediante una **constante entera inmutable** con el valor hexadecimal fijado por la norma.
+- Las constantes pueden combinarse directamente con el operador OR bit a bit del lenguaje correspondiente.
+- El RC acumulado se representa mediante un valor entero, **no mediante una instancia de enumeración**.
+- Las API deben aceptar, acumular y devolver el valor de la máscara sin traducirlo a elementos de un `enum`.
+- En Java, utilizar `public static final int` (o una visibilidad menor cuando corresponda), no `enum`.
+
+Ejemplo ilustrativo en Java:
+
+```java
+public final class RC {
+    private RC() {}
+
+    public static final int OK = 0x00;
+    public static final int NOTHING_TO_DO = 0x01;
+    public static final int INFO = 0x02;
+    public static final int WARNING = 0x04;
+    public static final int ATTENTION = 0x08;
+    public static final int ERROR = 0x10;
+    public static final int SEVERE = 0x20;
+    public static final int FATAL = 0x40;
+}
+
+// Acumulación de condiciones:
+int rc = RC.OK;
+rc |= RC.INFO;
+rc |= RC.WARNING;
+```
+
+El ejemplo muestra la representación normativa, no impone una clase, módulo o paquete concreto a todos los lenguajes.
+
+### 4.1.2. Operación `setRC`: acumulación, nunca asignación sustitutiva
+
+Cuando una aplicación disponga de una operación de registro de RC, denominada `setRC` o equivalente, **su semántica es obligatoriamente acumulativa**:
+
+`RC_actual = RC_actual | RC_recibido`
+
+- `setRC(Warning)` **añade** el bit de advertencia al RC existente; no lo sustituye.
+- `setRC(OK)` no cambia el valor existente (`rc | 0x00 = rc`).
+- Repetir `setRC(Warning)` es idempotente: el bit no se cuenta varias veces.
+- Ninguna función debe borrar bits previamente activados mediante una nueva llamada a `setRC`.
+- Cuando una función detecta una circunstancia con impacto RC, debe **acumular** el bit correspondiente; el resultado global no se sustituye por la última incidencia.
+- La operación de emisión de mensajes y la de acumulación del RC pueden integrarse, pero **no todo mensaje de consola modifica el RC**. Solo los eventos con impacto RC definido producen esa acumulación.
+
+Ejemplo ilustrativo en Java, con estado RC asociado a la ejecución:
+
+```java
+private int rc = RC.OK;
+
+public void setRC(int value) {
+    rc |= value;
+}
+
+public int getRC() {
+    return rc;
+}
+```
+
+Ejemplo de uso:
+
+```java
+setRC(RC.INFO);     // rc = 0x02
+setRC(RC.WARNING);  // rc = 0x06
+setRC(RC.OK);       // rc = 0x06: no borra nada
+```
+
+**Nota de alcance:** este ejemplo describe la semántica, no exige un objeto global, Singleton ni API concretos. Si varios hilos pueden actualizar el mismo acumulador, la implementación deberá garantizar que la operación OR es atómica o está sincronizada para no perder actualizaciones.
+
+En APIs que devuelven un RC local en lugar de modificar un acumulador compartido, el llamador debe integrarlo también mediante OR: `rc |= funcion();`. Ambas formas son válidas y conservan las incidencias acumuladas.
+
+### 4.2. Interpretación
+
+- Los bits `0x01`, `0x02`, `0x04` y `0x08` son **no erróneos**: cualquier combinación de ellos se considera correcta, aunque no necesariamente perfecta.
+- `0x10`, `0x20` y `0x40` representan error, error grave y error fatal, respectivamente.
+- `OK (0x000)` es la ausencia de bits activados.
+- Las combinaciones preservan todas las circunstancias ocurridas; no se sustituyen unas por otras por una escala de prioridad.
+
+Ejemplos:
+
+| Eventos acumulados | RC final | Clasificación |
+|---|---:|---|
+| Ninguno | `0x00` | Correcto |
+| `Info` | `0x02` | Correcto con información relevante |
+| `Info + Warning` | `0x06` | Correcto con advertencia |
+| `Warning + Attention` | `0x0C` | Correcto; requiere atención |
+| `Error + Warning` | `0x14` | Erróneo |
+
+### 4.3. Clasificación del resultado
+
+Los RC válidos se interpretan con el criterio sencillo:
+
+- `0x00` a `0x0F`: ejecución correcta, con o sin incidencias no erróneas.
+- `0x10` a `0x7F`: ejecución con uno o más indicadores de error.
+
+Los valores comprendidos en cada intervalo **no son nuevos códigos predefinidos**: surgen de combinar los bits establecidos mediante OR. `0x80` está reservado; una implementación conforme no debe emitirlo ni asignarle significado.
+
+El RC acumulado es el valor que devuelve el programa; no requiere transformación a un código secuencial. Por ejemplo, en Bash, para RC emitidos conforme a esta norma:
+
+```bash
+comando
+rc=$?
+(( rc > 15 )) && echo "Error: RC=$rc"
+```
+
+## 5. Cuándo activar Info
+
+**`Info (0x002)` se activa por una circunstancia informativa relevante para el resultado**, no por el mero hecho de mostrar un mensaje en consola ni por usar una severidad denominada `INFO`.
+
+Ejemplos de aplicación:
+
+| Evento | Mensaje posible | Impacto RC |
+|---|---|---:|
+| Inicio de ejecución | «Iniciando procesamiento» | `0x00` |
+| Progreso ordinario | «Procesando elemento 3» | `0x00` |
+| Se ignora una definición opcional ausente y se continúa | «Omitiendo definición porque no existe» | `0x02` |
+| Se produce una advertencia no bloqueante | «Configuración incompleta» | `0x04` |
+| No hay acciones aplicables | «No hay trabajo pendiente» | `0x01` |
+
+**Regla:** severidad del mensaje e impacto sobre el RC se declaran o deciden separadamente. No se deduce el RC únicamente del prefijo del identificador ni de que se haya escrito en consola.
+
+## 6. Acumulación, propagación y finalización
+
+1. El RC **solo registra el resultado**: cuando ocurre una circunstancia relevante, se incorpora su bit mediante OR (`rc |= valor`). No impone por sí mismo decisiones de ejecución.
+2. El flujo continúa, retorna, omite trabajo o termina conforme a la **lógica funcional de la aplicación**, no por una regla automática asociada a `Warning`, `Error`, `Severe` o `Fatal`.
+3. `setRC` (si existe) **acumula y nada más**: no debe provocar `throw`, `return`, `break`, `System.exit` ni ningún otro cambio de control.
+4. Cada función puede registrar sus incidencias en el acumulador disponible o devolver un RC que el llamador integre mediante OR. Esta norma no impone una arquitectura concreta de propagación.
+5. Los mensajes se emiten en el punto donde suceden; registrar un mensaje ordinario no tiene por qué modificar el RC.
+6. Los códigos de salida de herramientas externas no son RC de IASI: se interpretan antes de incorporar cualquier bit al resultado.
+7. Los RC definidos caben en el intervalo `0x00` a `0x7F` y se devuelven sin reinterpretación.
+
+### 6.1. Política de terminación del proceso
+
+**Regla general:** una aplicación debe disponer de un único punto de salida explícita del proceso, al final de su punto de entrada. En Java, se recomienda **una sola invocación a `System.exit(rc)` al final de `main`**, usando el RC final acumulado.
+
+- Los métodos y componentes internos **devuelven su resultado** o registran incidencias mediante OR; no terminan la JVM directamente.
+- Un error, incluso grave, **no obliga por sí mismo** a abortar el proceso donde se detecta. El programa sigue el flujo que corresponda a su lógica, permitiendo el cierre y la devolución del RC acumulado.
+- Deben completarse los cierres necesarios de recursos y el vaciado de registros antes de la salida final.
+- Se admite una **excepción justificada** para operaciones de terminación inmediata sin ejecución operativa, como la solicitud exclusiva de ayuda (`--help`), normalmente con RC `OK`.
+- Un aborto anticipado en mitad del proceso es **excepcional**: solo procede cuando continuar o realizar un cierre ordinario resulta imposible o inseguro. Debe documentarse el motivo, procurarse el cierre seguro posible y conservar un RC significativo.
+- No debe confundirse «finalizar una operación por error» con «terminar inmediatamente la JVM». La primera puede implementarse devolviendo el control al punto de entrada.
+
+**Ejemplo conceptual en Java (sin imponer arquitectura interna):**
+
+```java
+public static void main(String[] args) {
+    int rc = RC.OK;
+    try {
+        rc |= run(args);
+    } catch (Exception ex) {
+        rc |= RC.FATAL;
+        // Registrar el diagnóstico y cerrar los recursos pertinentes.
+    }
+    System.exit(rc);
+}
+```
+
+Una ruta de ayuda puede devolverse normalmente desde `run(args)` con `RC.OK`; no es obligatorio introducir un segundo `System.exit` para implementarla. La excepción se permite, **no se recomienda como camino habitual**.
+
+## 7. Reglas de conformidad
+
+Una implementación conforme DEBE:
+
+- Utilizar los identificadores y contratos de mensaje establecidos.
+- Mantener estable el significado de cada código entre idiomas.
+- Separar severidad, mensaje visible e impacto RC.
+- Definir los RC mediante **constantes enteras**, nunca como enumeraciones o valores ordinales.
+- Inicializar a `OK` y acumular bits mediante OR, sin perder bits previos.
+- Implementar `setRC` (si existe) como OR acumulativo, nunca como asignación que sustituya el RC anterior, y **sin modificar el flujo de control**.
+- Garantizar la atomicidad de la actualización cuando varios hilos compartan el acumulador.
+- Considerar no erróneas las combinaciones de `NothingToDo`, `Info`, `Warning` y `Attention` que no incluyan bits de error.
+- No asignar significado a bits reservados.
+- Traducir explícitamente códigos externos antes de incorporarlos al RC IASI.
+- Devolver el RC agregado como resultado del proceso, sin traducirlo a códigos secuenciales.
+- Concentrar la terminación explícita en el punto de entrada, preferentemente con una única salida final; justificar cualquier salida anticipada.
+
+## 8. Verificación mínima
+
+1. Comprobar formato e invariancia de los códigos de mensaje.
+2. Comprobar que mensajes ordinarios de consola no activan `Info`.
+3. Comprobar que una omisión informativa relevante sí activa `Info`.
+4. Comprobar que los símbolos RC están implementados como constantes enteras explícitas y no como enumeraciones.
+5. Comprobar acumulación OR: `0x02 | 0x04 = 0x06`.
+6. Comprobar que `setRC(Info)`, seguido de `setRC(Warning)`, conserva ambos bits; `setRC(OK)` no los borra y repetir `setRC(Warning)` no cambia el resultado.
+7. Comprobar que `0x0F` (bits no erróneos) no se clasifica como error.
+8. Comprobar que `0x10`, `0x20` y `0x40` sí se clasifican como error.
+9. Comprobar que el programa devuelve el RC acumulado sin transformación.
+10. Comprobar que un código externo no se utiliza como máscara IASI sin adaptación.
+11. Comprobar que la traducción cambia texto, nunca código ni significado.
+12. Comprobar que los componentes internos no llaman a `System.exit` y que la terminación normal usa el RC acumulado.
+13. Comprobar que ayuda y fallo durante una operación respetan la política de salida y cierre de recursos.
+14. Comprobar que `setRC` no interrumpe ni desvía el flujo de ejecución por sí solo.
+
+## 9. Decisiones pendientes
+
+Esta versión **no** establece todavía:
+
+- El catálogo corporativo definitivo de familias/grupos y sus códigos concretos.
+- El formato físico y mecanismo de distribución del catálogo de mensajes.
+- Las decisiones de continuación o cancelación, que pertenecen a la lógica funcional de cada aplicación y no a la codificación RC.
+
+Estas decisiones deben formalizarse separadamente antes de exigir su implementación transversal.

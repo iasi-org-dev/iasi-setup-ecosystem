@@ -1,5 +1,7 @@
 package org.iasi.common.logging;
 
+import org.iasi.base.Verbosity;
+
 import java.io.PrintStream;
 import java.time.format.DateTimeFormatter;
 
@@ -31,7 +33,7 @@ public final class ConsoleSink implements LogSink {
      */
     @Override
     public void write(LogEvent event) {
-        if (!verbosity.includes(event.severity())) return;
+        if (!includes(event.severity())) return;
         String line = event.timestamp().format(TIME) + " - " + event.code() + " - " + event.message();
         if (colors && !event.severity().color().isEmpty()) line = "\u001b[" + event.severity().color() + "m" + line + "\u001b[0m";
         PrintStream destination = event.severity() == Severity.ERROR ? err : out;
@@ -43,5 +45,17 @@ public final class ConsoleSink implements LogSink {
     public void close() {
         out.flush();
         err.flush();
+    }
+
+    /**
+     * Aplica el filtro de presentación en common, sin acoplar los valores base a
+     * las severidades de logging.
+     */
+    private boolean includes(Severity severity) {
+        if (severity == Severity.ERROR) return true;
+        if (verbosity == Verbosity.SILENT) return false;
+        if (severity == Severity.TRACE) return verbosity == Verbosity.VERY_VERBOSE;
+        if (severity == Severity.DEBUG) return verbosity == Verbosity.VERBOSE || verbosity == Verbosity.VERY_VERBOSE;
+        return true;
     }
 }
