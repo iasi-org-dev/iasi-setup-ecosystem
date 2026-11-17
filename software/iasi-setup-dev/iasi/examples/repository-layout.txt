@@ -1,0 +1,19 @@
+project/
+|-- iasi/
+|   |-- inputs/
+|   |   `-- externals/
+|   |-- specifications/
+|   |   `-- project/
+|   `-- tasks/
+|       `-- TASK-0001.iasi
+|-- outputs/
+|   `-- TASK-0001/
+|       |-- build/
+|       |-- artifacts/
+|       `-- qa/
+|-- release/
+|-- src/
+|-- pom.xml
+|-- .editorconfig
+|-- .gitattributes
+`-- .gitignore

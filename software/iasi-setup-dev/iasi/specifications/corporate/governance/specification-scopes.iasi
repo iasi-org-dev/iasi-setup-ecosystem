@@ -1,0 +1,24 @@
++++
+id = "COR-GOV-001"
+type = "standard"
+title = "Ámbitos y jerarquía de especificaciones"
+scope = "corporate"
+status = "draft"
+version = "0.1.0"
++++
+
+# Ámbitos y jerarquía de especificaciones
+
+## Contrato
+
+Las especificaciones se organizan por alcance:
+
+- `corporate`: aplicables transversalmente al ecosistema.
+- `departmental`: aplicables a un dominio técnico o funcional.
+- `project`: aplicables al proyecto concreto.
+
+Una tarea debe identificar y evaluar las especificaciones pertinentes sin exigir enumeración exhaustiva en su enunciado. Aplicar únicamente aquellas que estén vigentes y aprobadas. No convertir automáticamente ideas, entradas externas o decisiones abiertas en mandatos.
+
+Las reglas inferiores complementan a las superiores. Los conflictos deben hacerse explícitos; una excepción requiere justificación y autorización.
+
+El sistema puede consultar normas compartidas recuperadas de otros repositorios; su distribución y mecanismo de resolución son decisiones técnicas pendientes, no condiciones ya implementadas.

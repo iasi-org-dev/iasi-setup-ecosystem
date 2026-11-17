@@ -1,0 +1,19 @@
++++
+id = "CORP-JAVA-CYC-001"
+title = "Java cyclomatic complexity verification"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
+related = ["CORP-QUAL-CYC-001"]
++++
+
+# Java cyclomatic complexity verification
+
+## Requirement
+
+Apply the corporate cyclomatic complexity policy to Java methods using a declared analysis tool and its documented Java counting conventions. SonarQube is an initial candidate, not a normative dependency.
+
+## Verification
+
+Record per-method scores, the analyzer and version, configured threshold and exceptions. The approved per-method maximum is **10**. Findings above this value MUST fail the applicable QA Gate unless a documented exception has been approved.

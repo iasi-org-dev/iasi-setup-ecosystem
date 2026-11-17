@@ -1,0 +1,17 @@
++++
+id = "CORP-WF-SPEC-001"
+title = "Specification scopes and contextual applicability"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.2.0"
++++
+
+# Specification scopes and contextual applicability
+
+## Rule
+- **MUST:** Distinguish `corporate`, `departmental` and `project` scopes in specifications.
+- **MUST:** Task executors determine which approved specifications apply based on context, without requiring a task to enumerate every applicable specification.
+- **MUST:** Be able to explain the applicability of an identified specification, how it was implemented or verified, or why it was omitted.
+- **MUST:** Treat ideas, drafts and unresolved decisions as non-binding until approved.
+- **SHOULD:** Resolve centrally governed corporate or departmental rules from their authoritative source, not by maintaining unmanaged duplicate copies.

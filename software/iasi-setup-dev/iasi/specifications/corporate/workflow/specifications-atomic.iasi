@@ -1,0 +1,18 @@
++++
+id = "CORP-WF-SPEC-002"
+title = "Atomic and traceable specification documents"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.2.0"
+related = ["CORP-WF-SPEC-001"]
++++
+
+# Atomic and traceable specification documents
+
+## Rule
+- **MUST:** Use small independently identifiable `.iasi` documents for individual ideas, requirements, constraints or coherent specifications.
+- **MUST NOT:** Accumulate unrelated requirements into giant multipurpose specification files.
+- **MUST:** Preserve many-to-many links between external source documents and generated specifications when known.
+- **MUST:** `.iasi` consists of structured front matter and Markdown body; TOML `+++` is the approved corporate baseline representation for these files.
+- **SHOULD:** Name files so related rules group together naturally in directory trees (e.g. `complexity-cognitive`, `complexity-cyclomatic`).

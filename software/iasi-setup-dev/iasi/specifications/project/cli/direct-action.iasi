@@ -1,0 +1,27 @@
++++
+id = "CLI-002"
+title = "Direct action single responsibility"
+type = "requirement"
+status = "draft"
+scope = "project"
+project = "iasi-dev-tools"
+component = "cli"
+version = "0.1.2"
++++
+
+# Direct action single responsibility
+
+## Requirement
+
+A direct action invoked as `iasi-dev <action> ...` MUST perform **one operation with one clearly defined responsibility**.
+
+## Constraints
+
+- The action MUST be independently invocable.
+- A direct action MUST NOT implicitly orchestrate a multi-action workflow.
+- Actions SHOULD be reusable by workflows without duplicating their implementation.
+- An action MAY have flags, parameters and targets appropriate to its operation.
+
+## Acceptance
+
+For every direct action, its help describes one operation, and its implementation can be invoked without selecting a workflow.

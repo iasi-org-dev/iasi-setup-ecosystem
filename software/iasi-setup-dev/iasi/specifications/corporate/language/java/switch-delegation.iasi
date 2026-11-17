@@ -1,0 +1,47 @@
++++
+id = "CORP-JAVA-SW-001"
+title = "Java switch selection and delegation"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
+language = "java"
+related = ["CORP-JAVA-STR-001", "CORP-JAVA-FMT-001"]
++++
+
+# Java switch selection and delegation
+
+## Rules
+
+- **CORP-JAVA-SW-001.1 (SHOULD):** Prefer `switch` when selecting among multiple cases of the same discriminator; retain `if`/`if-else` for binary decisions.
+- **CORP-JAVA-SW-001.2 (SHOULD):** A `case` SHOULD dispatch to a cohesive operation, not contain a substantial implementation.
+- **CORP-JAVA-SW-001.3 (MAY):** Trivial, immediate operations MAY be written directly within a `case` (e.g. one assignment, direct return or short method call).
+- **CORP-JAVA-SW-001.4 (MUST):** Avoid extended, nested or multi-stage business logic inside `case` arms. Extract a named method instead.
+- **CORP-JAVA-SW-001.5 (MUST):** The selected alternative must preserve existing behavior, including handling of unsupported values.
+
+## Example: preferred
+
+```java
+switch (action) {
+    case "build" -> buildProject();
+    case "test" -> runTests();
+    case "release" -> prepareRelease();
+    default -> reportUnknownAction(action);
+}
+```
+
+## Example: avoid implementing a full process inside the case
+
+```java
+switch (action) {
+    case "build" -> {
+        loadModules();
+        validateModules();
+        compileModules();
+        writeBuildReport();
+    }
+    default -> reportUnknownAction(action);
+}
+```
+
+A one-line `return` or assignment inside a case is acceptable when its intent is immediately clear. `switch` statements and expressions may both be used when appropriate.

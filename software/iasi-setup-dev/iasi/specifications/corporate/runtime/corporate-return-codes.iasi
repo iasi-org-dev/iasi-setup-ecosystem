@@ -1,0 +1,192 @@
++++
+id = "COR-MSG-RC-001"
+type = "standard"
+title = "Mensajes, diagnóstico y códigos de retorno de IASI"
+scope = "corporate"
+status = "draft"
+version = "0.1.1"
+created = 2026-11-17
+related = ["COR-DOC-001", "COR-QA-001"]
++++
+
+# Mensajes, diagnóstico y códigos de retorno de IASI
+
+## 1. Objetivo y alcance
+
+Establecer un contrato transversal para identificar mensajes, comunicar incidencias y acumular resultados de ejecución en los productos IASI, con independencia del lenguaje de implementación, del sistema operativo y de la interfaz utilizada.
+
+Esta norma distingue **tres conceptos**:
+
+1. **Mensaje**: comunicación de un evento, identificada por un código estable y un texto localizable.
+2. **Severidad del evento**: clasificación de su naturaleza (progreso, aviso, error, diagnóstico, etc.).
+3. **RC (return code)**: máscara acumulativa que resume las circunstancias y el resultado de la operación.
+
+La impresión de texto en consola **no implica por sí misma** modificación del RC.
+
+## 2. Identificador de mensaje
+
+### 2.1. Formato obligatorio
+
+Todo mensaje de aplicación IASI registrado en el catálogo tiene un identificador:
+
+`LLLNNMMM`
+
+- `LLL`: tres letras mayúsculas (`A`-`Z`) que identifican una familia, bloque o ámbito del catálogo.
+- `NN`: dos dígitos decimales (`00`-`99`) que identifican un grupo dentro de la familia.
+- `MMM`: tres dígitos decimales (`000`-`999`) que identifican el mensaje dentro del grupo.
+- Expresión regular: `^[A-Z]{3}[0-9]{5}$`.
+
+Ejemplo **ilustrativo, sin reserva oficial de código**: `CFG01003`.
+
+Las tres letras **no codifican automáticamente la severidad**. La asignación oficial de familias y grupos pertenece a un catálogo corporativo separado; esta norma no inventa una taxonomía que aún no está aprobada.
+
+### 2.2. Catálogo e internacionalización
+
+- Cada identificador representa **un único significado funcional estable**.
+- El catálogo registra como mínimo código, significado, plantilla de texto, parámetros y severidad; también podrá indicar el efecto sobre el RC cuando corresponda.
+- Un código retirado no se reutiliza con otro significado.
+- Los textos se localizan por idioma; el código no cambia entre traducciones.
+- Los parámetros interpolados conservan nombre, significado y compatibilidad entre idiomas.
+- No se registran credenciales, tokens ni secretos.
+- El texto generado por herramientas externas no adquiere un código IASI arbitrario: debe contextualizarse mediante un evento IASI identificable.
+
+## 3. Emisión y presentación
+
+### 3.1. Consola
+
+Formato establecido:
+
+`HH:mm:ss - LLLNNMMM - Mensaje`
+
+Ejemplo ilustrativo:
+
+```text
+18:35:12 - CFG01003 - Se omite la definición porque su directorio no existe
+```
+
+- La hora corresponde al instante del evento.
+- Los colores, cuando existan, son auxiliares: el diagnóstico debe comprenderse sin color.
+- La presentación y el filtrado de mensajes en consola no alteran el RC ni eliminan los eventos que deban persistirse en el log.
+- Los mensajes normales de arranque, progreso o finalización pueden emitirse con **impacto RC = 0**.
+
+### 3.2. Registro persistente
+
+Los eventos registrados conservan al menos fecha, hora, código, severidad, texto y contexto disponible. Los registros no incluyen secuencias ANSI. El detalle de nomenclatura de ficheros, directorios de logs y políticas de retención corresponde a normas o especificaciones complementarias.
+
+## 4. Códigos de retorno (RC)
+
+### 4.1. Modelo
+
+El RC de IASI es una **máscara de bits**, no un número de error secuencial. Se acumula mediante OR bit a bit:
+
+`rc = rc | eventRc`
+
+Los valores aprobados para esta versión del contrato son:
+
+| Símbolo | Hexadecimal | Decimal | Semántica |
+|---|---:|---:|---|
+| `OK` | `0x00` | 0 | Finalización sin incidencias marcadas |
+| `NothingToDo` | `0x01` | 1 | No había trabajo aplicable |
+| `Info` | `0x02` | 2 | Circunstancia informativa relevante |
+| `Warning` | `0x04` | 4 | Advertencia no bloqueante |
+| `Attention` | `0x08` | 8 | Circunstancia que requiere atención, sin considerarse error |
+| `Error` | `0x10` | 16 | Error |
+| `Severe` | `0x20` | 32 | Error grave |
+| `Fatal` | `0x40` | 64 | Error fatal |
+
+`0x80` queda reservado y sin significado definido. Los RC emitidos por esta versión solo utilizan los bits `0x01` a `0x40`.
+
+### 4.2. Interpretación
+
+- Los bits `0x01`, `0x02`, `0x04` y `0x08` son **no erróneos**: cualquier combinación de ellos se considera correcta, aunque no necesariamente perfecta.
+- `0x10`, `0x20` y `0x40` representan error, error grave y error fatal, respectivamente.
+- `OK (0x000)` es la ausencia de bits activados.
+- Las combinaciones preservan todas las circunstancias ocurridas; no se sustituyen unas por otras por una escala de prioridad.
+
+Ejemplos:
+
+| Eventos acumulados | RC final | Clasificación |
+|---|---:|---|
+| Ninguno | `0x00` | Correcto |
+| `Info` | `0x02` | Correcto con información relevante |
+| `Info + Warning` | `0x06` | Correcto con advertencia |
+| `Warning + Attention` | `0x0C` | Correcto; requiere atención |
+| `Error + Warning` | `0x14` | Erróneo |
+
+### 4.3. Clasificación del resultado
+
+Los RC válidos se interpretan con el criterio sencillo:
+
+- `0x00` a `0x0F`: ejecución correcta, con o sin incidencias no erróneas.
+- `0x10` a `0x7F`: ejecución con uno o más indicadores de error.
+
+Los valores comprendidos en cada intervalo **no son nuevos códigos predefinidos**: surgen de combinar los bits establecidos mediante OR. `0x80` está reservado; una implementación conforme no debe emitirlo ni asignarle significado.
+
+El RC acumulado es el valor que devuelve el programa; no requiere transformación a un código secuencial. Por ejemplo, en Bash, para RC emitidos conforme a esta norma:
+
+```bash
+comando
+rc=$?
+(( rc > 15 )) && echo "Error: RC=$rc"
+```
+
+## 5. Cuándo activar Info
+
+**`Info (0x002)` se activa por una circunstancia informativa relevante para el resultado**, no por el mero hecho de mostrar un mensaje en consola ni por usar una severidad denominada `INFO`.
+
+Ejemplos de aplicación:
+
+| Evento | Mensaje posible | Impacto RC |
+|---|---|---:|
+| Inicio de ejecución | «Iniciando procesamiento» | `0x00` |
+| Progreso ordinario | «Procesando elemento 3» | `0x00` |
+| Se ignora una definición opcional ausente y se continúa | «Omitiendo definición porque no existe» | `0x02` |
+| Se produce una advertencia no bloqueante | «Configuración incompleta» | `0x04` |
+| No hay acciones aplicables | «No hay trabajo pendiente» | `0x01` |
+
+**Regla:** severidad del mensaje e impacto sobre el RC se declaran o deciden separadamente. No se deduce el RC únicamente del prefijo del identificador ni de que se haya escrito en consola.
+
+## 6. Acumulación, propagación y finalización
+
+1. El componente responsable produce sus eventos y, cuando procede, sus bits RC.
+2. Los componentes superiores agregan mediante OR los RC de sus operaciones hijas.
+3. Los mensajes se emiten **en el punto donde suceden**; el RC final resume el resultado agregado sin reemplazar los diagnósticos individuales.
+4. La tolerancia a errores y la decisión de continuar o detenerse son políticas de ejecución **separadas** de la operación OR.
+5. Un `Fatal` debe ser tratado por la política de control de flujo correspondiente; la máscara por sí misma no ejecuta una interrupción.
+6. Los códigos de salida nativos de herramientas externas **no se confunden** con los RC de IASI: un adaptador debe interpretarlos y mapearlos explícitamente.
+7. Los RC definidos caben en el intervalo `0x00` a `0x7F` y se devuelven sin reinterpretación. Los adaptadores de procesos externos deben evitar confundir los códigos de salida de terceros con RC de IASI.
+
+## 7. Reglas de conformidad
+
+Una implementación conforme DEBE:
+
+- Utilizar los identificadores y contratos de mensaje establecidos.
+- Mantener estable el significado de cada código entre idiomas.
+- Separar severidad, mensaje visible e impacto RC.
+- Inicializar a `OK` y acumular bits mediante OR, sin perder bits previos.
+- Considerar no erróneas las combinaciones de `NothingToDo`, `Info`, `Warning` y `Attention` que no incluyan bits de error.
+- No asignar significado a bits reservados.
+- Traducir explícitamente códigos externos antes de incorporarlos al RC IASI.
+- Devolver el RC agregado como resultado del proceso, sin traducirlo a códigos secuenciales.
+
+## 8. Verificación mínima
+
+1. Comprobar formato e invariancia de los códigos de mensaje.
+2. Comprobar que mensajes ordinarios de consola no activan `Info`.
+3. Comprobar que una omisión informativa relevante sí activa `Info`.
+4. Comprobar acumulación OR: `0x002 | 0x004 = 0x006`.
+5. Comprobar que `0x0F` (bits no erróneos) no se clasifica como error.
+6. Comprobar que `0x10`, `0x20` y `0x40` sí se clasifican como error.
+7. Comprobar que el programa devuelve el RC acumulado sin transformación.
+8. Comprobar que un código externo no se utiliza como máscara IASI sin adaptación.
+9. Comprobar que la traducción cambia texto, nunca código ni significado.
+
+## 9. Decisiones pendientes
+
+Esta versión **no** establece todavía:
+
+- El catálogo corporativo definitivo de familias/grupos y sus códigos concretos.
+- El formato físico y mecanismo de distribución del catálogo de mensajes.
+- La política de continuación o cancelación asociada a cada combinación de RC.
+
+Estas decisiones deben formalizarse separadamente antes de exigir su implementación transversal.

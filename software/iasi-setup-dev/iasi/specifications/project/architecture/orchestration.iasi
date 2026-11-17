@@ -1,0 +1,22 @@
++++
+id = "PRJ-ARC-001"
+type = "design"
+title = "Orquestación modular de instalación"
+scope = "project"
+status = "draft"
+version = "0.1.0"
++++
+
+# Orquestación modular de instalación
+
+## Decisiones iniciales para revisión
+
+- Orquestador inicial implementado en Java.
+- Separación entre motor de orquestación y adaptadores de plataforma, virtualizador e instalador.
+- Trabajo organizado en bloques jerárquicos y tareas verificables.
+- Las configuraciones modificables permanecen externas al ejecutable.
+- Recursos auxiliares pueden viajar dentro del JAR y extraerse a un directorio de trabajo cuando sea necesario.
+- Operaciones manuales y automatizadas podrán convivir; cada una debe tener condiciones de verificación.
+- El parser de argumentos será convencional inicialmente; la biblioteca UNICLAP no es dependencia para esta fase.
+
+Estas decisiones son propuestas de arquitectura derivadas del trabajo de diseño en curso. Deben validarse antes de declararlas aprobadas.

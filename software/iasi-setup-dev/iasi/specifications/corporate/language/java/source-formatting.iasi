@@ -1,0 +1,129 @@
++++
+id = "CORP-JAVA-FMT-001"
+title = "Java source formatting and readability"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
+language = "java"
++++
+
+# Java source formatting and readability
+
+## Requirement
+
+Java source code **MUST** be consistently indented and formatted, with readable line breaks and clear separation of logical blocks. Generated code is subject to the same rules as manually written code.
+
+## Rules
+
+- **CORP-JAVA-FMT-001.1 (MUST):** Use four spaces per indentation level; do not indent with tab characters.
+- **CORP-JAVA-FMT-001.2 (MUST):** Put independent Java statements on separate lines, except a one-statement conditional branch written as `if (condition) statement;`. Do not minify methods, classes, or multi-statement control-flow blocks.
+- **CORP-JAVA-FMT-001.3 (MUST):** Use an opening brace on the declaration/control statement line and the closing brace on a separate line for multi-statement blocks. For a one-statement `if` branch, omit the braces and write the statement on the same line. This deliberate exception does not allow multiple statements on one line.
+- **CORP-JAVA-FMT-001.4 (MUST):** Use blank lines to separate methods and meaningful logical sections, without excessive whitespace.
+- **CORP-JAVA-FMT-001.5 (MUST):** Put each import on its own line, remove unused imports, and order import groups consistently.
+- **CORP-JAVA-FMT-001.6 (SHOULD):** Keep lines within 120 characters, except where wrapping materially reduces readability or breaks an unavoidable literal.
+- **CORP-JAVA-FMT-001.7 (MUST):** Apply the same formatting rules to source and test code.
+- **CORP-JAVA-FMT-001.8 (MUST):** For Maven-based projects, provide a formatter configuration and a non-mutating format check bound to the `verify` lifecycle or equivalent mandatory QA command. Noncompliant formatting MUST cause the check to fail.
+- **CORP-JAVA-FMT-001.9 (MUST):** Formatter versions and configuration MUST be pinned/shared so local and CI checks are reproducible.
+
+## Structured programming and control flow
+
+The normative architectural principles and fuller examples live in `functional-decomposition.iasi` (`CORP-JAVA-STR-001`). This document governs surface formatting and complementary control-flow style.
+
+- **CORP-JAVA-FMT-001.10 (MUST):** Prefer structured control flow with clearly bounded blocks and an explicit, readable sequence of operations. Avoid deeply nested conditions, duplicated branches, hidden side effects in conditions and unnecessary jumps.
+- **CORP-JAVA-FMT-001.11 (SHOULD):** Use `if` / `if-else` for binary decisions. Keep each branch focused on one logical operation; prefer a single statement per branch when that is sufficient. For a single-statement `if`, omit braces and put the statement on the same line. Use braces for multi-statement branches.
+- **CORP-JAVA-FMT-001.12 (SHOULD):** When selecting among multiple alternatives based on the same value, prefer `switch` over a chain of `if-else if`. Include an appropriate `default` or document why the cases are exhaustive. Do not force `switch` for unrelated predicates or complex ranges.
+- **CORP-JAVA-FMT-001.13 (SHOULD):** Extract cohesive operations into well-named methods, keep methods focused, and favor guard clauses when they reduce nesting without obscuring flow.
+- **CORP-JAVA-FMT-001.14 (MUST):** Format control-flow statements so that the program's structure is obvious from indentation and block layout, not dependent on reader inference.
+
+## Examples
+
+### Example 1: Binary decision, one statement per branch
+
+**Preferred:**
+
+```java
+if (enabled) startService();
+else stopService();
+```
+
+**Multiple statements require braces:**
+
+```java
+if (enabled) {
+    prepareService();
+    startService();
+}
+```
+
+**Avoid:** multiple statements compressed into one line:
+
+```java
+if (enabled) { prepareService(); startService(); }
+```
+
+### Example 2: Several options, use `switch`
+
+**Preferred:**
+
+```java
+switch (command) {
+    case "start" -> startService();
+    case "stop" -> stopService();
+    case "status" -> showStatus();
+    default -> reportUnsupportedCommand(command);
+}
+```
+
+**Avoid:** a multiway selection implemented as a repetitive chain:
+
+```java
+if ("start".equals(command)) {
+    startService();
+} else if ("stop".equals(command)) {
+    stopService();
+} else if ("status".equals(command)) {
+    showStatus();
+} else {
+    reportUnsupportedCommand(command);
+}
+```
+
+### Example 3: Reduce nesting through structured delegation
+
+**Preferred:**
+
+```java
+void processTask(Task task) {
+    if (!task.isValid()) {
+        reportInvalidTask(task);
+        return;
+    }
+
+    executeTask(task);
+}
+```
+
+**Avoid:** unnecessary nesting around the principal operation:
+
+```java
+void processTask(Task task) {
+    if (task.isValid()) executeTask(task);
+    else reportInvalidTask(task);
+}
+```
+
+The second version is not intrinsically incorrect; the first is preferred when the early guard makes the main path clearer. These are style examples, not instructions to alter observable behavior.
+
+## Acceptance criteria
+
+1. A Java file with collapsed independent statements, missing multi-statement block line breaks or incorrect indentation is rejected by the formatting check, while the agreed one-line single-statement `if` form is accepted.
+2. Correctly formatted Java main and test sources pass the check.
+3. The configured formatter preserves the agreed one-line single-statement `if` style; if a formatter cannot represent this rule, choose a compatible formatter or provide an explicit supplementary check.
+4. Maven verification reports formatting failures clearly and stops the QA Gate from passing.
+5. A review confirms that binary choices are clear, single-operation branches are readable, and multiway selection uses `switch` where appropriate.
+6. Structured-control-flow guidelines are checked through code review or static analysis where feasible; the formatter alone is not claimed to enforce semantic design.
+
+## Notes
+
+The formatter product is not prescribed by this specification. Formatting, compilation, static analysis and testing are separate QA concerns; one does not replace the others.

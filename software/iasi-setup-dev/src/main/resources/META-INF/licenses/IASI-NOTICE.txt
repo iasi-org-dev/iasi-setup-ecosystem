@@ -1,0 +1,4 @@
+IASI Setup Ecosystem
+
+This repository may redistribute third-party tools or binaries required by the IASI installation process.
+Their applicable notices and license texts are collected under LICENSES/ as the distribution inventory is finalized.

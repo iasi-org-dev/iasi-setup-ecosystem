@@ -1,0 +1,30 @@
++++
+id = "CORP-WF-DIR-001"
+title = "IASI governance directory"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.2.0"
++++
+
+# IASI governance directory
+
+## Rule
+- **MUST:** `iasi/` is the project governance area for IASI-defined material, such as `inputs/`, `specifications/` and `tasks/`.
+- **MUST:** `iasi/` MUST NOT contain an independent execution results directory such as `iasi/outputs/`.
+- **MUST:** Define execution results using the single project-root `outputs/` convention.
+- **SHOULD:** Corporate and departmental specifications may be retrieved from authoritative central sources rather than duplicated into every repository.
+
+## Example
+```text
+project/
+├── iasi/
+│   ├── inputs/
+│   │   └── externals/
+│   ├── specifications/
+│   └── tasks/
+├── outputs/
+└── release/
+```
+
+No empty directory must be present unless needed by the project. The logical `corporate`, `departmental` and `project` scopes must be understood even when their material is stored centrally.

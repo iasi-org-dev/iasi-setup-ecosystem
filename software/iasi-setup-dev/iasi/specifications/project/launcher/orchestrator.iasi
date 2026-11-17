@@ -1,0 +1,183 @@
++++
+schema = "iasi/specification/v1"
+id = "specifications.project.launcher.orchestrator"
+title = "IASI Setup Ecosystem: launcher y orquestador Java"
+type = "specification"
+scope = "project"
+category = "launcher"
+project = "iasi-setup-ecosystem"
+language = "java"
+status = "draft"
+version = "0.1.4"
+created = 2026-11-15
+origin = "derived-from-project-decisions-and-legacy"
++++
+
+# Launcher y orquestador Java
+
+## 1. Objeto
+
+Esta especificación define el contrato observable del launcher y del orquestador Java de `iasi-setup-ecosystem`: entrada CLI, directorios, selección de componentes, descubrimiento, ejecución y verificación.
+
+La arquitectura debe separar el launcher, el orquestador, los adaptadores de proveedor de virtualización y los instaladores del sistema operativo. El parser será convencional y propio de esta fase: **no se exige UNICLAP** ni el nuevo modelo universal de argumentos. Aplican las normas Java pertinentes de `iasi/specifications/language/java/`.
+
+**Estado:** borrador normativo de proyecto. Los nombres de acciones usados como ejemplos no quedan registrados automáticamente.
+
+## 2. Contrato CLI
+
+```text
+iasi-setup [ámbito ...] <acción> [flags] [parámetros] [targets ...]
+```
+
+| Elemento | Contrato |
+|---|---|
+| `-h` | Ayuda de la acción indicada, sin ejecutarla |
+| `-v` | Consola detallada, incluye `DEBUG` |
+| `-V` | Consola muy detallada, incluye `DEBUG` y `TRACE` |
+| `-s` | Consola silenciosa, solo `ERROR` |
+| `-f` | Fuerza solo operaciones que lo admitan, sin omitir seguridad ni QA |
+| `--config <directorio>` | Directorio de búsqueda de configuración |
+| `--machines <directorio>` | Directorio de almacenamiento de máquinas |
+| `--log <directorio>` | Directorio de los archivos de log |
+
+- Los flags cortos son sensibles a mayúsculas y pueden agruparse: `-vf`, `-Vf`, `-sf`. Las combinaciones incompatibles se rechazan; específicamente `-s` es incompatible con `-v` y `-V`, incluso dentro de un grupo.
+- Los parámetros largos **siempre llevan un valor separado** (`--nombre valor`); `--help` no está soportado.
+- Los flags y parámetros pueden aparecer en posiciones no ambiguas. El valor de un parámetro largo se consume como un único argumento, no como flag ni target.
+- Se validan los argumentos desconocidos, parámetros sin valor y flags incompatibles. No se admiten en esta fase abreviaturas largas, variables `/clave=valor` ni directivas del parser universal.
+
+### 2.1 Ayuda contextual
+
+`help` es una **acción** situada después del ámbito al que pertenece. `-h` solicita ayuda de una acción concreta.
+
+```text
+iasi-setup help
+iasi-setup workflow help
+iasi-setup create -h
+iasi-setup workflow release -h
+```
+
+Son inválidos `iasi-setup help workflow` y `iasi-setup --help`.
+
+El mismo principio se aplica a `iasi-dev help`, `iasi-dev workflow help` y `iasi-dev workflow release -h`.
+
+La petición válida de ayuda termina con código 0, no necesita parámetros obligatorios, no inicia operaciones y no crea un log operativo. `workflow`, `release` y `create` son ejemplos de sintaxis, no nuevas acciones aprobadas.
+
+## 3. Directorios y valores por defecto
+
+`CWD` es el **directorio de trabajo al lanzar el proceso**, capturado antes de cambiar cualquier contexto; no es la ruta del JAR, del ejecutable ni la raíz del repositorio.
+
+| `--config` | `--machines` | Buscar configuración en | Crear máquinas bajo |
+|---|---|---|---|
+| ausente | ausente | CWD | CWD |
+| presente | ausente | directorio `--config` | CWD |
+| ausente | presente | CWD | directorio `--machines` |
+| presente | presente | directorio `--config` | directorio `--machines` |
+
+El destino del log se resuelve con esta precedencia:
+
+1. `--log <directorio>` explícito.
+2. `defaults.log` del `setup.toml` seleccionado, cuando exista y sea válido.
+3. CWD original.
+
+Ejemplo:
+
+```toml
+[defaults]
+log = 'D:\IASI\logs'
+```
+
+- `--config`, `--machines` y `--log` son independientes: ninguno sustituye semánticamente al otro.
+- Todos designan **directorios**. Admiten rutas absolutas o relativas al CWD original; también `defaults.log` se interpreta contra ese CWD.
+- Si no se define `--log` ni `defaults.log`, el log se crea **directamente en CWD**, sin añadir implícitamente `logs/`.
+- Si no existe un manifiesto, no hay `defaults.log`; el destino de logs queda en `--log` o CWD.
+- La configuración no puede introducir silenciosamente un valor distinto de `--machines`; el destino de VM es el acordado por CLI/CWD.
+- Cada VM se coloca en su **propio subdirectorio** dentro del directorio de máquinas. Se deben prevenir colisiones y escrituras accidentales sobre las configuraciones cuando ambos árboles coinciden.
+
+## 4. Selección mediante `setup.toml` o descubrimiento
+
+El orquestador busca `setup.toml` **en la raíz del directorio de configuración efectivo**.
+
+### 4.1 Existe `setup.toml`
+
+El manifiesto define los componentes que se consideran para la ejecución, su orden, su tipo y la referencia a la carpeta de configuración correspondiente. Puede haber otras carpetas definidas en disco que **no** se procesen.
+
+Ejemplo orientativo, con forma recuperada del código antiguo:
+
+```toml
+[[components]]
+name = "iasi-tools"
+type = "vm"
+config = "iasi-tools"
+enabled = true
+
+[[components]]
+name = "iasi-work"
+type = "vm"
+config = "iasi-work"
+enabled = false
+```
+
+- `enabled = false` excluye el componente; si falta, se entiende habilitado, según el comportamiento del orquestador antiguo.
+- Las rutas relativas `components.config` se resuelven contra el directorio que contiene el manifiesto.
+- El orden declarado se respeta, sujeto a dependencias explícitas y verificadas.
+- Un componente mal configurado emite `WARNING`, se omite y **no bloquea los restantes**.
+- Un `setup.toml` existente pero no interpretable no se considera "ausente": se informa de su anomalía como `WARNING`; **no se ejecuta un descubrimiento alternativo silencioso**, para no activar componentes inesperados. Se marca la selección como no disponible y se informa del resultado final. Esta política de seguridad podrá revisarse expresamente.
+
+### 4.2 No existe `setup.toml`
+
+Se realiza **descubrimiento por convención**: se examinan las carpetas hijas inmediatas del directorio de configuración efectivo, de forma determinista. No se activa un recorrido recursivo ilimitado.
+
+Cada carpeta candidata debe aportar su propia configuración/información. En la primera versión se reconoce el patrón legado `carpeta/config-data/config.toml`, y se puede reconocer `carpeta/config.toml` cuando su esquema esté definido y validado.
+
+| Carpeta descubierta | Comportamiento |
+|---|---|
+| Configuración válida | Se reconoce como componente y puede procesarse |
+| Sin configuración reconocible | `WARNING` y se omite |
+| Configuración existente pero incorrecta | `WARNING` con causa concreta y se omite |
+
+- Una carpeta sin configuración **no se ignora en silencio**.
+- Las advertencias de descubrimiento no son fallos globales y no impiden procesar los demás componentes.
+- No inferir datos de configuración que falten (tipo, nombre, instalador, recursos, etc.).
+- Enumerar y seleccionar las carpetas candidatas en orden **estable y documentado**; en ausencia de un manifiesto, el orden de descubrimiento no debe depender del orden arbitrario del sistema de archivos.
+- La selección por targets explícitos podrá acotar el conjunto cuando se defina su contrato definitivo.
+- Una carpeta candidata no se convierte en una operación destructiva sin aplicar el contrato de la acción, sus controles de validación y los mecanismos de protección.
+
+## 5. Unificación de las configuraciones antiguas
+
+La intención es evitar duplicar responsabilidades entre `setup.toml`, `ecosystem.toml` y `hyperv.toml`.
+
+- `setup.toml`: manifiesto opcional de selección y orden; puede definir `defaults.log`.
+- Configuración propia de cada componente: identidad, tipo, sistema operativo, recursos, medio de instalación y demás información necesaria.
+- `--machines` o CWD: destino del almacenamiento de máquinas; no copiar la antigua ruta global `C:\Maquinas` como defecto oculto.
+- Opciones específicas de un proveedor de virtualización: quedan bajo responsabilidad de su adaptador, no se mezclan con la selección de componentes.
+- `vm.installer` pertenece a **cada VM**. Los valores presentes en el legado incluyen `subiquity` (Ubuntu Server), `calamares` (Linux gráfico) e `interactive` (Windows), pero solo se invocan adaptadores implementados y compatibles.
+
+La selección y el descubrimiento no equivalen a una instalación correcta: la ejecución debe incorporar verificación.
+
+## 6. Responsabilidades operativas
+
+- **Launcher Java:** interpreta CLI, determina CWD, muestra ayuda, resuelve ubicaciones e inicializa el sistema común de mensajes y logging.
+- **Orquestador Java:** carga manifiesto o descubre componentes; valida y omite inválidos; ordena las operaciones; coordina ejecución y verificación.
+- **Proveedor de virtualización:** gestiona ciclo de vida de la VM en un hipervisor concreto, inicialmente Hyper-V, sin acoplar el orquestador a él.
+- **Instalador de SO:** mecanismo propio de cada VM, elegible por configuración y con adaptadores sustituibles.
+
+`-f` no autoriza eliminar indiscriminadamente VMs, redes o recursos compartidos. Configuraciones externas se leen como datos, nunca se ejecutan como código. Los pasos manuales y automáticos deben poder verificarse.
+
+Todos los componentes usan el **servicio de mensajes** especificado en `messages-logging.iasi`, sin formatos de consola independientes. Cada evento IASI lleva un código `LLLNNMMM` (tres letras mayúsculas, dos dígitos de grupo y tres dígitos de mensaje), estable entre traducciones y persistido en el log. El launcher comparte con los adaptadores el catálogo de mensajes y la selección de idioma. Los artefactos de trabajo se producen en `outputs/`, y su promoción a `release/` requiere un proceso separado cuando correspondan.
+
+## 7. Pruebas de aceptación
+
+1. Verificar las cuatro combinaciones de `--config`/`--machines` y rutas absolutas/relativas.
+2. Verificar prioridad `--log` > `defaults.log` > CWD, incluyendo ausencia de manifiesto.
+3. Verificar que un `setup.toml` válido selecciona solo componentes habilitados, y no activa carpetas sobrantes.
+4. Verificar que sin `setup.toml` se inspeccionan las carpetas hijas y se detectan configuraciones válidas.
+5. Verificar que las carpetas sin configuración y con configuración incorrecta producen **`WARNING`** visible (salvo `-s`) y registrado en log, sin bloquear a las demás.
+6. Comprobar que un manifiesto defectuoso no activa componentes mediante fallback inesperado.
+7. Validar flags agrupados, sensibilidad a mayúsculas, `help` contextual, `-h`, rechazo de `--help`, incompatibilidades, errores CLI y salida sin efectos secundarios de la ayuda.
+8. Verificar que `vm.installer` es individual y diferente del proveedor de virtualización.
+9. Validar que la ubicación conjunta de configuraciones y máquinas no sobrescribe información fuente y que `-f` no evita barreras de seguridad.
+10. Verificar coherencia de mensajes (`HH:mm:ss - Código - Mensaje`), internacionalización, catálogos, logs, códigos de salida y verificación real de operaciones.
+
+## 8. Decisiones aún abiertas
+
+Quedan por especificar las acciones de negocio concretas, namespaces, targets posicionales, dependencias y el esquema completo de los tipos de componente. No inventar extensiones del contrato sin aprobación.

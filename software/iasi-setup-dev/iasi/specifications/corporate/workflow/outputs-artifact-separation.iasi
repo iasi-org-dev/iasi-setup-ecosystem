@@ -1,0 +1,36 @@
++++
+id = "CORP-WF-OUT-002"
+title = "Separate build intermediates, candidates and QA evidence"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.2.0"
+related = ["CORP-WF-OUT-001"]
++++
+
+# Separate build intermediates, candidates and QA evidence
+
+## Rule
+- **MUST:** Distinguish temporary and reconstructible build material from final **candidate artifacts** and QA evidence.
+- **MUST:** Build intermediates, compiled classes, generated sources and test execution caches MUST NOT be treated as release candidates.
+- **MUST:** Package candidates separately from transient build material so that QA knows exactly what is under review.
+- **MUST:** Retain test results and QA evidence outside the release deliverable.
+- **SHOULD:** For Maven, place or stage its `target/` under `outputs/<task-id>/build/`, and place the candidate JAR under `outputs/<task-id>/artifacts/`. Alternative build staging is acceptable when the same separation is demonstrably preserved.
+- **SHOULD:** Ignore rebuildable intermediates in version control, unless explicitly required for provenance or audit.
+
+## Example (Maven)
+```text
+outputs/TASK-0001/
+├── build/
+│   └── target/
+│       ├── classes/
+│       ├── maven-status/
+│       └── surefire-reports/
+├── artifacts/
+│   └── iasi-setup-launcher-0.1.0.jar
+└── qa/
+    ├── qa-report.md
+    └── logs/
+```
+
+The same policy applies to Gradle, Go, R and other ecosystems. The `target/` directory is not itself a release artifact.

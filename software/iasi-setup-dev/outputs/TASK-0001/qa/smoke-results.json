@@ -1,0 +1,193 @@
+[
+  {
+    "arguments": [
+      "help"
+    ],
+    "exit_code": 0,
+    "stdout": "USO\n  iasi-setup-dev <acción> [flags] [parámetros]\n  iasi-setup-dev workflow <acción> [flags] [parámetros]\nACCIONES\n  help — Ayuda general\n  platform — Diagnóstico del host de TASK-0001\n  create — No disponible; solo ayuda contextual\nWORKFLOWS\n  workflow help — Ayuda del ámbito workflow\n  workflow release — No disponible; solo ayuda contextual\nFLAGS\n  -h ayuda contextual; -v DEBUG; -V TRACE; -s solo errores; -f force\n  La última verbosidad indicada gana, también dentro de grupos.\n  force está hardcoded a false; solo -f lo activa para esta instancia.\nPARÁMETROS\n  --config <archivo>  Valores TOML externos para esta instancia\n  --definitions <directorio>  Definiciones de máquinas\n  --machines <directorio>  Almacenamiento de máquinas (no se escribe en esta tarea)\n  --logs <directorio>  Registros de ejecución\n  Precedencia: hardcoded < recurso opcional del JAR < archivo --config < CLI explícita.\n  Directorios por defecto: CWD original. No busca configuración automáticamente.\nTARGETS\n  TASK-0001 no admite targets posicionales.\n",
+    "stderr": "",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\0",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "workflow",
+      "help"
+    ],
+    "exit_code": 0,
+    "stdout": "USO\n  iasi-setup-dev workflow help\n  iasi-setup-dev workflow release -h\nNo hay ejecución de workflows implementada.\nFLAGS\n  -h ayuda contextual; -v DEBUG; -V TRACE; -s solo errores; -f force\n  La última verbosidad indicada gana, también dentro de grupos.\n  force está hardcoded a false; solo -f lo activa para esta instancia.\nPARÁMETROS\n  --config <archivo>  Valores TOML externos para esta instancia\n  --definitions <directorio>  Definiciones de máquinas\n  --machines <directorio>  Almacenamiento de máquinas (no se escribe en esta tarea)\n  --logs <directorio>  Registros de ejecución\n  Precedencia: hardcoded < recurso opcional del JAR < archivo --config < CLI explícita.\n  Directorios por defecto: CWD original. No busca configuración automáticamente.\nTARGETS\n  TASK-0001 no admite targets posicionales.\n",
+    "stderr": "",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\1",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "create",
+      "-h"
+    ],
+    "exit_code": 0,
+    "stdout": "USO\n  iasi-setup-dev create -h\nEjemplo de sintaxis reservado. Crear máquinas no está disponible.\nFLAGS\n  -h ayuda contextual; -v DEBUG; -V TRACE; -s solo errores; -f force\n  La última verbosidad indicada gana, también dentro de grupos.\n  force está hardcoded a false; solo -f lo activa para esta instancia.\nPARÁMETROS\n  --config <archivo>  Valores TOML externos para esta instancia\n  --definitions <directorio>  Definiciones de máquinas\n  --machines <directorio>  Almacenamiento de máquinas (no se escribe en esta tarea)\n  --logs <directorio>  Registros de ejecución\n  Precedencia: hardcoded < recurso opcional del JAR < archivo --config < CLI explícita.\n  Directorios por defecto: CWD original. No busca configuración automáticamente.\nTARGETS\n  TASK-0001 no admite targets posicionales.\n",
+    "stderr": "",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\2",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "workflow",
+      "release",
+      "-h"
+    ],
+    "exit_code": 0,
+    "stdout": "USO\n  iasi-setup-dev workflow release -h\nEjemplo de sintaxis reservado. No realiza promoción ni ejecuta workflows.\nFLAGS\n  -h ayuda contextual; -v DEBUG; -V TRACE; -s solo errores; -f force\n  La última verbosidad indicada gana, también dentro de grupos.\n  force está hardcoded a false; solo -f lo activa para esta instancia.\nPARÁMETROS\n  --config <archivo>  Valores TOML externos para esta instancia\n  --definitions <directorio>  Definiciones de máquinas\n  --machines <directorio>  Almacenamiento de máquinas (no se escribe en esta tarea)\n  --logs <directorio>  Registros de ejecución\n  Precedencia: hardcoded < recurso opcional del JAR < archivo --config < CLI explícita.\n  Directorios por defecto: CWD original. No busca configuración automáticamente.\nTARGETS\n  TASK-0001 no admite targets posicionales.\n",
+    "stderr": "",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\3",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "platform",
+      "-h",
+      "--config",
+      "missing.toml",
+      "--logs",
+      "unused"
+    ],
+    "exit_code": 0,
+    "stdout": "USO\n  iasi-setup-dev platform [flags] [parámetros]\nInforma del SO y runtime del host. No comprueba hipervisores.\nFLAGS\n  -h ayuda contextual; -v DEBUG; -V TRACE; -s solo errores; -f force\n  La última verbosidad indicada gana, también dentro de grupos.\n  force está hardcoded a false; solo -f lo activa para esta instancia.\nPARÁMETROS\n  --config <archivo>  Valores TOML externos para esta instancia\n  --definitions <directorio>  Definiciones de máquinas\n  --machines <directorio>  Almacenamiento de máquinas (no se escribe en esta tarea)\n  --logs <directorio>  Registros de ejecución\n  Precedencia: hardcoded < recurso opcional del JAR < archivo --config < CLI explícita.\n  Directorios por defecto: CWD original. No busca configuración automáticamente.\nTARGETS\n  TASK-0001 no admite targets posicionales.\n",
+    "stderr": "",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\4",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "--help"
+    ],
+    "exit_code": 2,
+    "stdout": "",
+    "stderr": "18:52:12 - CLI01001 - Línea de comandos o configuración incorrecta: Parámetro desconocido.\n",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\5",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "help",
+      "workflow"
+    ],
+    "exit_code": 2,
+    "stdout": "",
+    "stderr": "18:52:12 - CLI01001 - Línea de comandos o configuración incorrecta: Orden desconocida o incompleta. Usa help.\n",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\6",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "platform"
+    ],
+    "exit_code": 0,
+    "stdout": "18:52:12 - SYS01001 - Iniciando platform.\n18:52:12 - SYS01003 - Host: WINDOWS; nombre=Windows 11; versión=10.0; arquitectura=amd64.\n18:52:12 - SYS01005 - Identificación del SO verificada. No se ha comprobado capacidad de virtualización.\n18:52:12 - SYS01007 - Ejecución finalizada; código de salida=0.\n",
+    "stderr": "",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\7",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "platform",
+      "-v",
+      "-s",
+      "-V"
+    ],
+    "exit_code": 0,
+    "stdout": "18:52:12 - SYS01001 - Iniciando platform.\n18:52:12 - SYS01002 - CWD=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\8; definiciones=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\8; máquinas=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\8; registros=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\8; force=false.\n18:52:12 - SYS01003 - Host: WINDOWS; nombre=Windows 11; versión=10.0; arquitectura=amd64.\n18:52:12 - SYS01004 - Runtime=25.0.5.0.3+1-LTS-2; proveedor=Oracle Corporation.\n18:52:12 - SYS01005 - Identificación del SO verificada. No se ha comprobado capacidad de virtualización.\n18:52:12 - SYS01007 - Ejecución finalizada; código de salida=0.\n",
+    "stderr": "",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\8",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "platform",
+      "-V",
+      "-s"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\9",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "platform",
+      "-vsVf",
+      "--machines",
+      "unused-machines"
+    ],
+    "exit_code": 0,
+    "stdout": "18:52:13 - SYS01001 - Iniciando platform.\n18:52:13 - SYS01002 - CWD=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\10; definiciones=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\10; máquinas=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\10\\unused-machines; registros=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\10; force=true.\n18:52:13 - SYS01003 - Host: WINDOWS; nombre=Windows 11; versión=10.0; arquitectura=amd64.\n18:52:13 - SYS01004 - Runtime=25.0.5.0.3+1-LTS-2; proveedor=Oracle Corporation.\n18:52:13 - SYS01005 - Identificación del SO verificada. No se ha comprobado capacidad de virtualización.\n18:52:13 - SYS01007 - Ejecución finalizada; código de salida=0.\n",
+    "stderr": "",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\10",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "create"
+    ],
+    "exit_code": 2,
+    "stdout": "18:52:13 - SYS01001 - Iniciando create.\n18:52:13 - SYS01007 - Ejecución finalizada; código de salida=2.\n",
+    "stderr": "18:52:13 - CLI01002 - La acción create no está disponible. No se ha realizado ninguna operación.\n",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\11",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "workflow",
+      "release"
+    ],
+    "exit_code": 2,
+    "stdout": "18:52:13 - SYS01001 - Iniciando workflow release.\n18:52:13 - SYS01007 - Ejecución finalizada; código de salida=2.\n",
+    "stderr": "18:52:13 - CLI01002 - La acción workflow release no está disponible. No se ha realizado ninguna operación.\n",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\12",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "platform",
+      "--config",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\inputs\\defaults.toml",
+      "--logs",
+      "audit",
+      "-V",
+      "-s"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\external",
+    "jar": "artifacts\\iasi-setup-dev-0.1.0.jar"
+  },
+  {
+    "arguments": [
+      "platform"
+    ],
+    "exit_code": 0,
+    "stdout": "18:52:13 - SYS01001 - Iniciando platform.\n18:52:13 - SYS01002 - CWD=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\internal; definiciones=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\internal\\internal-definitions; máquinas=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\internal; registros=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\internal\\internal-logs; force=false.\n18:52:13 - SYS01003 - Host: WINDOWS; nombre=Windows 11; versión=10.0; arquitectura=amd64.\n18:52:13 - SYS01005 - Identificación del SO verificada. No se ha comprobado capacidad de virtualización.\n18:52:13 - SYS01007 - Ejecución finalizada; código de salida=0.\n",
+    "stderr": "",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\internal",
+    "jar": "build\\internal-layer-test.jar"
+  },
+  {
+    "arguments": [
+      "platform",
+      "--config",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\inputs\\defaults.toml",
+      "--logs",
+      "explicit",
+      "-s",
+      "-V"
+    ],
+    "exit_code": 0,
+    "stdout": "18:52:13 - SYS01001 - Iniciando platform.\n18:52:13 - SYS01002 - CWD=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\layered; definiciones=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\layered\\definitions; máquinas=C:\\Machines; registros=C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-0001\\qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\layered\\explicit; force=false.\n18:52:13 - SYS01003 - Host: WINDOWS; nombre=Windows 11; versión=10.0; arquitectura=amd64.\n18:52:13 - SYS01004 - Runtime=25.0.5.0.3+1-LTS-2; proveedor=Oracle Corporation.\n18:52:13 - SYS01005 - Identificación del SO verificada. No se ha comprobado capacidad de virtualización.\n18:52:13 - SYS01007 - Ejecución finalizada; código de salida=0.\n",
+    "stderr": "",
+    "cwd": "qa\\smoke\\0aa3f9c6-36f5-4ed0-befa-c4ceed487f1c\\layered",
+    "jar": "build\\internal-layer-test.jar"
+  }
+]

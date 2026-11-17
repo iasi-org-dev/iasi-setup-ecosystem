@@ -1,0 +1,32 @@
++++
+id = "CORP-JAVA-VER-002"
+title = "Java JDK and runtime patch version policy"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
++++
+
+# Java JDK and runtime patch version policy
+
+## Requirement
+
+The JDK used to compile, test and run a Java product MUST be compatible with the approved Java runtime/toolchain baseline, allowing only authorized maintenance updates within that baseline's release line.
+
+## Rules
+
+- Record the approved JDK feature/release line and its exact baseline, including vendor when relevant.
+- Permit only maintenance/security releases within that approved line, following the JDK vendor's version scheme; do not assume that JDK releases follow ordinary SemVer `major.minor.patch` semantics.
+- Upgrading to another Java feature release requires an explicit baseline change.
+- Verify the actual `java`, `javac`, test runtime and build toolchain versions used, rather than relying on a project declaration alone.
+- Validate runtime/compiler compatibility, including bytecode target where relevant.
+- Preserve verification evidence outside the release deliverable.
+
+## Example
+
+If Java feature release `25` is approved, a compatible maintenance release within the Java 25 line may be accepted; Java 26 is not an automatic replacement.
+
+## Open decision
+
+JDK vendor policy, exact approved JDK baseline and vendor-specific patch comparison must be defined in the relevant technology baseline.
+

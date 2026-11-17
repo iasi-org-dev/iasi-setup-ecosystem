@@ -1,0 +1,22 @@
++++
+id = "CORP-JAVA-CON-001"
+title = "Java method length constraints"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
++++
+
+# Java method length constraints
+
+## Requirement
+
+Java methods and constructors MUST contain no more than **60 effective source lines**. A justified exception requires explicit approval and recorded QA evidence.
+
+## Counting rule
+
+Count lines within the method body containing executable statements, declarations or structural syntax (including braces). Ignore blank lines, comment-only lines, and annotations outside the method body. Count a statement spanning multiple physical lines once per nonblank, non-comment physical line. A `case` line and a brace line count as effective lines. The method signature and its opening brace line count as one effective line. The closing brace counts as one line. A formatter is not authoritative for length checking; a suitable static analyzer or documented parser-based checker MUST enforce this definition.
+
+## Guidance
+
+Do not fragment cohesive operations solely to satisfy a numeric limit. Enforcement MUST apply the counting rule above consistently, including for generated and test code.

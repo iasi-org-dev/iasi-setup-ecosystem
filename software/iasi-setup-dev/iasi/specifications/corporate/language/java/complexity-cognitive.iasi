@@ -1,0 +1,19 @@
++++
+id = "CORP-JAVA-COG-001"
+title = "Java cognitive complexity verification"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
+related = ["CORP-QUAL-COG-001"]
++++
+
+# Java cognitive complexity verification
+
+## Requirement
+
+Apply the corporate cognitive complexity policy to Java methods with a documented analyzer and language-specific counting behavior.
+
+## Verification
+
+Record per-method scores, tool version, threshold and exceptions. The approved per-method maximum is **15**. Findings above this value MUST fail the applicable QA Gate unless a documented exception has been approved.

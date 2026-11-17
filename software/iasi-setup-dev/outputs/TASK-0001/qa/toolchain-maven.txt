@@ -1,0 +1,5 @@
+Apache Maven 3.10.1 (3afd8084b5629f80b97750906a719879ed4cd283)
+Maven home: C:\SDK\maven
+Java version: 25.0.5.0.3, vendor: Oracle Corporation, runtime: C:\SDK\java\jdk-25.0.5.0.3
+Default locale: es_ES, platform encoding: UTF-8, time zone: Europe/Madrid
+OS name: "windows 11", version: "10.0", arch: "amd64", family: "windows"

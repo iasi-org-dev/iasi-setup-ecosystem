@@ -1,0 +1,24 @@
++++
+id = "COR-DOC-001"
+type = "standard"
+title = "Formato documental .iasi"
+scope = "corporate"
+status = "draft"
+version = "0.1.0"
++++
+
+# Formato documental .iasi
+
+## Contrato
+
+- Un documento `.iasi` contiene un bloque inicial de metadatos y un cuerpo Markdown.
+- El bloque de metadatos podrá ser TOML delimitado por `+++` o YAML delimitado por `---`.
+- Los metadatos se procesan como datos estructurados y el cuerpo como Markdown; no deben confundirse.
+- Los campos mínimos de una especificación serán `id`, `type`, `title`, `scope`, `status` y `version`.
+- `scope` identifica su aplicación corporativa, departamental o de proyecto.
+- Los estados `draft` y `proposed` no equivalen a aprobación.
+- Se debe preservar el contenido original al editar, transformar o visualizar el documento.
+
+## Verificación
+
+Validar delimitadores, sintaxis de metadatos, campos requeridos y preservación del Markdown. No asumir que todas las entradas externas están en formato `.iasi`.

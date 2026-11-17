@@ -1,0 +1,16 @@
++++
+id = "COR-QA-001"
+type = "standard"
+title = "Calidad y seguridad por diseño"
+scope = "corporate"
+status = "draft"
+version = "0.1.0"
++++
+
+# Calidad y seguridad por diseño
+
+## Contrato
+
+Calidad y seguridad forman parte del diseño, la implementación y la verificación. Cada tarea deberá establecer pruebas y evidencias adecuadas a los riesgos y requisitos pertinentes. Los controles pueden ser manuales o automáticos, siempre que su resultado pueda comprobarse.
+
+No afirmar que pruebas o análisis han pasado sin ejecutarlos. Los hallazgos, limitaciones y excepciones deben estar explícitos. La arquitectura de QA no debe depender de una herramienta específica: SonarQube y otras herramientas son opciones, no fundamentos del modelo.

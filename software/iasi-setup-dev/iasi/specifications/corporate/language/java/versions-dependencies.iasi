@@ -1,0 +1,41 @@
++++
+id = "CORP-JAVA-VER-001"
+title = "Java dependency and Maven plugin version policy"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
++++
+
+# Java dependency and Maven plugin version policy
+
+## Requirement
+
+Java libraries, build plugins (including Maven plugins), and governed transitive dependencies MUST respect the approved technology baseline and patch-line allowance defined by `CORP-TECH-VER-001`.
+
+## Rules
+
+- Record each governed dependency's baseline version and its artifact coordinates.
+- Permit patch revisions within the frozen major.minor line, from the approved baseline upward.
+- Reject a resolved minor/major upgrade unless a new baseline or an explicit exception has been approved.
+- Check the **effective dependency tree**, including transitives and Maven build plugins; declaring an allowed direct version alone is insufficient.
+- Prefer centrally managed dependency versions (`dependencyManagement` and `pluginManagement`) where appropriate.
+- Reproducible builds MUST use a controlled resolution strategy: an allowed range by itself does not prove repeatability.
+- QA evidence MUST identify the versions actually resolved and any approved exceptions.
+
+## Example
+
+Approved dependency baseline: `org.example:component:2.3.0`.
+
+Allowed candidate versions: `2.3.0`, `2.3.1`, `2.3.2`.
+Not allowed without reapproval: `2.4.0`, `3.0.0` or a version older than `2.3.0`.
+
+**Implementation note:** A Maven version range is not a substitute for a reproducible dependency resolution mechanism; the selected patch revision must remain auditable. No particular enforcement plugin is mandated by this specification.
+
+
+## Security and compatibility
+
+- Do not assume a patch is harmless simply because it changes only the third component. Run the affected build and tests.
+- Check resolved direct and transitive dependencies, including Maven plugins, for newly disclosed vulnerabilities.
+- Escalate an unpatched vulnerable dependency for risk assessment and remediation even if it matches the frozen version line.
+- See `CORP-TECH-SEC-001` for the general security rule.

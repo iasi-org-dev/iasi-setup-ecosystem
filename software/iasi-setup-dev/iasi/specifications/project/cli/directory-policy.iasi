@@ -1,0 +1,39 @@
+# IASI Setup Dev - Directory and file handling policies
+# This file defines validation and creation behavior, not default CLI values.
+
+[config]
+kind = "file"
+required = false
+on_missing_when_specified = "error"
+on_wrong_type = "error"
+on_inaccessible = "error"
+create = false
+
+[definitions]
+kind = "directory"
+on_missing = "warning"
+on_wrong_type = "error"
+on_inaccessible = "error"
+create = false
+
+[machines]
+kind = "directory"
+on_missing = "create"
+on_wrong_type = "error"
+on_inaccessible = "error"
+create = true
+recursive = true
+create_when = "needed"
+
+[logs]
+kind = "directory"
+on_missing = "create"
+on_wrong_type = "error"
+on_inaccessible = "error"
+create = true
+recursive = true
+create_when = "needed"
+
+[processing]
+resolve_after_precedence = true
+create_during_help = false

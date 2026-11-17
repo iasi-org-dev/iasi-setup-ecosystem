@@ -1,0 +1,29 @@
++++
+id = "CORP-WF-OUT-001"
+title = "Task-scoped execution outputs"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.2.0"
+related = ["CORP-WF-DIR-001"]
++++
+
+# Task-scoped execution outputs
+
+## Rule
+- **MUST:** All task execution deliverables, intermediate products, reports and evidence MUST be written beneath the **project root** at `outputs/<task-id>/`.
+- **MUST:** Associate each task's execution results with its own identifier; never use a parallel `iasi/outputs/` tree.
+- **MUST:** Avoid writing transient build products or candidate artifacts to the repository source root.
+- **SHOULD:** Keep each task output self-contained for repeatable testing and inspection.
+- **MAY:** Use scratch space outside the task tree for tool-specific temporary files when necessary, but material needed to inspect the result MUST be collected under the task's output tree.
+
+## Example
+```text
+outputs/
+└── TASK-0001/
+    ├── build/
+    ├── artifacts/
+    └── qa/
+```
+
+Names under the task directory are recommended conventions; the project may extend them as needed, without creating a second root output area.

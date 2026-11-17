@@ -1,0 +1,134 @@
++++
+schema = "iasi/specification/v1"
+id = "specifications.project.launcher.messages-logging"
+title = "IASI Setup Ecosystem: mensajes y logging"
+type = "specification"
+scope = "project"
+category = "launcher"
+project = "iasi-setup-ecosystem"
+language = "java"
+status = "draft"
+version = "0.1.4"
+created = 2026-11-15
+origin = "derived-from-project-decisions-and-legacy"
++++
+
+# Mensajes y logging coherentes
+
+## 1. Principio y alcance
+
+Los eventos del launcher, orquestador y adaptadores deben tener **un contrato común**, independientemente del sistema operativo, del proveedor o del instalador.
+
+**Un evento, dos destinos:** el mismo evento estructurado se representa en consola y se registra en fichero, con filtros distintos. El log nunca depende de `-s`, `-v` o `-V` para conservar los avisos y errores.
+
+Se preserva el criterio del legado `old/bin/ps/common/messages.ps1`: **hora + separador + mensaje**, colores para los tipos significativos, y un servicio compartido. Se preserva de `old/bin/ps/common/log.ps1` el fichero por ejecución.
+
+## 2. Tipos de evento
+
+| Tipo | Significado | Color de consola |
+|---|---|---|
+| `INFO` | Progreso y hechos normales | Color predeterminado |
+| `SUCCESS` | Resultado completado y **verificado** | Verde |
+| `WARNING` | Incidencia recuperable; omisión de componente o configuración | Amarillo |
+| `ERROR` | Fallo real de operación | Rojo |
+| `DEBUG` | Diagnóstico detallado | Gris/neutro |
+| `TRACE` | Diagnóstico exhaustivo | Gris/neutro |
+
+No convertir `WARNING` en `ERROR` por una configuración de componente ausente o incorrecta durante el descubrimiento. Una advertencia individual no bloquea el resto; el resultado agregado debe informar qué se completó, qué se omitió y qué falló.
+
+Los mensajes se emiten a través de una única API de eventos, sin `System.out`/`System.err` ad hoc en adaptadores. Las excepciones son la ayuda y los errores previos a la inicialización.
+
+## 3. Identidad y catálogo de mensajes
+
+Cada mensaje emitido por los componentes IASI tendrá un **código estable** y una plantilla de texto separada del código. La estructura del código es obligatoria:
+
+```text
+LLLNNMMM
+```
+
+- `LLL`: exactamente **tres letras mayúsculas** (`A` a `Z`); identifican la familia del mensaje. Podrán codificar tipo, bloque o ámbito según una clasificación corporativa que se aprobará por separado. **No se inventa en este documento una asignación cerrada de letras ni se confunde con la severidad del evento.**
+- `NN`: exactamente **dos cifras decimales** (`00` a `99`) que identifican el grupo de mensajes dentro de esa familia.
+- `MMM`: exactamente **tres cifras decimales** (`000` a `999`) que identifican el mensaje dentro del grupo.
+
+La forma válida responde a `^[A-Z]{3}[0-9]{2}[0-9]{3}$`, sin separadores. Ejemplo **ilustrativo y no reservado**: `CFG01003`.
+
+El código es independiente del idioma y no cambia por revisiones de la traducción. Un mismo código debe identificar el mismo significado funcional, con severidad y parámetros conocidos. No reutilizar un código retirado para otro evento. Debe existir un catálogo central que evite duplicados y documente código, significado, severidad y variables de interpolación.
+
+Los textos se resuelven a partir del **locale** de ejecución mediante catálogos de mensajes; se admite un idioma de reserva definido por la aplicación cuando no exista traducción. Las traducciones deben preservar los parámetros, su significado y cualquier dato técnico necesario para el diagnóstico. No construir textos traducibles mediante concatenación de fragmentos ni registrar secretos en sus parámetros. Las excepciones y salidas de terceros se etiquetarán con un evento/código IASI contextual, sin inventar códigos por ocurrencia.
+
+## 4. Formato de consola
+
+La salida de consola debe seguir exactamente **`HH:mm:ss - LLLNNMMM - Mensaje`**, donde el código siempre se muestra, independientemente de la severidad y del idioma.
+
+Ejemplos:
+
+```text
+19:54:12 - CFG01001 - Analizando configuraciones...
+19:54:13 - VMG01001 - Máquina iasi-tools configurada correctamente.
+19:54:13 - CFG01003 - iasi-work no contiene configuración. Se omite.
+19:54:14 - VMG02001 - No se pudo crear iasi-models.
+```
+
+- Los tipos de severidad deben poder reconocerse incluso sin colores; como mínimo `WARNING` y `ERROR` quedan identificados en los metadatos y en el archivo de log. La correspondencia entre letras del código y tipos/severidades queda pendiente de la taxonomía corporativa; no inferir la severidad a partir de ejemplos de códigos.
+- Los colores ANSI se emiten solo si la consola los soporta y son apropiados; los logs son texto **sin secuencias ANSI**.
+- Salida de errores a `stderr`, mensajes restantes a `stdout`.
+- La hora se registra en el momento del evento, no cuando se vuelca posteriormente.
+
+## 5. Verbosidad de consola
+
+| Modo | Eventos visibles |
+|---|---|
+| Normal | `INFO`, `SUCCESS`, `WARNING`, `ERROR` |
+| `-v` | Normal + `DEBUG` |
+| `-V` | Normal + `DEBUG` + `TRACE` |
+| `-s` | Solo `ERROR` |
+
+- `-v` y `-V` aumentan detalle; `-s` suprime mensajes informativos y `WARNING` **solo en consola**.
+- `-s` es incompatible con `-v` y `-V`, incluso en flags agrupados.
+- Solicitar `help` o `-h` muestra ayuda contextual sin iniciar una operación de negocio ni crear log de ella.
+
+## 6. Archivo de log
+
+Se crea un archivo de log para cada ejecución real, sin confundirlo con el directorio de las máquinas.
+
+Ubicación:
+
+1. `--log <directorio>` explícito.
+2. `defaults.log` del `setup.toml` válido que se haya cargado.
+3. CWD original.
+
+La ubicación es un **directorio**; los nombres de archivo los elige el sistema común, por ejemplo `iasi-setup-<acción>-<timestamp>.log`, con protección frente a colisiones. No crear automáticamente un subdirectorio `logs/` cuando rige CWD.
+
+Cada evento persistido incluye al menos fecha, hora, **código**, severidad/tipo, mensaje localizado y contexto del componente cuando exista. El código es obligatorio incluso para `DEBUG` y `TRACE` emitidos por IASI. Se registran al menos `INFO`, `SUCCESS`, `WARNING`, `ERROR` y `DEBUG`; `TRACE` puede habilitarse mediante configuración explícita. El log no contiene códigos ANSI y no pierde información por aplicar `-s`.
+
+Registrar arranque, acción, CWD, rutas efectivas, componentes seleccionados, componentes omitidos y sus causas, inicio/fin, comandos externos saneados, resultados de verificaciones y resumen final.
+
+Se deben proteger contraseñas, tokens y otros secretos **antes de escribir en cualquier destino**, también en excepciones y salidas de herramientas externas. Capturar stdout, stderr y código de salida real separadamente; la presencia de stderr no equivale por sí sola a fallo.
+
+Si no se puede crear/escribir el log, emitir un diagnóstico visible y no afirmar falsamente una operación verificada. Definir la política de bloqueo para acciones destructivas antes de implementarlas.
+
+## 7. Coherencia de estados y resultados
+
+- Las carpetas sin configuración reconocible y las configuraciones de componente incorrectas generan **`WARNING`**, y el componente se omite.
+- Una operación verificada puede emitir `SUCCESS`; no se muestra como `SUCCESS` una ejecución que solo se inició o terminó sin verificación.
+- El resumen de ejecución diferencia procesados, omitidos y fallidos; omitir componentes con avisos no equivale a fracaso de todas las operaciones.
+- Los mensajes de advertencia llevan causa y ubicación relativa o identificador del componente cuando sea posible.
+- El servicio común no altera la semántica de los eventos en función del modo de consola.
+
+## 8. Verificaciones
+
+1. Validar el formato `HH:mm:ss - LLLNNMMM - Mensaje`, código de ocho caracteres, grupos e identificadores numéricos con ceros iniciales, tipos y colores en consola compatible.
+2. Validar salida sin ANSI y con tipo identificable cuando no haya terminal compatible.
+3. Comprobar normal, `-v`, `-V`, `-s` y la coherencia del log bajo todos ellos.
+4. Verificar `WARNING` para carpeta sin configuración y para configuración incorrecta, sin bloquear otras carpetas.
+5. Verificar la precedencia `--log`, TOML, CWD y ausencia de escritura en el log de operaciones cuando solo se solicita ayuda.
+6. Verificar un registro independiente por ejecución, protección de secretos y correlación entre operaciones.
+7. Confirmar que el resultado final refleja correctamente éxitos, omisiones y fallos.
+
+## 9. Criterios de catálogo e internacionalización
+
+- Verificar que un mismo evento conserva el mismo código en dos idiomas y que solo cambia el texto localizado.
+- Rechazar códigos duplicados, mal formados o sin plantilla, y traducciones con parámetros incompatibles.
+- Registrar un idioma de reserva documentado para traducciones ausentes.
+- Garantizar que consola y log comparten el código original del evento, sin inventar otro al renderizarlo.
+- La estructura interna de las tres letras y el catálogo definitivo se someterán a una especificación corporativa aparte antes de dar por estabilizada la numeración.

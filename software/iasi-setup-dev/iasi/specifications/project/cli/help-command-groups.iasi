@@ -1,0 +1,53 @@
++++
+id = "CLI-005"
+title = "Separate actions and workflows in help"
+type = "requirement"
+status = "draft"
+scope = "project"
+project = "iasi-dev-tools"
+component = "cli"
+version = "0.1.2"
++++
+
+# Separate actions and workflows in help
+
+## Requirement
+
+The general `iasi-dev help` command output MUST distinguish **ACTIONS** and **WORKFLOWS** as separate command groups.
+
+## Expected behavior
+
+```text
+USAGE
+  iasi-dev <action> [flags] [parameters] [targets...]
+  iasi-dev workflow <action> [flags] [parameters] [targets...]
+
+ACTIONS
+  Direct commands that each perform one operation.
+
+WORKFLOWS
+  Commands that describe or orchestrate composite flows.
+
+FLAGS
+  ...
+
+PARAMETERS
+  ...
+
+TARGETS
+  ...
+```
+
+The labels above express the required grouping; exact typography and translated descriptions may follow the CLI's presentation and internationalization conventions.
+
+`iasi-dev workflow <action> -h` MUST show contextual help for the named workflow, without presenting unrelated direct actions as workflows.
+
+The help for one direct action or one workflow MUST explain only that command's applicable syntax and arguments, using the defined categories.
+
+## Acceptance
+
+- General help displays two invocation forms and separate ACTIONS/WORKFLOWS groups.
+- Help for a named workflow focuses on that workflow rather than unrelated direct actions.
+- Command-specific help follows the same category distinction.
+
+The only help flag is `-h`. The CLI MUST NOT document, suggest or accept `--help` as an alias. General help is a command (`iasi-dev help`), not a long flag.

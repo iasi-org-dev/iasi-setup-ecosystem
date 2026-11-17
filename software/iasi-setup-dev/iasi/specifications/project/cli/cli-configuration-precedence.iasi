@@ -1,0 +1,106 @@
++++
+id = "SETUP-CLI-002"
+type = "specification"
+title = "Resolución de parámetros CLI y precedencia de configuración"
+scope = "project"
+project = "iasi-setup-dev"
+component = "cli"
+status = "draft"
+version = "0.1.0"
+created = 2026-11-17
++++
+
+# Resolución de parámetros CLI y precedencia de configuración
+
+## 1. Objetivo
+
+Definir cómo `iasi-setup-dev` obtiene, combina, valida y aplica los valores de sus parámetros. Esta especificación describe un contrato de comportamiento; no impone una biblioteca de análisis de argumentos ni un diseño interno concreto.
+
+Las **definiciones de máquinas** son datos de entrada del orquestador y se localizan mediante `--definitions`. No deben confundirse con la configuración de los **parámetros del CLI**, que puede proceder de un archivo indicado mediante `--config`.
+
+## 2. Precedencia de valores
+
+Las fuentes se aplican en el siguiente orden, de **menor a mayor prioridad**:
+
+1. **Valores codificados en el programa.** Para los parámetros de directorio `definitions`, `machines` y `logs`, el valor inicial es `.`.
+2. **Recurso de configuración interno del programa, si existe.** Por ejemplo, un TOML empaquetado dentro del JAR. Sus claves corresponden a parámetros aceptados por la aplicación.
+3. **Archivo externo indicado por `--config`, si se especifica.** Permite sustituir valores sin modificar el ejecutable.
+4. **Variables de entorno, si se indica un prefijo.** Solo se consideran las variables que correspondan a parámetros declarados y que utilicen el prefijo seleccionado.
+5. **Argumentos explícitos de la línea de comandos.** Tienen la máxima prioridad.
+
+Cada fuente sobrescribe **solo** los parámetros que proporciona. Los demás conservan el valor obtenido en niveles anteriores. La ausencia de una fuente opcional no impide aplicar los restantes niveles.
+
+El archivo interno y el externo contienen valores de parámetros; **no declaran nuevos parámetros aceptados**. El conjunto de parámetros, sus tipos y sus restricciones pertenece al contrato de la aplicación.
+
+## 3. Parámetros relevantes
+
+| Parámetro CLI | Clave de configuración | Significado |
+|---|---|---|
+| `--definitions` | `definitions` | Directorio de definiciones de máquinas |
+| `--machines` | `machines` | Directorio de almacenamiento de máquinas |
+| `--logs` | `logs` | Directorio de registros |
+| `--config` | (control de carga) | Selecciona un archivo externo de valores de parámetros |
+
+El mecanismo de selección del **prefijo de entorno** debe reconocerse durante el análisis preliminar. Su sintaxis exacta se establecerá en el contrato CLI aplicable; esta especificación no presupone un nombre de opción que no esté confirmado.
+
+`--config` y el selector de prefijo son **opciones de control de la resolución**. No designan definiciones de máquinas ni sustituyen a `--definitions`.
+
+## 4. Procesamiento en dos fases
+
+### Fase A. Análisis preliminar (bootstrap)
+
+1. Capturar el directorio de trabajo actual del proceso (CWD) como base de resolución de las rutas relativas.
+2. Examinar los argumentos originales para localizar `--config` y, cuando exista, el selector del prefijo de entorno.
+3. Validar suficientemente dichas opciones para poder localizar las fuentes configurables. No ejecutar acciones operativas en esta fase.
+
+### Fase B. Resolución completa
+
+1. Inicializar los valores definidos por el programa.
+2. Superponer el recurso interno, si existe.
+3. Superponer el archivo externo identificado en la fase A, si se ha indicado.
+4. Superponer las variables de entorno que correspondan al prefijo seleccionado, si se ha indicado.
+5. Superponer los argumentos explícitos restantes de la línea de comandos.
+6. Validar **el conjunto completo**: nombres admitidos, tipos, restricciones y combinaciones incompatibles.
+7. **Solo después de validar**, aplicar los valores resultantes a la ejecución. Ante un fallo, no dejar una configuración aplicada parcialmente.
+
+El análisis preliminar no sustituye al análisis y validación completos de la segunda fase.
+
+## 5. Directorio actual y rutas
+
+El valor `.` representa el **directorio de trabajo desde el que se inicia el proceso**, no la ubicación del JAR ni la raíz del repositorio. Las rutas relativas se interpretan respecto del CWD capturado al iniciar la ejecución.
+
+Si ninguna fuente redefine `definitions`, `machines` o `logs`, los tres tienen valor efectivo `.`.
+
+## 6. Ejemplo de archivo de valores
+
+```toml
+# Ejemplo, tanto para un recurso interno como para un archivo externo
+# (las claves deben estar declaradas por la aplicación).
+definitions = "./definitions"
+machines = "C:/Machines"
+logs = "./logs"
+verbose = false
+force = false
+```
+
+Este ejemplo no modifica los valores codificados en el programa: representa **otra capa** que puede sobrescribirlos. El fichero `defaults.toml` ya existente en el proyecto puede servir como fuente del recurso interno durante la construcción, si así lo establece el empaquetado.
+
+## 7. Verificación mínima
+
+- Sin fuentes opcionales ni argumentos, `definitions`, `machines` y `logs` resuelven a `.`.
+- Un valor del recurso interno sustituye al valor codificado únicamente para su clave.
+- Un valor del archivo `--config` sustituye al del recurso interno para la misma clave.
+- Una variable de entorno seleccionada sustituye al archivo externo para la misma clave.
+- Un argumento explícito sustituye a todas las fuentes anteriores para su clave.
+- Las claves ausentes en una capa conservan el valor previo.
+- La fase preliminar identifica las fuentes sin iniciar acciones operativas.
+- Los valores se validan íntegramente antes de su aplicación.
+- Las rutas relativas se resuelven respecto del CWD original.
+
+## 8. Aspectos que requieren definición separada
+
+Esta especificación **no fija todavía**: el nombre y formato exactos del selector de prefijo de entorno, la regla que transforma claves en nombres de variables de entorno, el tratamiento de claves desconocidas, los diagnósticos por archivos externos inexistentes y la política ante parámetros repetidos. Estas decisiones deben documentarse en el contrato CLI correspondiente antes de implementarse sin ambigüedad.
+
+## 9. Alcance
+
+Aplicable al CLI de `software/iasi-setup-dev/`. No requiere implementar un analizador universal ni reorganizar por sí sola el repositorio. Las modificaciones del proyecto, de sus tareas y de sus especificaciones existentes deberán planificarse como una actuación separada.

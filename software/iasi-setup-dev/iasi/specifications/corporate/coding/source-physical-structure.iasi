@@ -1,0 +1,23 @@
++++
+id = "CORP-CODE-LAYOUT-001"
+title = "Real source line breaks and readable structure"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.1.0"
++++
+
+# Real source line breaks and readable structure
+
+## Rule
+
+- **MUST:** Generated code preserve actual physical newline characters and indentation according to its language's formatting specification.
+- **MUST NOT:** Collapse an entire source file, multiple statements or multiple blocks into one physical line.
+- **MUST NOT:** Write literal `\\n` or `\\r\\n` sequences in place of physical line terminators.
+- **MUST:** Distinguish encoding/newline failures from formatting problems, and verify both.
+- **MUST:** Enforce a non-mutating formatting check at QA Gate when a compatible language formatter is available.
+- **SHOULD:** Report suspicious one-line source files for inspection rather than claiming that line count alone proves corruption.
+
+## Verification scenario
+
+A generated Java class containing several imports, methods, and statements must display as multiple correctly indented lines in VS Code and Notepad++. For example, a one-line `if (condition) action();` remains permitted by `CORP-JAVA-FMT-001`, while several unrelated statements on one line do not.

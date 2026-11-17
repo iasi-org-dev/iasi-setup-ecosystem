@@ -1,0 +1,22 @@
++++
+id = "CORP-JAVA-CON-002"
+title = "Java control-flow nesting constraints"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
++++
+
+# Java control-flow nesting constraints
+
+## Requirement
+
+- Prefer no more than **2** nested conditionals.
+- **MUST:** No more than **3** nested control-flow levels in a method; violations block the applicable QA Gate unless an exception is approved.
+- Prefer guard clauses and decomposition into coherent named operations to avoid deep nesting.
+
+## Counting rule
+
+Count each nested `if`, `else` branch with a block, `switch`, `for`, `while`, `do`, `catch` and conditional expression as a control-flow level. An `else if` continuation belongs to the same decision chain rather than adding a nested level. A `case` arm alone does not increment depth unless it introduces another control construct. `try` and `finally` do not independently increment conditional nesting. Lambda bodies and local functions are evaluated separately when independently analyzable. Count the maximum nesting depth over every path within each method. An approved static analysis implementation MUST document any semantic differences and flag them for review before the QA Gate adopts it.
+
+Three levels are the approved ceiling; two remain the recommended design target.

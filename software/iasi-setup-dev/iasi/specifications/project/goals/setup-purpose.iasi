@@ -1,0 +1,27 @@
++++
+id = "PRJ-GOL-001"
+type = "goal"
+title = "Propósito de IASI Setup Ecosystem"
+scope = "project"
+status = "draft"
+version = "0.1.0"
+source = "iasi/inputs/externals/IASI-Setup-Ecosystem-Business-Case.md"
++++
+
+# Propósito de IASI Setup Ecosystem
+
+## Objetivo
+
+Proporcionar una base modular, extensible, reproducible y verificable para definir, construir, reconstruir y evolucionar entornos de ingeniería.
+
+## Casos de uso
+
+1. Incorporar nuevos participantes al entorno IASI-DEV con un esfuerzo inicial razonable.
+2. Permitir crear proyectos independientes a partir de recursos de IASI, sin imponer dependencias posteriores.
+3. Reconstruir inicialmente un entorno funcionalmente equivalente al de referencia IASI.
+
+## Criterios de evaluación
+
+El entorno producido debe permitir comenzar actividades reales de ingeniería y verificar sus capacidades esenciales. Se preservará la posibilidad de adaptación y evolución sin quedar ligado a una máquina concreta.
+
+Este documento expresa objetivos de producto, no determina todavía arquitectura detallada ni tecnología de ejecución.

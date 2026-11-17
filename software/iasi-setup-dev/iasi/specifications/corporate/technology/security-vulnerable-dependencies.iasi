@@ -1,0 +1,24 @@
++++
+id = "CORP-TECH-SEC-001"
+title = "Vulnerability handling in frozen dependencies"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
+related = ["CORP-TECH-VER-001"]
++++
+
+# Vulnerability handling in frozen dependencies
+
+## Requirements
+
+- **SEC-001 (MUST):** Evaluate known vulnerabilities affecting software actually used by the project, including those disclosed after development or release.
+- **SEC-002 (MUST):** Assess applicability, exploitability, severity and exposure; a vulnerability listing does not automatically mean the project is exploitable.
+- **SEC-003 (MUST):** Remediate confirmed relevant vulnerabilities according to risk and the corporate response policy, preferably through verified compatible patch releases.
+- **SEC-004 (MUST):** If there is no safe patch within the frozen line, assess an approved baseline exception, a replacement, or verified mitigation. An unresolved risk needs an explicit risk decision and cannot be silently marked compliant.
+- **SEC-005 (MUST):** QA must evaluate security findings as well as version-line compliance; passing either check alone is insufficient.
+- **SEC-006 (SHOULD):** Re-evaluate software inventories when new advisories become available, not only at initial project approval.
+
+## Evidence
+
+Record affected component and effective version, advisory, applicability assessment, remediation decision and validation results outside release product artifacts.

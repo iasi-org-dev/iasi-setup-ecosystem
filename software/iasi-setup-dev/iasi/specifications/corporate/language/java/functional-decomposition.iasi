@@ -1,0 +1,112 @@
++++
+id = "CORP-JAVA-STR-001"
+title = "Structured programming and functional decomposition"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
+language = "java"
+related = ["CORP-JAVA-FMT-001", "CORP-JAVA-CON-001", "CORP-JAVA-CON-002", "CORP-JAVA-SW-001"]
++++
+
+# Structured programming and functional decomposition
+
+## Principle
+
+Decompose a program into **coherent logical responsibilities**, not arbitrary fragments sized to meet a line-count target. Each abstraction level describes **what happens and in what order**, while subordinate methods implement **how it happens**.
+
+## Normative rules
+
+- **CORP-JAVA-STR-001.1 (MUST):** Top-level orchestration exposes a readable sequence of logical operations and their success/failure dependencies.
+- **CORP-JAVA-STR-001.2 (SHOULD):** Keep each orchestration level at a consistent abstraction level. Delegate low-level operations to well-named methods.
+- **CORP-JAVA-STR-001.3 (MUST):** Group operations by cohesive responsibility, rather than mechanically splitting methods by length.
+- **CORP-JAVA-STR-001.4 (SHOULD):** Prefer structured sequence, selection, and iteration. Avoid unnecessary nesting and implicit side effects in conditions.
+- **CORP-JAVA-STR-001.5 (SHOULD):** Use `if`/`if-else` for binary choices. Prefer `switch` for multiple alternatives over the same selector, when the conditions permit it.
+- **CORP-JAVA-STR-001.6 (MUST):** A one-statement `if` uses no braces and stays on one line; multi-statement branches use braces, line breaks and indentation (see `CORP-JAVA-FMT-001`).
+- **CORP-JAVA-STR-001.7 (MUST):** Make operation results and continuation criteria explicit. On failure, do not accidentally continue dependent operations.
+- **CORP-JAVA-STR-001.8 (SHOULD):** Use meaningful method names reflecting the operation's purpose, not an implementation technique or arbitrary numbering.
+- **CORP-JAVA-STR-001.9 (SHOULD):** Keep success summaries and final status reporting at the orchestration level where the outcome is known, or delegate presentation without exposing low-level details.
+
+- **CORP-JAVA-STR-001.10 (SHOULD):** Keep `switch` arms declarative and delegate nontrivial processing to well-named methods; see `CORP-JAVA-SW-001`.
+
+## Reference example: high-level orchestration
+
+*Illustrative pseudocode in Java style; helper signatures and error policy depend on the project.*
+
+```java
+public static void main(String[] args) {
+    initialize(args);
+
+    int rc = processX();
+
+    if (rc == OK) rc = processY();
+
+    printSummary();
+    System.exit(rc);
+}
+```
+
+The reader understands the whole flow without reading the implementation. The example assumes `initialize` stops normal execution on failure under an explicitly defined initialization policy. Production code MUST define and test that policy; it MUST NOT accidentally continue after invalid arguments or configuration.
+
+## Next level: initialization is one logical responsibility
+
+```java
+private static void initialize(String[] args) {
+    loadConfiguration();
+    parseArguments(args);
+    validateConfiguration();
+    prepareEnvironment();
+}
+```
+
+Although it has several internal stages, **initialization is a single responsibility from the caller's perspective**. The lower-level steps may themselves be decomposed where useful.
+
+## Next level: a process with sequential dependencies
+
+```java
+private static int processX() {
+    int rc = loadData();
+
+    if (rc == OK) rc = validateData();
+    if (rc == OK) rc = transformData();
+    if (rc == OK) rc = saveResults();
+
+    return rc;
+}
+```
+
+Each step depends on successful completion of its predecessor; error handling is explicit and does not bury the main path under nested blocks. Alternative designs (such as early return) are valid when they improve clarity and satisfy the same behavioral contract.
+
+## Anti-example: mixed abstraction levels
+
+```java
+public static void main(String[] args) {
+    Properties properties = new Properties();
+    // ... file lookup, stream creation, parsing and validation ...
+    int rc = processX();
+    // ... detailed processing and output formatting ...
+}
+```
+
+This mixes file I/O, orchestration and presentation details, obscuring the program's logical structure. It is an anti-pattern when those details can be coherently delegated.
+
+## Multiway branching
+
+```java
+switch (mode) {
+    case "verify" -> verify();
+    case "build" -> build();
+    case "publish" -> publish();
+    default -> rejectUnknownMode(mode);
+}
+```
+
+Use `switch` when alternatives share a selector. Do not force it on independent Boolean predicates, non-equivalent ranges or complex logical conditions.
+
+## Verification / QA
+
+1. Reviewing `main` or the orchestration entry point reveals the logical process in execution order.
+2. Each extracted method has a coherent purpose; arbitrary micro-methods are not rewarded.
+3. A failed operation prevents dependent work, while summary/final reporting follows the specified error policy.
+4. One-statement `if` formatting conforms to `CORP-JAVA-FMT-001`.
+5. An implementation review or suitable static checks assess logical decomposition; automatic formatting alone cannot prove these design requirements.

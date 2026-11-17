@@ -1,18 +1,53 @@
-.Rproj.user/
+# ==============================================================================
+# Generated IASI / Quarto artifacts
+# ==============================================================================
+
+**/_outputs/
+**/_publish/
+**/.quarto/
+**/_book/
+**/_site/
+**/_cache/
+**/.iasi/
+
+# Quarto/R generated side directories
+**/*_files/
+**/*.quarto_ipynb
+
+# ==============================================================================
+# R and RStudio local state
+# ==============================================================================
+
+**/.Rproj.user/
 .Rhistory
-.quarto/
-_freeze/
-_outputs/
-_publish/
-release/
-**/logs/
+.RData
+.Ruserdata
+
+# ==============================================================================
+# Local configuration and editor files
+# ==============================================================================
+
+_*.local
+*~
+*.swp
+*.swo
+*.tmp
+*.bak
+*.zip
+~$*
+
+# ==============================================================================
+# Operating system
+# ==============================================================================
+
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ==============================================================================
+# Logs and local agent state
+# ==============================================================================
+
 *.log
+.codex*
 .Rproj.user
-
-/config/iasi-models/gpu/
-/config/iasi-models/services/gpu/
-
-# Hyper-V / generated virtual machines: never track their disks.
-*.vhd
-*.vhdx
-*.avhdx

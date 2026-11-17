@@ -1,0 +1,21 @@
++++
+id = "CORP-QUAL-CYC-001"
+title = "Cyclomatic complexity"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
++++
+
+# Cyclomatic complexity
+
+## Requirement
+
+- Cyclomatic complexity (McCabe) MUST be measured for supported languages at method/function level wherever the analyzer supports this granularity.
+- The corporate reference threshold is **10 (approved maximum per function/method)**, a binding QA limit where the configured analyzer supports function-level results.
+- Applicable language-specific rules MUST document the analyzer, counting conventions, thresholds and evidence.
+- QA decisions MUST be based on agreed thresholds and documented exceptions, not merely a project-wide sum.
+
+## Verification
+
+Keep analysis reports outside the release product. IASI owns the policy; analyzers such as SonarQube produce the evidence.

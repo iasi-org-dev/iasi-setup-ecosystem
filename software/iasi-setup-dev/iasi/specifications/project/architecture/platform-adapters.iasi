@@ -1,0 +1,18 @@
++++
+id = "PRJ-ARC-003"
+type = "design"
+title = "Adaptadores de plataforma y virtualización"
+scope = "project"
+status = "draft"
+version = "0.1.0"
++++
+
+# Adaptadores de plataforma y virtualización
+
+## Propuesta para revisión
+
+Definir contratos para capacidades del host, ciclo de vida de máquinas virtuales, ejecución de tareas y verificación del estado conseguido.
+
+La implementación inicial podrá usar Hyper-V en Windows. La arquitectura debe permitir futuros adaptadores Linux y otros hipervisores sin cambiar los contratos de orquestación.
+
+Distinguir capacidad diseñada de capacidad implementada. Las extensiones futuras no requieren implementarse en la primera entrega.

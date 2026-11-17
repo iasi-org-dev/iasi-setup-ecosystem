@@ -1,0 +1,16 @@
++++
+id = "CORP-WF-IN-001"
+title = "External source materials are an archive, not task inputs"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.2.0"
++++
+
+# External source materials are an archive, not task inputs
+
+## Rule
+- **MUST:** Treat `iasi/inputs/externals/` as the portal preserving original external material in its source formats.
+- **MUST NOT:** Assume all documents in that directory are execution inputs to every task.
+- **SHOULD:** Before formalizing external material into specifications, assess coherence and completeness; any deliberate bypass must be recorded.
+- **MUST:** Derived specifications are the governed source for implementation once approved. External material may remain relevant for provenance and context.

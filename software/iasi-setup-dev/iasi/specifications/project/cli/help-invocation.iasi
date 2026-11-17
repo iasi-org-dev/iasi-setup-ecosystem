@@ -1,0 +1,45 @@
++++
+id = "CLI-006"
+title = "General help command and contextual help flag"
+type = "requirement"
+status = "draft"
+scope = "project"
+project = "iasi-dev-tools"
+component = "cli"
+version = "0.1.2"
++++
+
+# General help command and contextual help flag
+
+## Requirement
+
+The general help entry point MUST be the command `iasi-dev help`.
+
+The only supported help flag MUST be `-h`. This flag MUST provide **contextual help for the selected action**, rather than acting as an alias for the general `help` command. The long form `--help` MUST NOT be supported, documented or suggested.
+
+## Supported invocation forms
+
+```text
+iasi-dev help                   # General CLI help
+iasi-dev <action> -h            # Contextual help for the direct action
+iasi-dev workflow <action> -h   # Contextual help for the named workflow action
+```
+
+## Contextual semantics
+
+- A direct action's `-h` MUST describe that action's behavior, flags, parameters and targets, as applicable.
+- A workflow action's `-h` MUST describe that particular workflow and its applicable flags, parameters and targets.
+- Contextual help MUST NOT be replaced by the general CLI help merely because `-h` is present.
+- `help` is a command; `-h` is a contextual flag. They are not aliases.
+
+## Not yet defined
+
+The behavior of bare `iasi-dev -h` and `iasi-dev workflow -h` remains **unspecified**. No behavior for those forms may be inferred from this specification.
+
+## Acceptance criteria
+
+1. `iasi-dev help` displays general help with ACTIONS and WORKFLOWS differentiated.
+2. `iasi-dev <action> -h` displays help for that direct action.
+3. `iasi-dev workflow <action> -h` displays help for that named workflow.
+4. Neither help output nor parser documentation offers `--help` as an alias.
+5. The implementation does not assume that `-h` is a general-help alias.

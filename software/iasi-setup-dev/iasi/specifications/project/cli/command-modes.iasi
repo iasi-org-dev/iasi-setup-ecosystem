@@ -1,0 +1,45 @@
++++
+id = "CLI-001"
+title = "Direct actions and workflow namespace"
+type = "requirement"
+status = "draft"
+scope = "project"
+project = "iasi-dev-tools"
+component = "cli"
+version = "0.1.2"
++++
+
+# Direct actions and workflow namespace
+
+## Requirement
+
+The `iasi-dev` command-line interface MUST distinguish two invocation forms:
+
+```text
+iasi-dev <action> [flags] [parameters] [targets...]
+iasi-dev workflow <action> [flags] [parameters] [targets...]
+```
+
+The `workflow` token identifies a **command namespace**, not a direct action. The action following `workflow` belongs to that namespace.
+
+## Constraints
+
+- The two forms MUST be distinguishable by the CLI parser and help system.
+- Each mode MAY define its own available commands, flags, parameters and targets.
+- The CLI MUST NOT silently treat a workflow invocation as a direct action or vice versa.
+- Command definitions MUST drive both dispatch and help generation to avoid inconsistencies.
+
+## Help invocation
+
+- General help: `iasi-dev help`.
+- Help flag: `-h` (never `--help`).
+- Contextual help for direct actions: `iasi-dev <action> -h`.
+- Contextual help for workflow actions: `iasi-dev workflow <action> -h`.
+- No behavior is specified yet for `iasi-dev -h` or `iasi-dev workflow -h`.
+
+## Acceptance
+
+- `iasi-dev help` presents both invocation forms separately.
+- `iasi-dev <action> -h` presents help for that direct action.
+- `iasi-dev workflow <action> -h` presents help for that workflow action.
+- Help and parsing distinguish `iasi-dev <action>` from `iasi-dev workflow <action>`.

@@ -1,0 +1,76 @@
++++
+id = "TASK-0002"
+type = "task"
+title = "Application Return Codes"
+status = "pending"
+priority = "high"
+project = "iasi-setup-ecosystem"
+component = "software/iasi-setup-dev"
+version = "0.1.0"
++++
+
+# TASK-0002: Application Return Codes
+
+## Objective
+
+Implement and verify the IASI return-code (RC) contract in the Java application `software/iasi-setup-dev/`. Every program invocation must return the accumulated IASI RC as the process exit status, including successful execution and controlled failures.
+
+## Applicable specification
+
+- `specifications/corporate/runtime/messages-return-codes.iasi` (COR-MSG-RC-001, version 0.1.1).
+- Applicable corporate Java, QA, and workflow specifications.
+
+Do not modify corporate specifications as part of this task. If implementation exposes a contradiction, report it for review.
+
+## RC contract
+
+| Name | Value | Meaning |
+|---|---|---|
+| `OK` | `0x00` | Successful result without marked circumstances |
+| `NothingToDo` | `0x01` | No applicable work |
+| `Info` | `0x02` | Relevant informational circumstance |
+| `Warning` | `0x04` | Non-blocking warning |
+| `Attention` | `0x08` | Attention required, not an error |
+| `Error` | `0x10` | Error |
+| `Severe` | `0x20` | Severe error |
+| `Fatal` | `0x40` | Fatal error |
+
+- Initialize the RC to `OK` and combine independent circumstances using bitwise OR.
+- Do not define individual names or meanings for composite values; combinations arise naturally.
+- RC values below `0x10` are non-erroneous. Defined erroneous values carry at least one of the bits `0x10`, `0x20`, `0x40`.
+- Do not implement `Skip = 0x100`; `0x80` remains reserved.
+- A normal informational console message does **not** activate `Info`; only a relevant execution circumstance does.
+- A message's severity and its RC impact are separate concerns.
+
+## Implementation requirements
+
+1. Implement a small, reusable, type-safe Java representation of the established RC values without introducing additional return-code semantics.
+2. Allow accumulation and propagation of RCs from internal operations to the application entry point.
+3. Ensure the top-level application exit status matches the final accumulated RC. Keep process termination at the application boundary; library components must not call `System.exit`.
+4. Handle controlled failures with an appropriate defined RC; do not silently report success after an error.
+5. Preserve existing CLI, launcher, logging and OS-detection functionality. Do not reimplement the future universal CLI parser.
+6. Do not substitute external processes' native exit codes for IASI RCs without an explicit interpretation/mapping.
+7. Apply the project's established directory layout: source and tests under `software/iasi-setup-dev/`, generated files and QA evidence under its own `outputs/`. Do not promote to the repository-wide `release/`.
+
+## Verification and acceptance criteria
+
+- Automated tests cover each defined RC and bitwise-OR accumulation, including non-erroneous and erroneous combinations.
+- A normal progress/console message leaves the RC unchanged.
+- A relevant informational circumstance sets `Info` even when execution succeeds.
+- A no-work execution returns `NothingToDo` when appropriate.
+- Controlled failures result in a nonzero error RC.
+- Integration tests launch the executable as a separate process and check its actual exit status, not merely an in-process return value.
+- The process returns the accumulated RC unmodified, and no internal component terminates the JVM.
+- Existing TASK-0001 functionality and tests continue to pass.
+- Save test outputs and a `qa-report.md` in the corresponding task area under `software/iasi-setup-dev/outputs/`.
+
+## Scope exclusions
+
+- No asynchronous message queue or messaging Singleton implementation.
+- No new message-code catalog or new RC values.
+- No changes to task approval workflows.
+- No release promotion.
+
+## Workflow
+
+This task is a proposal with `status = "pending"`. Approval must be recorded through the agreed task-approval command, which updates the task metadata (`status`, `approver`, `date`) and moves the task to `tasks/approved/`. Do not mark the task approved, in progress, or done without the corresponding workflow transition.

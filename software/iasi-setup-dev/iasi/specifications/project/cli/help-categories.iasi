@@ -1,0 +1,31 @@
++++
+id = "CLI-004"
+title = "Separate flags parameters and targets in help"
+type = "requirement"
+status = "draft"
+scope = "project"
+project = "iasi-dev-tools"
+component = "cli"
+version = "0.1.2"
++++
+
+# Separate flags, parameters and targets in help
+
+## Requirement
+
+The CLI help system MUST present the following argument categories as distinct sections:
+
+- **FLAGS:** switches or modifiers that do not require a value. The help flag is `-h`; `--help` is not supported.
+- **PARAMETERS:** named options that accept a value.
+- **TARGETS:** positional objects on which the action or workflow operates.
+
+## Constraints
+
+- Flags, parameters and targets MUST NOT be merged into an undifferentiated options listing.
+- Each entry SHOULD show its supported syntax and a concise description.
+- The categories MUST be used consistently in general, action-specific and workflow-specific help, where applicable.
+- Empty categories MAY be omitted in command-specific help.
+
+## Acceptance
+
+Help for a representative command with all three argument categories displays three clearly labeled sections and places every defined argument in the correct category.

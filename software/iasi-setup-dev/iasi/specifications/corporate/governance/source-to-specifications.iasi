@@ -1,0 +1,18 @@
++++
+id = "COR-GOV-002"
+type = "process"
+title = "De entradas externas a especificaciones"
+scope = "corporate"
+status = "draft"
+version = "0.1.0"
++++
+
+# De entradas externas a especificaciones
+
+## Contrato
+
+`inputs/externals/` almacena materiales originales en formato libre. `inputs/inferred/` puede almacenar inferencias identificadas como tales. Ninguna de ambas clases se convierte en norma automáticamente.
+
+Las especificaciones derivadas deberán identificar su fuente, separar hechos de hipótesis y mantener explícitas las cuestiones pendientes. Una revisión humana o un proceso autorizado determinará cuándo una propuesta pasa a estar aprobada.
+
+No modificar entradas externas para acomodarlas a la especificación inferida. Mantener el diseño y conocimiento reutilizables separados de la implementación particular.

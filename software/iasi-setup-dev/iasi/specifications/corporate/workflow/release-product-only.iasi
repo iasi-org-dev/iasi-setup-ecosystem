@@ -1,0 +1,18 @@
++++
+id = "CORP-WF-REL-001"
+title = "Release contains approved product only"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.2.0"
+related = ["CORP-WF-QA-001"]
++++
+
+# Release contains approved product only
+
+## Rule
+- **MUST:** Use the project-root `release/` for approved, ready-to-consume products.
+- **MUST NOT:** Copy scratch directories, tool caches, compilation intermediates, QA reports or promotion logs into `release/`.
+- **MAY:** Include required runtime dependencies, manifests, license notices and user/product documentation when they are part of the deliverable.
+- **MUST:** Make each released product identifiable and reproducible from its approved baseline and controlled dependencies.
+- **MUST:** Keep QA and promotion traces outside `release/`; their existence or retention is defined by the relevant workflow.

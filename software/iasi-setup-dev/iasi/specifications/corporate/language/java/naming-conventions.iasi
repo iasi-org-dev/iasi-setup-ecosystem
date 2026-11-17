@@ -1,0 +1,43 @@
++++
+id = "CORP-JAVA-NAME-001"
+title = "Java identifier naming conventions"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
+language = "java"
+related = ["CORP-JAVA-STR-001", "CORP-JAVA-FMT-001"]
++++
+
+# Java identifier naming conventions
+
+## Rules
+
+- **CORP-JAVA-NAME-001.1 (MUST):** Use **lowerCamelCase** for method names, fields, local variables and parameters.
+- **CORP-JAVA-NAME-001.2 (MUST):** Use **UpperCamelCase** for classes, interfaces, enums and record types, following Java type conventions.
+- **CORP-JAVA-NAME-001.3 (MUST):** Use **UPPER_SNAKE_CASE** for conventional `static final` constants.
+- **CORP-JAVA-NAME-001.4 (MUST):** Use lower-case package names; choose descriptive names, avoiding abbreviations without a clear domain meaning.
+- **CORP-JAVA-NAME-001.5 (SHOULD):** Name methods for the logical operation they perform, not the implementation technique. Avoid generic `doStuff`, `process1` and artificial fragmentation.
+- **CORP-JAVA-NAME-001.6 (MUST):** Apply naming conventions to generated and test code as well as hand-written code.
+
+## Example
+
+```java
+package org.iasi.plugins;
+
+public final class TaskProcessor {
+    private static final int MAX_RETRIES = 3;
+
+    private int completedTasks;
+
+    public int processTask(TaskDefinition taskDefinition) {
+        int returnCode = validateTask(taskDefinition);
+
+        if (returnCode == OK) returnCode = executeTask(taskDefinition);
+
+        return returnCode;
+    }
+}
+```
+
+The preference for camelCase does not override Java's customary class and constant naming patterns.

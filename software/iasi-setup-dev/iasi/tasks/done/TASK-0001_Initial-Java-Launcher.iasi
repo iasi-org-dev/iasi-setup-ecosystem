@@ -1,0 +1,182 @@
++++
+id = "TASK-0001"
+type = "task"
+title = "Java launcher bootstrap, CLI parsing and OS detection"
+priority = "high"
+project = "iasi-setup-ecosystem"
+component = "launcher"
+version = "0.1.0"
+status = "approved"
+approver = "javier"
+date = 2026-11-17T18:30:00+01:00
++++
+
+# TASK-0001: Initial Java Launcher
+
+## Objective
+
+Implement the initial executable foundation of the IASI Setup Ecosystem orchestrator.
+
+This task covers three capabilities:
+
+1. Java application bootstrap.
+2. Command-line argument parsing and validation.
+3. Host operating system identification.
+
+No machine provisioning or installation is required.
+
+## Applicable specifications
+
+Read and apply the relevant specifications under `iasi/specifications/`, including:
+
+- Java language and programming standards.
+- Launcher and orchestrator contract.
+- Messages, logging and internationalization.
+- Quality, security and verification requirements.
+
+The implementation must respect the existing `.iasi` specification format and applicable corporate conventions.
+
+Do not modify specifications.
+
+## 1. Java bootstrap
+
+- Use Java 25 LTS.
+- Use Maven as the initial build system.
+- Keep the architecture independent of Maven.
+- Provide an executable JAR.
+- Establish a modular architecture suitable for extending the orchestrator.
+- Avoid unnecessary external dependencies.
+
+## 2. Command-line processing
+
+Implement the command-line contract defined in the specifications.
+
+Supported flags:
+
+- `-h`: contextual help.
+- `-v`: verbose.
+- `-V`: very verbose.
+- `-s`: silent.
+- `-f`: force.
+
+Support grouped flags, such as `-vf`.
+
+Supported parameters:
+
+- `--config <directory>`
+- `--machines <directory>`
+- `--log <directory>`
+
+Implement argument validation, incompatible flags and contextual help.
+
+`help` is a reserved contextual action, not a long parameter.
+
+Examples:
+
+```text
+iasi-setup help
+iasi-setup workflow help
+iasi-setup create -h
+```
+
+Do not implement machine creation or workflow execution in this task. Operational actions may be recognized as future functionality but must not execute placeholder operations that report success.
+
+Resolve directory defaults and log location according to the applicable specifications.
+
+Do not implement UNICLAP or the proposed universal command-line model.
+
+## 3. Operating system identification
+
+Implement an independent host platform detection component.
+
+Initially recognize:
+
+- Microsoft Windows.
+- GNU/Linux.
+- macOS.
+- Unsupported or unknown operating systems.
+
+Expose a structured platform description including:
+
+- Operating system family.
+- Operating system name.
+- Operating system version.
+- Hardware architecture.
+- Relevant runtime information.
+
+Do not assume that every detected platform supports the same virtualization providers.
+
+Operating system identification must be independent of Hyper-V, VirtualBox, VMware or any other virtualization technology.
+
+Provide a simple mechanism to report the detected platform for testing and diagnosis.
+
+## 4. Messages and logging
+
+Use the common messaging contract:
+
+```text
+HH:mm:ss - LLLNNMMM - Message
+```
+
+Implement the defined message severities, console colors, verbosity modes and logging behavior.
+
+Message identifiers must remain independent of the language used to display their text.
+
+Implement the minimum message catalog needed for this task.
+
+## 5. Verification
+
+Provide automated tests for:
+
+- CLI parsing and grouped flags.
+- Contextual help.
+- Invalid and incompatible arguments.
+- Directory default resolution.
+- Operating system identification.
+- Unknown platform handling.
+- Message formatting and logging.
+- Console verbosity modes.
+
+Host platform detection must be testable without requiring access to multiple physical operating systems.
+
+## 6. Deliverables
+
+Write all generated artifacts under:
+
+`outputs/TASK-0001/`
+
+Include:
+
+- Java source code.
+- Maven project configuration.
+- Automated tests.
+- Build and execution instructions.
+- `qa-report.md` with evidence of verification.
+
+Do not write to `release/`.
+
+## 7. Acceptance criteria
+
+The task is successful when:
+
+1. The Java application compiles and produces an executable JAR.
+2. CLI arguments are parsed and validated according to the specification.
+3. Contextual help works correctly.
+4. The host operating system is correctly identified.
+5. Messages and logs follow IASI conventions.
+6. Automated tests pass.
+7. Verification evidence is available in `outputs/TASK-0001/`.
+
+Do not implement virtual machines, operating system installers, configuration discovery or orchestration workflows.
+
+Do not promote the result to `release/`.
+
+**Implement only this initial foundation.**
+
+Verifica también el cumplimiento de `CORP-WF-OUT-001` y `CORP-WF-OUT-002`.
+
+Separa estrictamente los archivos temporales y los productos intermedios de compilación, los artefactos candidatos y las evidencias QA.
+
+Comprueba que Maven no deja productos generados en la raíz del repositorio y que todo el material necesario para inspeccionar TASK-0001 queda bajo `outputs/TASK-0001/`.
+
+No promociones ni incluyas archivos temporales en `release/`.

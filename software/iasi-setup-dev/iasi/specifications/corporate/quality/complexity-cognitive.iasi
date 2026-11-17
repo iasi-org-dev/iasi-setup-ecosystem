@@ -1,0 +1,21 @@
++++
+id = "CORP-QUAL-COG-001"
+title = "Cognitive complexity"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
++++
+
+# Cognitive complexity
+
+## Requirement
+
+- Cognitive complexity MUST be measured for supported languages at method/function level wherever the analyzer supports it.
+- The corporate reference threshold is **15 (approved maximum per function/method)**, a binding QA limit where the configured analyzer supports function-level results.
+- Language-specific rules MUST describe analyzer behavior and its treatment of nesting and control structures.
+- A passing metric does not replace a review of readability or functional decomposition.
+
+## Verification
+
+IASI owns the quality policy, while tools such as SonarQube provide measurements and reports.

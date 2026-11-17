@@ -1,0 +1,24 @@
++++
+id = "PRJ-REQ-001"
+type = "requirement"
+title = "Plataformas y virtualización"
+scope = "project"
+status = "draft"
+version = "0.1.0"
+source = "iasi/inputs/externals/IASI-ERRS-001_plataformas_virtualizacion.md"
++++
+
+# Plataformas y virtualización
+
+## Requisitos
+
+- Considerar Windows, GNU/Linux, macOS y arquitecturas adicionales, incluidas IBM Z, sin suponer que todas están soportadas ya.
+- Priorizar inicialmente Windows y GNU/Linux; Ubuntu es la distribución Linux de referencia.
+- Tratar las máquinas virtuales como mecanismo fundamental para entornos de trabajo diferenciados.
+- Diseñar la integración de hipervisores sin dependencia exclusiva de un proveedor.
+- Considerar Hyper-V, VirtualBox, VMware y KVM/QEMU como tecnologías candidatas, no como adaptadores ya implementados.
+- Cada versión deberá declarar explícitamente plataformas e hipervisores efectivamente soportados y aquellos pendientes.
+
+## Alcance
+
+Los mecanismos particulares de instalación y administración pertenecen a diseño posterior. No se deben inferir como requisitos de esta fuente.

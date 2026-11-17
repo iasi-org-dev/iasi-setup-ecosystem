@@ -1,0 +1,44 @@
++++
+id = "CORP-TECH-VER-001"
+title = "Technology version freeze and patch allowance"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.0.0"
++++
+
+# Technology version freeze and patch allowance
+
+## Requirement
+
+An approved baseline freezes a technology to its **major.minor** line, allowing maintenance patch releases from the approved baseline onward after compatibility/security validation. Changes to the minor or major line require an explicit new baseline approval.
+
+## SemVer-like example
+
+For an approved baseline of `2.3.0`:
+- Allowed: `2.3.0`, `2.3.1`, `2.3.2`, etc.
+- Not allowed: `2.2.9`, `2.4.0`, `3.0.0`.
+
+The allowed set is conceptually `>=2.3.0 <2.4.0` **only for ordinary stable versions obeying the assumed numbering convention**. Pre-release, build metadata, vendor-specific numbering and non-SemVer schemes require explicit interpretation.
+
+## Conditions
+
+- A newer patch is **eligible**, not automatically adopted.
+- A change of approved baseline (major or minor line) requires **prior documented impact analysis and approval** before implementation. The analysis MUST cover compatibility, affected dependencies, regression testing, security exposure, migration effort and rollback strategy.
+- Effective versions MUST be verified and recorded outside the released product where appropriate.
+- Unapproved upgrades across the frozen line MUST block the applicable QA Gate.
+- If a patch is incompatible, unavailable, or withdrawn, follow the exception process instead of silently changing the version line.
+- The rule applies to runtime, build tools, libraries and other governed software, subject to their actual version conventions.
+
+## Verification
+
+Compare resolved/installed effective versions, not only declared version strings, against the approved baseline and allowed patch line.
+
+
+## Compatibility assumptions and security maintenance
+
+- For software that follows Semantic Versioning, a change to the third component is intended as a backwards-compatible bug fix. IASI MAY adopt a newer patch only after compatibility tests and security review. The version number alone does not prove compatibility.
+- The fixed `major.minor` baseline is a stability policy, **not an exemption from vulnerability remediation**.
+- Security fixes in the allowed patch line SHOULD be applied after verification, according to assessed risk and urgency.
+- If the security fix is only available outside that line, a documented security exception or new baseline MUST be evaluated. IASI MUST NOT silently accept a known exploitable vulnerability solely to preserve the frozen line.
+- All effective versions and corresponding vulnerability evidence MUST be considered in QA, independently of the original project start date.

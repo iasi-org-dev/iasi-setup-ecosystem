@@ -1,0 +1,25 @@
++++
+id = "COR-WKF-001"
+type = "process"
+title = "Ciclo de tareas, outputs y release"
+scope = "corporate"
+status = "draft"
+version = "0.1.0"
++++
+
+# Ciclo de tareas, outputs y release
+
+## Contrato
+
+- Las tareas describen el objetivo y los criterios de aceptación, sin duplicar todas las normas aplicables.
+- El ejecutor identifica y aplica las especificaciones pertinentes.
+- Toda generación destinada a revisión se escribe inicialmente en `outputs/<task-id>/`.
+- Las evidencias de pruebas y QA permanecen en `outputs/`.
+- Una verificación correcta hace que un resultado sea elegible para promoción, no lo promociona por sí misma.
+- La promoción a `release/` es un proceso independiente, manual o automático, expresamente autorizado.
+- `release/` contiene solo artefactos aprobados y necesarios para el producto; no debe contener logs o artefactos temporales del proceso de QA.
+- No se exige registrar la mecánica interna de transferencia a release. Debe ser posible identificar la versión aprobada.
+
+## Verificación
+
+Un resultado que incumpla controles obligatorios no puede promocionarse salvo excepción autorizada y justificada.

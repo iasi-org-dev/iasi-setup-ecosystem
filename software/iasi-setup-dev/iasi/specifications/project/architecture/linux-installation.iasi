@@ -1,0 +1,19 @@
++++
+id = "PRJ-ARC-002"
+type = "design"
+title = "Instalación Linux por capas"
+scope = "project"
+status = "draft"
+version = "0.1.0"
++++
+
+# Instalación Linux por capas
+
+## Propuesta para revisión
+
+- Utilizar Ubuntu Server y su instalador Subiquity como vía de instalación base cuando resulte compatible.
+- Separar instalación del sistema base y posterior incorporación opcional de escritorio, por ejemplo Kubuntu o GNOME.
+- La instalación del sistema operativo invitado debe desacoplarse del hipervisor que crea y arranca la máquina.
+- La elección de versión de Ubuntu y escritorio se validará con pruebas reales; no presumir soporte de Ubuntu 26 sin verificar imágenes, instaladores y compatibilidad.
+
+La estrategia debe poder evolucionar para incorporar otras distribuciones y tipos de instalación.

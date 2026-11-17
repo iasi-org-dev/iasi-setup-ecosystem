@@ -1,0 +1,18 @@
++++
+id = "CORP-WF-QA-001"
+title = "Mandatory QA Gate before promotion"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.2.0"
+related = ["CORP-WF-OUT-001"]
++++
+
+# Mandatory QA Gate before promotion
+
+## Rule
+- **MUST:** Validate a candidate within its task output workspace against applicable corporate, departmental and project specifications.
+- **MUST:** Record objective evidence for build, tests, formatting, complexity, version constraints and security as applicable.
+- **MUST NOT:** Promote an unverified, failing or otherwise unapproved candidate.
+- **MUST:** A QA exception must be documented and approved according to applicable policy rather than silently passing.
+- **MUST:** Treat generation, execution, QA approval and release promotion as distinct responsibilities.

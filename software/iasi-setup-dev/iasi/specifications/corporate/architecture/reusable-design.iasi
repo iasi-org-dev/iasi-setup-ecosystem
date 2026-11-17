@@ -1,0 +1,21 @@
++++
+id = "COR-ARC-001"
+type = "principle"
+title = "Diseño reutilizable e independencia tecnológica"
+scope = "corporate"
+status = "draft"
+version = "0.1.0"
+source = "iasi/inputs/externals/IASI-Filosofia-y-Fundamentos.md"
++++
+
+# Diseño reutilizable e independencia tecnológica
+
+## Principios
+
+- Reutilizar arquitecturas, contratos, arquetipos y procedimientos, no limitar la reutilización a copiar código.
+- Separar el modelo de ingeniería de las herramientas y lenguajes empleados en una realización.
+- Admitir implementaciones diferentes con contratos verificables y decisiones justificadas.
+- No generalizar prematuramente: una abstracción compartida debe tener un valor demostrado.
+- Reproducibilidad no exige uniformidad de tecnologías o entornos.
+
+Estos principios proceden del marco conceptual de IASI; su materialización técnica se define en especificaciones de proyecto.

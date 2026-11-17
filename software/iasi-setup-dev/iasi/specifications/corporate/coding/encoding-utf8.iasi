@@ -1,0 +1,21 @@
++++
+id = "CORP-CODE-ENC-001"
+title = "UTF-8 encoding without BOM"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.1.0"
++++
+
+# UTF-8 encoding without BOM
+
+## Rule
+
+- **MUST:** Store repository text source, configuration and documentation as UTF-8 **without BOM**, unless a documented format/tool exception requires otherwise.
+- **MUST:** Ensure text files decode as UTF-8 and preserve non-ASCII characters.
+- **MUST:** Check BOM and encoding on the actual bytes at the QA Gate; `.editorconfig` alone is not verification.
+- **MAY:** Permit explicitly documented generated/binary/legacy exceptions.
+
+## Acceptance
+
+A representative accented string in Java, `.iasi`, and Markdown round-trips without corruption; none begins with the UTF-8 BOM bytes `EF BB BF`.

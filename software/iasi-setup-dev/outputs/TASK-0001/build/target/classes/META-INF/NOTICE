@@ -1,0 +1,8 @@
+IASI Setup Dev launcher 0.1.0 — TASK-0001
+
+Project license and notice: licenses/IASI-LICENSE.txt and licenses/IASI-NOTICE.txt.
+TOMLJ 1.1.1: Apache License 2.0, licenses/APACHE-2.0.txt.
+ANTLR runtime 4.11.1: BSD 3-Clause, licenses/ANTLR-LICENSE.txt.
+Checker annotations 3.21.2: licenses/CHECKER-QUAL-LICENSE.txt.
+
+Paths above are relative to META-INF/ in this JAR.

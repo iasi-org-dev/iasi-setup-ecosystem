@@ -1,0 +1,28 @@
++++
+id = "CLI-003"
+title = "Workflow actions describe composite flows"
+type = "requirement"
+status = "draft"
+scope = "project"
+project = "iasi-dev-tools"
+component = "cli"
+version = "0.1.2"
++++
+
+# Workflow actions describe composite flows
+
+## Requirement
+
+An action invoked as `iasi-dev workflow <action> ...` MUST describe or orchestrate a **composite flow** made up of multiple actions or steps.
+
+## Constraints
+
+- The workflow definition MUST express the constituent steps and their coordination.
+- It SHOULD explicitly define ordering, dependencies and execution conditions where applicable.
+- It SHOULD reuse direct actions rather than duplicate their implementations.
+- Each workflow MAY expose its own flags, parameters and targets.
+- A workflow MUST be identified as such in user-facing help.
+
+## Acceptance
+
+Each workflow has a discoverable description of the composite flow, rather than being presented as a single independent direct action.

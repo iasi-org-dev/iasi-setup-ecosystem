@@ -1,0 +1,18 @@
++++
+id = "CORP-WF-REL-002"
+title = "Explicit release promotion, manual or automatic"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.2.0"
+related = ["CORP-WF-QA-001", "CORP-WF-REL-001"]
++++
+
+# Explicit release promotion, manual or automatic
+
+## Rule
+- **MUST:** Promote a candidate from `outputs/<task-id>/` to project-root `release/` only after approval by the QA Gate.
+- **MUST:** Promotion is a deliberate process, which MAY be manual or automated.
+- **MUST NOT:** Automatically treat task completion as permission to publish or promote.
+- **MUST:** Verify that promotion operates on the exact approved candidate without adding unrelated output.
+- **MUST:** Keep process details, execution traces and promotion history out of the released product.

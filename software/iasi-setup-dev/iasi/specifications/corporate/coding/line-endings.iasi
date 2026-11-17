@@ -1,0 +1,23 @@
++++
+id = "CORP-CODE-EOL-001"
+title = "Line endings by file purpose"
+type = "specification"
+scope = "corporate"
+status = "approved"
+version = "1.1.0"
++++
+
+# Line endings by file purpose
+
+## Rule
+
+- **MUST:** Use `LF` for cross-platform source/configuration (`.java`, `.iasi`, `.md`, `.xml`, `.toml`, `.yaml`, `.yml`, `.json`, `.sh`, etc.), including when edited on Windows.
+- **MUST:** Use `CRLF` for Windows-specific command scripts (`.bat`, `.cmd`, `.ps1`) unless an explicit tool requirement dictates otherwise.
+- **MUST:** Do not mix newline styles within a text file. Include a final newline and remove trailing whitespace where safe.
+- **MUST:** Configure Git attributes to normalize checked-out text to the agreed per-file style, independently of a developer's `core.autocrlf`.
+- **MUST:** Verify actual checkout/file bytes in QA, not solely Git metadata.
+- **MAY:** Document exceptions for generated files, third-party assets or fixed-format text.
+
+## Reason
+
+The host running an editor does not necessarily determine the required newline style. Java on Windows remains `LF` as a cross-platform source format. Windows scripts use `CRLF` as this project's starting policy, not as a universal claim that Windows cannot read `LF`.
