@@ -7,13 +7,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.Clock;
-import java.util.UUID;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Destino UTF-8 por ejecución; independiente de la verbosidad elegida para
  * consola.
  */
 public final class FileLogSink implements LogSink {
+    private static final DateTimeFormatter FILE_TIME = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
     private final BufferedWriter writer;
     private final Path file;
     private final boolean trace;
@@ -24,9 +26,8 @@ public final class FileLogSink implements LogSink {
      */
     public FileLogSink(Path directory, String application, Clock clock, boolean trace) throws IOException {
         if (!application.matches("[A-Za-z0-9._-]+")) throw new IllegalArgumentException("Invalid application identifier");
-        Files.createDirectories(directory);
         this.trace = trace;
-        file = directory.resolve(application + "-" + clock.millis() + "-" + UUID.randomUUID() + ".log");
+        file = directory.resolve(application + "-" + ZonedDateTime.now(clock).format(FILE_TIME) + ".log");
         writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
     }
 

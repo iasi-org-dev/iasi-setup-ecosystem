@@ -1,0 +1,1 @@
+20:38:44 - CLI01001 - Invalid command line or configuration: Only definitions, machines, logs and verbose are accepted in configuration.

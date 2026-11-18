@@ -1,0 +1,16 @@
+org\iasi\setupdev\DependencyDirectionTest.class
+org\iasi\common\logging\ConsoleSinkTest.class
+org\iasi\common\logging\LoggerTest$Definition.class
+org\iasi\common\platform\PlatformTest.class
+org\iasi\setupdev\args\ArgsListTest.class
+org\iasi\base\RCTest.class
+org\iasi\common\logging\LoggerTest$TrackingStream.class
+org\iasi\common\logging\LoggerTest.class
+org\iasi\setupdev\core\ContextTest.class
+org\iasi\common\logging\FileLogSinkTest.class
+org\iasi\common\logging\LoggerTest$RecordingSink.class
+org\iasi\setupdev\args\ArgumentValidatorTest.class
+org\iasi\setupdev\args\CommandLineLoaderTest.class
+org\iasi\setupdev\args\TargetsTest.class
+org\iasi\setupdev\args\WorkingArgumentsTest.class
+org\iasi\setupdev\SourceGateTest.class

@@ -1,0 +1,6 @@
+20:38:32 - SYS01001 - Starting platform.
+20:38:32 - SYS01002 - CWD=C:\Users\Javier\AppData\Local\Temp\junit-12549828423254059334; definitions=C:\Users\Javier\AppData\Local\Temp\junit-12549828423254059334; machines=C:\Users\Javier\AppData\Local\Temp\junit-12549828423254059334; logs=C:\Users\Javier\AppData\Local\Temp\junit-12549828423254059334; force=false.
+20:38:32 - SYS01003 - Host: LINUX; name=Linux; version=6.0; architecture=s390x.
+20:38:32 - SYS01004 - Runtime=25; vendor=test-vendor.
+20:38:32 - SYS01005 - Host OS identification verified. No virtualization capability tested.
+20:38:32 - SYS01007 - Execution finished; exit code=0.

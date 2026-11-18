@@ -1,0 +1,1 @@
+20:38:46 - SYS01009 - Unable to read configuration, access a directory or write the log. Execution failed.

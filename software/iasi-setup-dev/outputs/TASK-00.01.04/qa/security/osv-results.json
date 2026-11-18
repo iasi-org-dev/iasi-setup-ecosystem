@@ -1,0 +1,1189 @@
+{
+  "checked_at": "2026-11-17T20:38:42.147673+00:00",
+  "source": "https://api.osv.dev/v1/querybatch",
+  "packages": [
+    {
+      "package": "asm:asm",
+      "version": "3.3.1",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "cglib:cglib",
+      "version": "2.2.2",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "com.fasterxml.jackson.core:jackson-annotations",
+      "version": "2.17.1",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "com.fasterxml.jackson.core:jackson-core",
+      "version": "2.18.11",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "com.fasterxml.jackson.core:jackson-databind",
+      "version": "2.18.11",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "com.github.cliftonlabs:json-simple",
+      "version": "3.0.2",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "com.github.luben:zstd-jni",
+      "version": "1.5.5-11",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-jar-plugin"
+      ]
+    },
+    {
+      "package": "com.github.luben:zstd-jni",
+      "version": "1.5.6-3",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "com.google.errorprone:error_prone_annotations",
+      "version": "2.50.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "com.google.guava:failureaccess",
+      "version": "1.0.3",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "com.google.guava:guava",
+      "version": "33.7.2-jre",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "com.google.guava:listenablefuture",
+      "version": "9999.0-empty-to-avoid-conflict-with-guava",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "com.google.j2objc:j2objc-annotations",
+      "version": "3.1",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "com.ibm.icu:icu4j",
+      "version": "74.2",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "com.thoughtworks.qdox:qdox",
+      "version": "2.0.3",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "com.thoughtworks.qdox:qdox",
+      "version": "2.2.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-compiler-plugin"
+      ]
+    },
+    {
+      "package": "commons-beanutils:commons-beanutils",
+      "version": "1.11.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin",
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "commons-codec:commons-codec",
+      "version": "1.16.1",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-jar-plugin"
+      ]
+    },
+    {
+      "package": "commons-codec:commons-codec",
+      "version": "1.17.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin",
+        "plugin:org.apache.maven.plugins:maven-shade-plugin"
+      ]
+    },
+    {
+      "package": "commons-collections:commons-collections",
+      "version": "3.2.2",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin",
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "commons-io:commons-io",
+      "version": "2.14.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-compiler-plugin"
+      ]
+    },
+    {
+      "package": "commons-io:commons-io",
+      "version": "2.16.1",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin",
+        "plugin:org.apache.maven.plugins:maven-jar-plugin",
+        "plugin:org.apache.maven.plugins:maven-resources-plugin",
+        "plugin:org.apache.maven.plugins:maven-shade-plugin"
+      ]
+    },
+    {
+      "package": "commons-logging:commons-logging",
+      "version": "1.3.2",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "commons-logging:commons-logging",
+      "version": "1.3.5",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "io.airlift:aircompressor",
+      "version": "2.0.3",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "net.revelc.code.formatter:formatter-maven-plugin",
+      "version": "2.24.1",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "net.revelc.code.formatter:jsdt-core",
+      "version": "3.4.4",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "net.revelc.code.formatter:xml-formatter",
+      "version": "0.4.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "net.sourceforge.cssparser:cssparser",
+      "version": "0.9.30",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.antlr:antlr4-runtime",
+      "version": "4.11.1",
+      "contexts": [
+        "runtime"
+      ]
+    },
+    {
+      "package": "org.apache.commons:commons-compress",
+      "version": "1.26.1",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-jar-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.commons:commons-compress",
+      "version": "1.26.2",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin",
+        "plugin:org.apache.maven.plugins:maven-shade-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.commons:commons-digester3",
+      "version": "3.2",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin",
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.commons:commons-exec",
+      "version": "1.4.0",
+      "contexts": [
+        "plugin:org.codehaus.mojo:exec-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.commons:commons-lang3",
+      "version": "3.18.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin",
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin",
+        "plugin:org.apache.maven.plugins:maven-jar-plugin",
+        "plugin:org.apache.maven.plugins:maven-shade-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.commons:commons-lang3",
+      "version": "3.20.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-resources-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.commons:commons-text",
+      "version": "1.12.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.doxia:doxia-core",
+      "version": "2.0.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.doxia:doxia-integration-tools",
+      "version": "2.0.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.doxia:doxia-module-apt",
+      "version": "2.0.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.doxia:doxia-module-xdoc",
+      "version": "2.0.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.doxia:doxia-module-xhtml5",
+      "version": "2.0.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.doxia:doxia-sink-api",
+      "version": "2.0.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.doxia:doxia-site-model",
+      "version": "2.0.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.doxia:doxia-site-renderer",
+      "version": "2.0.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.doxia:doxia-skin-model",
+      "version": "2.0.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.plugins:maven-clean-plugin",
+      "version": "3.5.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-clean-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.plugins:maven-compiler-plugin",
+      "version": "3.15.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-compiler-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.plugins:maven-dependency-plugin",
+      "version": "3.8.1",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.plugins:maven-jar-plugin",
+      "version": "3.4.2",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-jar-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.plugins:maven-resources-plugin",
+      "version": "3.4.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-resources-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.plugins:maven-shade-plugin",
+      "version": "3.6.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-shade-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.plugins:maven-surefire-plugin",
+      "version": "3.5.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.reporting:maven-reporting-api",
+      "version": "4.0.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.reporting:maven-reporting-impl",
+      "version": "4.0.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.shared:file-management",
+      "version": "3.1.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-jar-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.shared:maven-artifact-transfer",
+      "version": "0.13.1",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.shared:maven-common-artifact-filters",
+      "version": "3.4.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin",
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.shared:maven-dependency-analyzer",
+      "version": "1.15.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.shared:maven-dependency-tree",
+      "version": "3.3.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.shared:maven-filtering",
+      "version": "3.4.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-resources-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.shared:maven-shared-incremental",
+      "version": "1.1",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-compiler-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.shared:maven-shared-utils",
+      "version": "3.4.2",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-compiler-plugin",
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.surefire:common-java5",
+      "version": "3.5.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.surefire:maven-surefire-common",
+      "version": "3.5.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.surefire:surefire-api",
+      "version": "3.5.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.surefire:surefire-booter",
+      "version": "3.5.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.surefire:surefire-extensions-api",
+      "version": "3.5.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.surefire:surefire-extensions-spi",
+      "version": "3.5.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.surefire:surefire-junit-platform",
+      "version": "3.5.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.surefire:surefire-logger-api",
+      "version": "3.5.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven.surefire:surefire-shared-utils",
+      "version": "3.5.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.maven:maven-archiver",
+      "version": "3.6.2",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin",
+        "plugin:org.apache.maven.plugins:maven-jar-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.velocity.tools:velocity-tools-generic",
+      "version": "3.1",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apache.velocity:velocity-engine-core",
+      "version": "2.4",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.apiguardian:apiguardian-api",
+      "version": "1.1.2",
+      "contexts": [
+        "test"
+      ]
+    },
+    {
+      "package": "org.checkerframework:checker-qual",
+      "version": "3.21.2",
+      "contexts": [
+        "runtime"
+      ]
+    },
+    {
+      "package": "org.codehaus.mojo:exec-maven-plugin",
+      "version": "3.5.0",
+      "contexts": [
+        "plugin:org.codehaus.mojo:exec-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-archiver",
+      "version": "4.10.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-archiver",
+      "version": "4.9.2",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-jar-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-compiler-api",
+      "version": "2.16.2",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-compiler-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-compiler-javac",
+      "version": "2.16.2",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-compiler-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-compiler-manager",
+      "version": "2.16.2",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-compiler-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-component-annotations",
+      "version": "2.0.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-i18n",
+      "version": "1.0-beta-10",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-interpolation",
+      "version": "1.27",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin",
+        "plugin:org.apache.maven.plugins:maven-jar-plugin",
+        "plugin:org.apache.maven.plugins:maven-resources-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-io",
+      "version": "3.4.2",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-jar-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-io",
+      "version": "3.5.1",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-java",
+      "version": "1.2.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-java",
+      "version": "1.5.2",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-compiler-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-resources",
+      "version": "1.3.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-utils",
+      "version": "3.6.1",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-shade-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-utils",
+      "version": "4.0.3",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin",
+        "plugin:org.apache.maven.plugins:maven-clean-plugin",
+        "plugin:org.apache.maven.plugins:maven-compiler-plugin",
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin",
+        "plugin:org.apache.maven.plugins:maven-jar-plugin",
+        "plugin:org.apache.maven.plugins:maven-resources-plugin",
+        "plugin:org.codehaus.mojo:exec-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-velocity",
+      "version": "2.2.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-xml",
+      "version": "3.0.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.codehaus.plexus:plexus-xml",
+      "version": "3.0.1",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-compiler-plugin",
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin",
+        "plugin:org.apache.maven.plugins:maven-resources-plugin",
+        "plugin:org.codehaus.mojo:exec-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.jdt:ecj",
+      "version": "3.37.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.jdt:org.eclipse.jdt.core",
+      "version": "3.37.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.platform:org.eclipse.core.commands",
+      "version": "3.12.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.platform:org.eclipse.core.contenttype",
+      "version": "3.9.300",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.platform:org.eclipse.core.expressions",
+      "version": "3.9.300",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.platform:org.eclipse.core.filesystem",
+      "version": "1.10.300",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.platform:org.eclipse.core.jobs",
+      "version": "3.15.200",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.platform:org.eclipse.core.resources",
+      "version": "3.20.100",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.platform:org.eclipse.core.runtime",
+      "version": "3.31.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.platform:org.eclipse.equinox.app",
+      "version": "1.7.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.platform:org.eclipse.equinox.common",
+      "version": "3.19.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.platform:org.eclipse.equinox.preferences",
+      "version": "3.11.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.platform:org.eclipse.equinox.registry",
+      "version": "3.12.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.platform:org.eclipse.osgi",
+      "version": "3.19.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.platform:org.eclipse.text",
+      "version": "3.14.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.eclipse.sisu:org.eclipse.sisu.inject",
+      "version": "0.9.0.M3",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin"
+      ]
+    },
+    {
+      "package": "org.iq80.snappy:snappy",
+      "version": "0.5",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-jar-plugin"
+      ]
+    },
+    {
+      "package": "org.jdom:jdom2",
+      "version": "2.0.6.1",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-shade-plugin"
+      ]
+    },
+    {
+      "package": "org.jsoup:jsoup",
+      "version": "1.23.2",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.jspecify:jspecify",
+      "version": "1.0.1",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.junit.jupiter:junit-jupiter",
+      "version": "5.11.0",
+      "contexts": [
+        "test"
+      ]
+    },
+    {
+      "package": "org.junit.jupiter:junit-jupiter-api",
+      "version": "5.11.0",
+      "contexts": [
+        "test"
+      ]
+    },
+    {
+      "package": "org.junit.jupiter:junit-jupiter-engine",
+      "version": "5.11.0",
+      "contexts": [
+        "test"
+      ]
+    },
+    {
+      "package": "org.junit.jupiter:junit-jupiter-params",
+      "version": "5.11.0",
+      "contexts": [
+        "test"
+      ]
+    },
+    {
+      "package": "org.junit.platform:junit-platform-commons",
+      "version": "1.11.0",
+      "contexts": [
+        "test"
+      ]
+    },
+    {
+      "package": "org.junit.platform:junit-platform-engine",
+      "version": "1.11.0",
+      "contexts": [
+        "test"
+      ]
+    },
+    {
+      "package": "org.junit.platform:junit-platform-launcher",
+      "version": "1.11.0",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.opentest4j:opentest4j",
+      "version": "1.3.0",
+      "contexts": [
+        "test"
+      ]
+    },
+    {
+      "package": "org.osgi:org.osgi.service.prefs",
+      "version": "1.1.2",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.osgi:org.osgi.util.function",
+      "version": "1.2.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.osgi:org.osgi.util.measurement",
+      "version": "1.0.2",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.osgi:org.osgi.util.position",
+      "version": "1.0.1",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.osgi:org.osgi.util.promise",
+      "version": "1.3.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.osgi:org.osgi.util.xml",
+      "version": "1.0.2",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.osgi:osgi.annotation",
+      "version": "8.1.0",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.ow2.asm:asm",
+      "version": "9.6",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-surefire-plugin"
+      ]
+    },
+    {
+      "package": "org.ow2.asm:asm",
+      "version": "9.7",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin",
+        "plugin:org.apache.maven.plugins:maven-shade-plugin"
+      ]
+    },
+    {
+      "package": "org.ow2.asm:asm",
+      "version": "9.7.1",
+      "contexts": [
+        "plugin:org.codehaus.mojo:exec-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.ow2.asm:asm",
+      "version": "9.9.1",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-compiler-plugin"
+      ]
+    },
+    {
+      "package": "org.ow2.asm:asm-commons",
+      "version": "9.7",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-shade-plugin"
+      ]
+    },
+    {
+      "package": "org.ow2.asm:asm-commons",
+      "version": "9.7.1",
+      "contexts": [
+        "plugin:org.codehaus.mojo:exec-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.ow2.asm:asm-tree",
+      "version": "9.7",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-shade-plugin"
+      ]
+    },
+    {
+      "package": "org.ow2.asm:asm-tree",
+      "version": "9.7.1",
+      "contexts": [
+        "plugin:org.codehaus.mojo:exec-maven-plugin"
+      ]
+    },
+    {
+      "package": "org.sonatype.plexus:plexus-build-api",
+      "version": "0.0.7",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin",
+        "plugin:org.apache.maven.plugins:maven-resources-plugin"
+      ]
+    },
+    {
+      "package": "org.tomlj:tomlj",
+      "version": "1.1.1",
+      "contexts": [
+        "runtime"
+      ]
+    },
+    {
+      "package": "org.tukaani:xz",
+      "version": "1.9",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-dependency-plugin",
+        "plugin:org.apache.maven.plugins:maven-jar-plugin"
+      ]
+    },
+    {
+      "package": "org.vafer:jdependency",
+      "version": "2.10",
+      "contexts": [
+        "plugin:org.apache.maven.plugins:maven-shade-plugin"
+      ]
+    },
+    {
+      "package": "org.w3c.css:sac",
+      "version": "1.3",
+      "contexts": [
+        "plugin:net.revelc.code.formatter:formatter-maven-plugin"
+      ]
+    }
+  ],
+  "results": [
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ],
+  "findings": []
+}

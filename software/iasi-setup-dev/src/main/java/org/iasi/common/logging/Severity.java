@@ -1,7 +1,10 @@
 package org.iasi.common.logging;
 
+/**
+ * Tipos comunes de mensaje y colores de presentación en consola.
+ */
 public enum Severity {
-    INFO(""), SUCCESS("32"), WARNING("33"), ERROR("31"), DEBUG("90"), TRACE("90");
+    MESSAGE(""), INFO("36"), SUCCESS("32"), WARNING("33"), ERROR("31"), DEBUG("90"), TRACE("90");
 
     private final String color;
 

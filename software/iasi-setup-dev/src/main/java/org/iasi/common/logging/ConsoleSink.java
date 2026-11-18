@@ -4,6 +4,8 @@ import org.iasi.base.Verbosity;
 
 import java.io.PrintStream;
 import java.time.format.DateTimeFormatter;
+import java.time.Clock;
+import java.time.ZonedDateTime;
 
 /**
  * Representación de consola con filtrado local, colores opcionales y errores en
@@ -33,10 +35,24 @@ public final class ConsoleSink implements LogSink {
      */
     @Override
     public void write(LogEvent event) {
-        if (!includes(event.severity())) return;
-        String line = event.timestamp().format(TIME) + " - " + event.code() + " - " + event.message();
-        if (colors && !event.severity().color().isEmpty()) line = "\u001b[" + event.severity().color() + "m" + line + "\u001b[0m";
-        PrintStream destination = event.severity() == Severity.ERROR ? err : out;
+        print(event.severity(), event.timestamp(), event.message());
+    }
+
+    /**
+     * Presenta mensajes de inicialización sin exigir metadatos de logging.
+     */
+    public void write(Severity severity, String message, Clock clock) {
+        print(severity, ZonedDateTime.now(clock), Redactor.sanitize(message));
+    }
+
+    /**
+     * Aplica el formato común y el color del tipo antes de elegir el stream.
+     */
+    private void print(Severity severity, ZonedDateTime time, String message) {
+        if (!includes(severity)) return;
+        String line = time.format(TIME) + " - " + message;
+        if (colors && !severity.color().isEmpty()) line = "\u001b[" + severity.color() + "m" + line + "\u001b[0m";
+        PrintStream destination = severity == Severity.ERROR ? err : out;
         destination.println(line);
     }
 

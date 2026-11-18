@@ -1,0 +1,68 @@
+[
+  {
+    "arguments": [
+      "FORBIDDEN",
+      "help",
+      "--config",
+      "missing.toml",
+      "--logs",
+      "unused"
+    ],
+    "exit_code": 0,
+    "stdout": "USAGE\n  iasi-setup-dev <action> [flags] [parameters]\n  iasi-setup-dev workflow <action> [flags] [parameters]\nACTIONS\n  help — General help\n  platform — Host diagnosis for TASK-0001\n  create — Unavailable; contextual help only\nWORKFLOWS\n  workflow help — Workflow namespace help\n  workflow release — Unavailable; contextual help only\nFLAGS\n  -h contextual help; -v DEBUG; -V TRACE; -s errors only; -f force\n  Verbosity flags apply left to right; last wins, including groups.\n  force is hardcoded false; only -f enables it for this instance.\nPARAMETERS\n  --config <file>  External instance-specific TOML parameter values\n  --definitions <directory>  Machine definitions\n  --machines <directory>  Machine storage (not written in this task)\n  --logs <directory>  Execution logs\n  Precedence: hardcoded < optional JAR resource < --config file < explicit CLI.\n  Directory defaults: original CWD. No automatic configuration discovery.\nTARGETS\n  No positional targets supported in TASK-0001.\n",
+    "stderr": "",
+    "cwd": "qa\\context-processes\\b26dfb9d-3f24-4ded-9e6e-cd8d37060c80\\help",
+    "jar": "build\\rc-process-harness.jar",
+    "context": "published=false\n"
+  },
+  {
+    "arguments": [
+      "FORBIDDEN",
+      "platform",
+      "--config",
+      "missing.toml"
+    ],
+    "exit_code": 16,
+    "stdout": "",
+    "stderr": "20:38:56 - SYS01009 - Unable to read configuration, access a directory or write the log. Execution failed.\n",
+    "cwd": "qa\\context-processes\\b26dfb9d-3f24-4ded-9e6e-cd8d37060c80\\missing-config",
+    "jar": "build\\rc-process-harness.jar",
+    "context": "published=false\n"
+  },
+  {
+    "arguments": [
+      "OK",
+      "platform"
+    ],
+    "exit_code": 0,
+    "stdout": "20:38:57 - SYS01001 - Starting platform.\n20:38:57 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:38:57 - SYS01005 - Host OS identification verified. No virtualization capability tested.\n20:38:57 - SYS01007 - Execution finished; exit code=0.\n",
+    "stderr": "",
+    "cwd": "qa\\context-processes\\b26dfb9d-3f24-4ded-9e6e-cd8d37060c80\\ordinary",
+    "jar": "build\\rc-process-harness.jar",
+    "context": "published=true\nrc=0\nid=46ff4b22-1e29-412e-897d-8e7a8910b077\n"
+  },
+  {
+    "arguments": [
+      "INFO+WARNING",
+      "platform"
+    ],
+    "exit_code": 6,
+    "stdout": "20:38:57 - SYS01001 - Starting platform.\n20:38:57 - SYS01003 - Host: WINDOWS; name=Windows 11; version=10.0; architecture=amd64.\n20:38:57 - SYS01005 - Host OS identification verified. No virtualization capability tested.\n20:38:57 - SYS01007 - Execution finished; exit code=6.\n",
+    "stderr": "",
+    "cwd": "qa\\context-processes\\b26dfb9d-3f24-4ded-9e6e-cd8d37060c80\\information-warning",
+    "jar": "build\\rc-process-harness.jar",
+    "context": "published=true\nrc=6\nid=beb3068f-40f9-45b0-a379-faef1a302319\n"
+  },
+  {
+    "arguments": [
+      "INFO_THEN_FAILURE",
+      "platform"
+    ],
+    "exit_code": 66,
+    "stdout": "20:38:57 - SYS01001 - Starting platform.\n",
+    "stderr": "20:38:57 - SYS01010 - Unexpected application failure. Resources have been closed where possible.\n",
+    "cwd": "qa\\context-processes\\b26dfb9d-3f24-4ded-9e6e-cd8d37060c80\\unexpected-failure",
+    "jar": "build\\rc-process-harness.jar",
+    "context": "published=true\nrc=66\nid=f00ac3b2-6375-48dc-8d8a-b19e1b10187c\n"
+  }
+]

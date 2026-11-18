@@ -22,20 +22,36 @@ class DependencyDirectionTest {
     }
 
     /**
-     * Solo Main puede terminar el proceso; bibliotecas y operaciones deben devolver
-     * sus resultados.
+     * La salida normal pertenece a App y los abortos de inicialización a sus
+     * mensajes; los paquetes comunes no terminan la JVM.
      */
     @Test
-    void onlyProductEntryPointTerminatesJvm() throws IOException {
+    void terminationStaysAtApplicationBoundaries() throws IOException {
         try (var sources = Files.walk(Path.of("src/main/java"))) {
             for (Path source : sources.filter(path -> path.toString().endsWith(".java")).toList()) {
                 String code = Files.readString(source);
                 long calls = Pattern.compile("System\\.exit\\s*\\(").matcher(code).results().count();
-                assertEquals(source.getFileName().toString().equals("Main.java") ? 1 : 0, calls, source.toString());
+                String name = source.getFileName().toString();
+                assertEquals(name.equals("App.java") || name.equals("InitializationMessages.java") ? 1 : 0, calls, source.toString());
                 assertFalse(code.contains("Runtime.getRuntime().halt("));
                 assertFalse(code.contains("Runtime.getRuntime().exit("));
             }
         }
+    }
+
+    /**
+     * App reúne el punto de entrada estático y run de instancia, sin una clase Main
+     * separada.
+     */
+    @Test
+    void appContainsStaticEntryPointAndInstanceRun() throws Exception {
+        var main = App.class.getMethod("main", String[].class);
+        var run = App.class.getMethod("run", String[].class);
+        assertTrue(java.lang.reflect.Modifier.isStatic(main.getModifiers()));
+        assertFalse(java.lang.reflect.Modifier.isStatic(run.getModifiers()));
+        assertEquals(int.class, run.getReturnType());
+        assertNotNull(App.class.getConstructor());
+        assertFalse(Files.exists(Path.of("src/main/java/org/iasi/setupdev/Main.java")));
     }
 
     /**

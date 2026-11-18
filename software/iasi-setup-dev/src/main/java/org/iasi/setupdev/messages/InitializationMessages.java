@@ -1,0 +1,44 @@
+package org.iasi.setupdev.messages;
+
+import org.iasi.setupdev.core.Context;
+
+import java.time.Clock;
+import java.util.Locale;
+import org.iasi.base.RC;
+import org.iasi.base.Verbosity;
+import org.iasi.common.i18n.MessageCatalog;
+import org.iasi.common.logging.ConsoleSink;
+import org.iasi.common.logging.Severity;
+
+public final class InitializationMessages {
+    private static final Context        CTX     = Context.getInstance();
+    private static final Clock          CLOCK   = Clock.systemDefaultZone();
+    private static final MessageCatalog CATALOG = new MessageCatalog("org.iasi.setupdev.messages.catalog", Locale.getDefault());
+    private static final ConsoleSink    CONSOLE = new ConsoleSink(CTX.out(), CTX.err(), Verbosity.NORMAL, System.console() != null);
+
+    private InitializationMessages() {
+    }
+
+    public static void inputError(String key) {
+        stop(RC.ERROR, CATALOG.text("inputError", CATALOG.text(key)));
+    }
+
+    public static void ioError() {
+        stop(RC.ERROR, CATALOG.text("ioError"));
+    }
+
+    public static void unexpectedFailure() {
+        stop(RC.FATAL, CATALOG.text("unexpectedFailure"));
+    }
+
+    public static void warning(String key, Object... arguments) {
+        CTX.setRC(RC.WARNING);
+        CONSOLE.write(Severity.WARNING, CATALOG.text(key, arguments), CLOCK);
+    }
+
+    private static void stop(int rc, String message) {
+        CTX.setRC(rc);
+        CONSOLE.write(Severity.ERROR, message, CLOCK);
+        System.exit(CTX.getRC());
+    }
+}

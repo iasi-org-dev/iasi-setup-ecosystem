@@ -2,16 +2,17 @@
 
 Software Java 25 dentro del contenedor multiproyecto `iasi-setup-ecosystem`.
 Cada tarea evoluciona las mismas fuentes en `src/`. La tarea actual es
-`TASK-00.01.03` (Execution Context); sus productos y evidencias residen en
-`outputs/TASK-00.01.03/`. Las entregas TASK-0001 y TASK-0002 permanecen intactas.
+`TASK-00.01.04` (Structured Code Refactoring, interactiva); sus incrementos y
+pruebas se conservan en `outputs/TASK-00.01.04/`. Las tres entregas anteriores
+permanecen intactas.
 
 Desde esta raíz, con JDK 25 y Maven:
 
 ```powershell
 mvn -B -ntp clean verify
-java -jar outputs/TASK-00.01.03/artifacts/iasi-setup-dev-0.1.0.jar help
-java -jar outputs/TASK-00.01.03/artifacts/iasi-setup-dev-0.1.0.jar platform -V --logs outputs/TASK-00.01.03/qa/manual
-python outputs/TASK-00.01.03/qa/tools/verify.py
+java -jar outputs/TASK-00.01.04/artifacts/iasi-setup-dev-0.1.0.jar help
+java -jar outputs/TASK-00.01.04/artifacts/iasi-setup-dev-0.1.0.jar platform -V --logs outputs/TASK-00.01.04/qa/manual
+python outputs/TASK-00.01.04/qa/tools/verify.py
 ```
 
 El último comando requiere Python 3.10+, Windows para el lanzador Maven y acceso
@@ -118,6 +119,30 @@ marca Error y el diagnóstico normal conserva OK. Los procesos de QA inyectan
 circunstancias Info, Warning, NothingToDo y combinaciones sin añadir parámetros
 artificiales al CLI del producto.
 
-Informe: `outputs/TASK-00.01.03/qa/qa-report.md`. Fuentes y pruebas tienen Javadoc;
+Informe: `outputs/TASK-00.01.04/qa/qa-report.md`. Fuentes y pruebas tienen Javadoc;
 Maven verify comprueba documentación, formato no mutante, codificación y métricas.
 No se promociona a release ni se modifican documentos normativos o de tareas.
+
+
+## Refactorización interactiva — incremento 01
+
+El punto de entrada solo crea una instancia de App, invoca run(args) y devuelve
+Context.getInstance().getRC() mediante System.exit. Main no tiene constructor
+privado explícito ni funciones auxiliares.
+
+App.run coordina initialize y el paso operativo existente. Initialize analiza
+argumentos y configuración, valida y publica el contexto con out/err. No crea
+máquinas, directorios o logs operativos. Las salidas de bootstrap anteriores a
+ctx (ayuda exclusiva o error de inicialización) terminan en App; la salida normal
+permanece en Main. Options conserva el parser puro y App.initialize traduce sus
+errores al diagnóstico y salida inmediata del proceso.
+
+Context conserva referencias finales a out/err, con propiedad prestada: no cierra
+los streams del proceso. Durante el bootstrap App conserva temporalmente las
+referencias necesarias para presentar ayuda o errores antes de publicar ctx;
+después se usan ctx.out() y ctx.err(). Help mantiene su componente de presentación
+separado. El diagnóstico de plataforma existente se conserva para evitar cambios
+funcionales en este primer incremento.
+
+El desglose restante de initialize se revisará interactivamente en los próximos
+casos. El incremento verificado no declara finalizada la tarea abierta.

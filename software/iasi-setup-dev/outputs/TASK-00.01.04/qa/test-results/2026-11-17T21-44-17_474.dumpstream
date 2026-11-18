@@ -1,0 +1,5 @@
+# Created at 2026-11-17T21:44:17.561
+Boot Manifest-JAR contains absolute paths in classpath 'J:\iasi-setup-ecosystem\software\iasi-setup-dev\outputs\TASK-00.01.04\build\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+

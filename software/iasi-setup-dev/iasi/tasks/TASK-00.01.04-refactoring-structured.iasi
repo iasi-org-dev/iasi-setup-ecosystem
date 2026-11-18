@@ -94,3 +94,26 @@ Do not assume that approval of the task is blanket approval of every architectur
 The task initially resides in `tasks/` with `status = "pending"`. The approval command, not a manual edit to this document, records the approver and date and moves it to `tasks/approved/`. Subsequent transitions follow the IASI task workflow.
 
 This is the **initial definition**, deliberately open to refinement during interactive execution. Any material change to scope or acceptance criteria must be recorded explicitly.
+
+## Examples and cases
+
+### App and Main
+
+Estamos trabajando sobre un orquestador para crear maquinas en diferentes sistemas operativos
+Actualmente solo estamos creando el contexto de ejecucion (ctx) analizando los ficheros de configuracion y la linea de comandos
+Main debe describir el proceso, y ser simple y sencillo
+
+Dado que ahora solo trabajamos con parametros y contexto main deberia ser:
+
+```
+public static void main(String[] args) {
+        createContext(args) // Opcion 1
+        initialize(args)    // Opcion 2
+        //otro nombre que se te ocurra 		
+        System.exit(rc);
+    }
+```	
+
+out y err son parte del contexto, no de main
+y consecuentemente en main no deberian existir mas funciones en es modulo
+Help deberia ir en su propio modulo, por que puede crecer y quitar legibilidad

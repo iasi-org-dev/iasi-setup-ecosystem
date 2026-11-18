@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.iasi.setupdev.SourceGateTest
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.292 s -- in org.iasi.setupdev.SourceGateTest
