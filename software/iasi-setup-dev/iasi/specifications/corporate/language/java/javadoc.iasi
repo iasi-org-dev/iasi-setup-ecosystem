@@ -1,0 +1,115 @@
++++
+id = "javadoc-iasi"
+title = "Corporate Java Javadoc documentation rules"
+type = "specification"
+status = "proposed"
+scope = "corporate"
+category = "language/java"
+language = "es"
+format = "iasi"
++++
+
+# Normativa corporativa: documentación Javadoc en Java
+
+## Objetivo
+
+Establecer un mínimo común, consistente y verificable de documentación Java para todos los proyectos IASI, sin sacrificar la legibilidad del código fuente. La documentación debe aportar información útil que no resulte evidente de la lectura del código.
+
+## Principio rector
+
+**Documentación estructural obligatoria; documentación de implementación selectiva.**
+
+No documentar por documentar. Evitar que los comentarios repitan nombres de métodos, tipos, parámetros o instrucciones evidentes. Mantener el código legible y la documentación enfocada en responsabilidades, contratos, decisiones y restricciones.
+
+## JAVA-DOC-001: paquetes
+
+1. **Todo paquete Java propio con código fuente debe incluir un `package-info.java`.**
+2. La cabecera Javadoc del paquete debe describir su propósito, responsabilidad y límites cuando sean relevantes.
+3. No es obligatorio añadir a los paquetes las etiquetas de autoría, versión o historial exigidas a los tipos.
+4. No generar descripciones genéricas, vacías o redundantes, como «Contiene clases del paquete X».
+
+Ejemplo:
+
+```java
+/**
+ * Provides command-line parsing and validation for the setup application.
+ *
+ * <p>The package interprets user input but does not execute provisioning tasks.</p>
+ */
+package org.iasi.setupdev.cli;
+```
+
+## JAVA-DOC-002: tipos
+
+1. **Toda clase, interfaz, enumeración, `record` y tipo de anotación propios deben llevar una cabecera Javadoc inicial.** Esto incluye tipos no públicos y tipos anidados, cuando existan.
+2. La cabecera debe describir el propósito y la responsabilidad del tipo, no repetir simplemente su nombre.
+3. Son obligatorias estas etiquetas de identificación:
+   - `@author`: autor o responsable real del componente; no asignar autoría automáticamente a la IA que genere código.
+   - `@since`: versión del proyecto en la que se introdujo el tipo, siguiendo el uso habitual de Javadoc.
+   - `@version`: versión del componente conforme a la política de versionado del proyecto.
+   - `@history`: historial corporativo de cambios relevantes, con una entrada inicial al crear el tipo.
+4. Cada entrada de `@history` tendrá, como mínimo, fecha ISO `YYYY-MM-DD`, versión y breve descripción. Añadir entradas únicamente para modificaciones funcionales, estructurales o contractuales significativas; Git conserva el detalle de los cambios menores.
+5. Mantener la cabecera actualizada cuando un cambio relevante altere la responsabilidad, el contrato o la versión del componente.
+
+Ejemplo:
+
+```java
+/**
+ * Coordinates application initialization and configuration precedence.
+ *
+ * @author IASI Development Team
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Initial implementation.
+ */
+public final class Initializer {
+    // Implementation.
+}
+```
+
+**Nota técnica:** `@history` es una etiqueta corporativa, no una etiqueta Javadoc estándar. La generación de documentación deberá configurar el doclet/Javadoc para reconocerla (por ejemplo, mediante la opción `-tag` del Javadoc utilizado) y evitar avisos por etiqueta desconocida. No sustituir `@since` por una fecha: `@since` identifica la versión de introducción.
+
+## JAVA-DOC-003: métodos y constructores
+
+1. **No exigir Javadoc por defecto a todos los métodos ni constructores.**
+2. Documentarlos cuando aporten información no evidente: contratos, precondiciones, poscondiciones, efectos secundarios, excepciones significativas, invariantes, decisiones técnicas o comportamiento poco intuitivo.
+3. Cuando un método se documente, usar `@param`, `@return`, `@throws` y otras etiquetas estándar **solo donde correspondan** y cuando ayuden a expresar correctamente su contrato.
+4. No introducir Javadoc mecánico en getters, setters, delegaciones simples, métodos autoexplicativos o implementaciones evidentes.
+5. Es válido emplear `{@inheritDoc}` cuando la documentación heredada describa correctamente el contrato; no duplicarla innecesariamente.
+
+## JAVA-DOC-004: campos y constantes
+
+1. No exigir Javadoc generalizado en atributos, constantes o campos.
+2. Documentar únicamente los que tengan semántica, unidades, restricciones, efectos o usos que no se comprendan con el nombre y el contexto.
+
+## JAVA-DOC-005: idioma y calidad
+
+1. Redactar la documentación técnica Javadoc **en inglés**, conforme a la convención corporativa de identificadores y documentación de código.
+2. Los comentarios deben ser precisos, actuales, concisos y coherentes con el comportamiento real.
+3. Prohibir relleno automático, textos vacíos, descripciones que se limitan a repetir el identificador y comentarios que contradigan el código.
+4. Preferir nombres claros y código comprensible frente a explicaciones innecesarias.
+5. No modificar el comportamiento del programa únicamente para satisfacer requisitos documentales.
+
+## JAVA-DOC-006: QA Gate
+
+Validación automática obligatoria en la medida en que las herramientas del proyecto lo permitan:
+
+- Comprobar que cada paquete propio contiene `package-info.java` y Javadoc descriptivo.
+- Comprobar que cada tipo propio tiene descripción y etiquetas `@author`, `@since`, `@version` y `@history` con una entrada inicial.
+- Configurar y ejecutar Javadoc reconociendo la etiqueta corporativa `@history` y detectar errores de sintaxis o referencias rotas.
+- **No exigir cobertura de Javadoc del 100 % para métodos, constructores ni atributos.**
+- Complementar las comprobaciones mecánicas con revisión de calidad: una cabecera formalmente completa pero inútil no satisface la norma.
+- Cualquier excepción justificada deberá quedar registrada según el procedimiento corporativo de QA, sin desactivar globalmente los controles.
+
+## Ámbito de aplicación
+
+Esta norma es **corporativa y reutilizable**: se aplica a todos los proyectos Java bajo la metodología IASI, no únicamente a `iasi-setup-dev`. Se incorporará a las especificaciones corporativas de `language/java`; las tareas concretas de adopción y regularización se derivarán posteriormente por proyecto.
+
+## Criterios de aceptación
+
+1. Todos los paquetes Java propios cuentan con `package-info.java` descriptivo.
+2. Todos los tipos Java propios presentan la cabecera y las cuatro etiquetas exigidas.
+3. Javadoc puede generar documentación sin fallos atribuibles al formato y reconoce `@history`.
+4. Métodos, constructores y campos no quedan saturados de documentación redundante.
+5. El QA verifica los mínimos estructurales y permite revisar la calidad del contenido.
+6. No se introducen cambios funcionales por aplicar esta especificación.

@@ -7,6 +7,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Locale;
 
+/**
+ * Indexes supported argument declarations and exposes their environment bindings and effective-value schema.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 public final class ArgsList {
     private final Map<String, ARG> args = new LinkedHashMap<>();
 
@@ -43,14 +51,13 @@ public final class ArgsList {
         return flag;
     }
 
-    // Los flags modifican valores efectivos; config solo selecciona el fichero TOML.
     public Map<String, ARG> getValues() {
         Map<String, ARG> values = new LinkedHashMap<>();
         for (ARG arg : args.values()) {
-            if (arg.getArgType() == ArgType.FLAG && arg.getEnv() != null)
-                values.putIfAbsent(arg.getEnv().toLowerCase(Locale.ROOT), arg);
-            if (arg.getArgType() == ArgType.DEF || arg.getArgType() == ArgType.PARM && arg.getEnv() != null)
-                values.put(arg.getCli(), arg);
+            if (arg.getArgType() == ArgType.TARGET) continue;
+            String name = arg.getArgType() == ArgType.FLAG && arg.getEnv() != null
+                    ? arg.getEnv().toLowerCase(Locale.ROOT) : arg.getCli();
+            values.put(name, arg);
         }
         return Collections.unmodifiableMap(values);
     }

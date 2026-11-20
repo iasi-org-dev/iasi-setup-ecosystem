@@ -5,12 +5,15 @@ import java.nio.file.Path;
 import org.iasi.setupdev.core.Context;
 
 /**
- * Resumen temporal de diagnóstico, destinado exclusivamente a consola.
+ * Prints the temporary console-only view of effective execution values and target selections.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 public final class ContextSummary {
-    /**
-     * Muestra los valores efectivos del contexto después de su validación.
-     */
+
     public void print(Context ctx, PrintStream out) {
         out.printf("""
                 Context:

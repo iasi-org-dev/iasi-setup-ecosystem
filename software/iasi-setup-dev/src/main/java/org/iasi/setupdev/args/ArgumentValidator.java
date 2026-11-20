@@ -1,177 +1,93 @@
 package org.iasi.setupdev.args;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * Convierte y valida los valores efectivos antes de incorporarlos al contexto.
+ * Validates supported working values and constraints before preparing declared filesystem paths.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 public final class ArgumentValidator {
-    private final Map<String, ARG> definitions;
+    private final Map<String, ARG>   definitions;
+    private final ArgumentTransformer transformer = new ArgumentTransformer();
+    private final ArgumentConstraints constraints = new ArgumentConstraints();
 
     public ArgumentValidator(ArgsList definitions) {
         this.definitions = definitions.getValues();
     }
 
-    /**
-     * Valida todos los valores y después prepara las rutas según su declaración.
-     * Devuelve los valores convertidos sin modificar el contexto.
-     */
-    public Map<String, Object> validateArgs(Map<String, String> values) throws IOException {
-        checkNames(values);
-        Map<String, Object> result = convertValues(values);
-        checkPaths(result);
-        preparePaths(result);
-        return Map.copyOf(result);
+    public Map<String, Object> validateArgs(WorkingArguments working) throws IOException {
+        checkAcceptedArguments(working);
+        Map<String, Object> values = validateArguments(working);
+        prepareArguments(values);
+        return Map.copyOf(values);
     }
 
-    /**
-     * Rechaza valores que no estén declarados en el esquema de argumentos.
-     */
-    private void checkNames(Map<String, String> values) {
-        for (String name : values.keySet()) {
+    public Map<String, Object> validateArgs(Map<String, String> values) throws IOException {
+        WorkingArguments working = new WorkingArguments();
+        for (var entry : values.entrySet())
+            working.setParameter(entry.getKey(), List.of(entry.getValue()));
+        /**
+         * Checks all supplied values before creating declared paths. The caller publishes the returned typed values to its context.
+         * @throws IOException if an allowed path cannot be created
+         */
+        return validateArgs(working);
+    }
+
+    private void checkAcceptedArguments(WorkingArguments working) {
+        checkNames(working.getParameters());
+        checkNames(working.getDefines());
+        checkNames(working.getFlags());
+    }
+
+    private void checkNames(List<String> names) {
+        for (String name : names) {
             if (!definitions.containsKey(name)) throw new ArgumentException("unknownConfigKey");
         }
     }
 
-    /**
-     * Comprueba la obligatoriedad y convierte los valores presentes.
-     */
-    private Map<String, Object> convertValues(Map<String, String> values) {
-        Map<String, Object> result = new HashMap<>();
+    private Map<String, Object> validateArguments(WorkingArguments working) {
+        Map<String, Object> values = new LinkedHashMap<>();
         for (var entry : definitions.entrySet()) {
-            String value = values.get(entry.getKey());
-            ARG definition = entry.getValue();
-            if (value == null) {
-                if (definition.isMandatory()) throw new ArgumentException("missingValue");
-                continue;
-            }
-            result.put(entry.getKey(), convert(definition, value));
+            List<String> original = working.getArgument(entry.getKey());
+            Object validated = validateArgument(entry.getValue(), original);
+            if (validated != null) values.put(entry.getKey(), validated);
         }
-        return result;
+        return values;
     }
 
-    /**
-     * Comprueba las rutas antes de comenzar a crearlas.
-     */
-    private void checkPaths(Map<String, Object> result) {
-        for (var entry : result.entrySet())
-            checkPath(definitions.get(entry.getKey()), entry.getValue());
-    }
-
-    /**
-     * Prepara las rutas cuya declaración permite crearlas.
-     */
-    private void preparePaths(Map<String, Object> result) throws IOException {
-        for (var entry : result.entrySet())
-            preparePath(definitions.get(entry.getKey()), entry.getValue());
-    }
-
-    /**
-     * Convierte el texto al tipo declarado y verifica los límites numéricos.
-     */
-    private Object convert(ARG definition, String value) {
-        if (value.isBlank()) throw new ArgumentException("missingValue");
-        try {
-            return switch (definition.getArgClass()) {
-                case STRING -> value;
-                case BOOLEAN -> booleanValue(value);
-                case INTEGER -> integerValue(definition, value);
-                case NATURAL -> naturalValue(definition, value);
-                case FLOAT -> floatValue(definition, value);
-                case FILE, DIRECTORY -> Path.of(value).toAbsolutePath().normalize();
-                case URL -> urlValue(value);
-                case DATE -> LocalDate.parse(value);
-                case TIME -> java.time.LocalTime.parse(value);
-                case TMS -> java.time.LocalDateTime.parse(value);
-                case MAIL -> mailValue(value);
-            };
-        } catch (ArgumentException exception) {
-            throw exception;
-        } catch (IllegalArgumentException | java.time.DateTimeException exception) {
-            throw new ArgumentException("invalidConfigType");
+    private Object validateArgument(ARG definition, List<String> values) {
+        if (values == null) {
+            if (definition.isMandatory()) throw new ArgumentException("missingValue");
+            return null;
         }
+        checkMultiplicity(definition, values);
+        Object transformed = transformValues(definition, values);
+        constraints.check(definition, transformed);
+        return transformed;
     }
 
-    /**
-     * Exige un literal booleano antes de convertirlo.
-     */
-    private boolean booleanValue(String value) {
-        if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")) throw new ArgumentException("invalidConfigType");
-        return Boolean.parseBoolean(value);
+    private void checkMultiplicity(ARG definition, List<String> values) {
+        if (values.isEmpty()) throw new ArgumentException("missingValue");
+        if (!definition.isMultiple() && values.size() != 1) throw new ArgumentException("repeatedArgument");
     }
 
-    /**
-     * Convierte un entero y comprueba los límites declarados.
-     */
-    private int integerValue(ARG definition, String value) {
-        int number = Integer.parseInt(value);
-        checkRange(definition, number);
-        return number;
+    private Object transformValues(ARG definition, List<String> values) {
+        List<Object> transformed = new ArrayList<>();
+        for (String value : values)
+            transformed.add(transformer.transform(definition, value));
+        return definition.isMultiple() ? List.copyOf(transformed) : transformed.getFirst();
     }
 
-    private int naturalValue(ARG definition, String value) {
-        int number = integerValue(definition, value);
-        if (number <= 0) throw new ArgumentException("invalidRange");
-        return number;
-    }
-
-    private java.math.BigDecimal floatValue(ARG definition, String value) {
-        java.math.BigDecimal number = new java.math.BigDecimal(value);
-        checkRange(definition, number);
-        return number;
-    }
-
-    private void checkRange(ARG definition, long number) {
-        if (definition.getMinimum() != null && number < definition.getMinimum()) throw new ArgumentException("invalidRange");
-        if (definition.getMaximum() != null && number > definition.getMaximum()) throw new ArgumentException("invalidRange");
-    }
-
-    private void checkRange(ARG definition, java.math.BigDecimal number) {
-        if (definition.getMinimum() != null && number.compareTo(java.math.BigDecimal.valueOf(definition.getMinimum())) < 0)
-            throw new ArgumentException("invalidRange");
-        if (definition.getMaximum() != null && number.compareTo(java.math.BigDecimal.valueOf(definition.getMaximum())) > 0)
-            throw new ArgumentException("invalidRange");
-    }
-
-    private String mailValue(String value) {
-        if (!value.matches("[^\\s@]+@[^\\s@]+\\.[^\\s@]+")) throw new ArgumentException("invalidConfigType");
-        return value;
-    }
-
-    /**
-     * Admite URI absolutas, incluidas URL y URN.
-     */
-    private URI urlValue(String value) {
-        URI uri = URI.create(value);
-        if (!uri.isAbsolute()) throw new ArgumentException("invalidConfigType");
-        return uri;
-    }
-
-    /**
-     * Comprueba las rutas existentes y las que se declararon obligatorias.
-     */
-    private void checkPath(ARG definition, Object value) {
-        if (!(value instanceof Path path)) return;
-        if (!Files.exists(path)) {
-            if (definition.isRequired()) throw new ArgumentException("invalidPath");
-            return;
-        }
-        boolean valid = definition.getArgClass() == ArgClass.DIRECTORY ? Files.isDirectory(path) : Files.isRegularFile(path);
-        if (!valid) throw new ArgumentException("invalidPath");
-    }
-
-    /**
-     * Crea las rutas ausentes cuya declaración permite su creación.
-     */
-    private void preparePath(ARG definition, Object value) throws IOException {
-        if (!(value instanceof Path path) || definition.isRequired() || Files.exists(path)) return;
-        if (definition.getArgClass() == ArgClass.DIRECTORY) Files.createDirectories(path);
-        else Files.createFile(path);
+    private void prepareArguments(Map<String, Object> values) throws IOException {
+        for (var entry : values.entrySet())
+            constraints.prepare(definitions.get(entry.getKey()), entry.getValue());
     }
 }

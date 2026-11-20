@@ -6,31 +6,36 @@ import org.iasi.base.RC;
 
 import org.iasi.common.operation.OperationResult;
 
+/**
+ * Describes host OS and runtime properties without claiming virtualization capabilities.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 public record Platform(Family family, String name, String version, String architecture, String runtime, String vendor) {
+
+    /**
+     * Groups recognized operating systems while retaining an explicit unknown case.
+     *
+     * @author Javier G. Grandez
+     * @since 0.1.0
+     * @version 0.1.0
+     * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+     */
     public enum Family {
         WINDOWS, LINUX, MACOS, UNKNOWN
     }
 
-    /**
-     * Captura propiedades del runtime actual sin consultar hipervisores ni
-     * modificar el host.
-     */
     public static Platform detect() {
         return detect(key -> System.getProperty(key, "unknown"));
     }
 
-    /**
-     * Propaga el resultado del diagnóstico como RC IASI, sin asociarlo al número de
-     * mensajes emitidos.
-     */
     public static OperationResult<Platform> identify() {
         return identify(key -> System.getProperty(key, "unknown"));
     }
 
-    /**
-     * Permite verificar el RC de cada familia sin cambiar propiedades globales ni
-     * depender del SO físico.
-     */
     public static OperationResult<Platform> identify(Function<String, String> properties) {
         Platform platform = detect(properties);
         int status = RC.OK;
@@ -38,20 +43,12 @@ public record Platform(Family family, String name, String version, String archit
         return OperationResult.withValue(platform, status);
     }
 
-    /**
-     * Construye la descripción desde propiedades inyectadas para probar otras
-     * plataformas sin disponer de ellas.
-     */
     public static Platform detect(Function<String, String> properties) {
         String name = properties.apply("os.name");
         return new Platform(family(name), name, properties.apply("os.version"), properties.apply("os.arch"), properties.apply("java.runtime.version"),
                 properties.apply("java.vendor"));
     }
 
-    /**
-     * Clasifica el nombre del SO de forma conservadora; una familia reconocida no
-     * implica capacidades de virtualización.
-     */
     private static Family family(String name) {
         String normalized = name.toLowerCase(Locale.ROOT);
         if (normalized.startsWith("windows")) return Family.WINDOWS;

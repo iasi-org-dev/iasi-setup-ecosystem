@@ -5,6 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Checks syntax-only token loading, indexed occurrences and surviving quote boundaries.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 class CommandLineLoaderTest {
     @Test
     void separatesGroupedFlagsParametersAndTargets() {

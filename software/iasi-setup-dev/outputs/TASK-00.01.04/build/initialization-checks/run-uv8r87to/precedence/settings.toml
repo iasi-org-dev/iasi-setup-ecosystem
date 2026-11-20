@@ -1,0 +1,3 @@
+env="IASI_TEST"
+logs="from-config"
+verbose=1

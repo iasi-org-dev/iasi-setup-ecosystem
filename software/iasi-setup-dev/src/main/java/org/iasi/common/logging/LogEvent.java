@@ -4,13 +4,15 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
- * Evento inmutable ya localizado y saneado, compartido por todos los destinos.
+ * Carries immutable event metadata and sanitized text shared by all output backends.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 public record LogEvent(ZonedDateTime timestamp, String code, Severity severity, String component, String message) {
-    /**
-     * Valida identidad y metadatos y sanea el texto incluso cuando se construye
-     * fuera de la fachada.
-     */
+
     public LogEvent {
         Objects.requireNonNull(timestamp);
         Objects.requireNonNull(severity);

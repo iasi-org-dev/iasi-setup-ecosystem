@@ -7,10 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+/**
+ * Checks the return-code bit contract and its independence from execution decisions.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 class RCTest {
-    /**
-     * Los símbolos son constantes int explícitas y no elementos de una enumeración.
-     */
+
     @ParameterizedTest
     @CsvSource({"OK,0", "NOTHING_TO_DO,1", "INFO,2", "WARNING,4", "ATTENTION,8", "ERROR,16", "SEVERE,32", "FATAL,64"})
     void constantsMatchStandard(String name, int expected) throws Exception {
@@ -22,10 +28,6 @@ class RCTest {
         assertEquals(8, RC.class.getFields().length);
     }
 
-    /**
-     * Todas las máscaras aprobadas conservan la clasificación por bits, incluida la
-     * combinación no errónea 0x0F.
-     */
     @Test
     void masksAndReservedBitsAreClassifiedWithoutEnums() {
         for (int rc = 0; rc <= 0x7F; rc++) {

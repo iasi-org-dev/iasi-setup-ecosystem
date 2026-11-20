@@ -9,18 +9,18 @@ import java.time.Clock;
 import org.iasi.common.i18n.MessageCatalog;
 
 /**
- * Punto de composición del backend predeterminado, aislado de la lógica de las
- * aplicaciones.
+ * Composes the default console and file backends without depending on application state.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 public final class Loggers {
-    /** Clase de utilidad; la configuración predeterminada se crea mediante open. */
+
     private Loggers() {
     }
 
-    /**
-     * Abre el backend actual. Una futura selección de Log4j se concentra en este
-     * punto.
-     */
     public static Logger open(MessageCatalog catalog, Clock clock, Verbosity verbosity, PrintStream out, PrintStream err, boolean colors, boolean trace,
             Path directory, String application, String component) throws IOException {
         LogSink console = new ConsoleSink(out, err, verbosity, colors);

@@ -8,6 +8,14 @@ import java.net.URI;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Checks argument constructors, accepted names and environment binding declarations.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 class ArgsListTest {
     @Test
     void collectsEnvironmentNamesFromEveryArgumentKind() {

@@ -3,8 +3,12 @@ package org.iasi.setupdev.args;
 import java.util.ArrayList;
 
 /**
- * Separa comas fuera de comillas. Solo interpreta las comillas que llegan en args;
- * no puede recuperar las que haya retirado el shell.
+ * Splits comma-separated values while respecting quotes that survived shell tokenization.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 final class ArgumentValuesLoader {
     public ArrayList<String> loadValues(String text) {
@@ -14,6 +18,14 @@ final class ArgumentValuesLoader {
         return state.finish();
     }
 
+    /**
+     * Tracks the current quoted segment and completed values during one parameter scan.
+     *
+     * @author Javier G. Grandez
+     * @since 0.1.0
+     * @version 0.1.0
+     * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+     */
     private static final class State {
         private final ArrayList<String> values = new ArrayList<>();
         private final StringBuilder     value  = new StringBuilder();

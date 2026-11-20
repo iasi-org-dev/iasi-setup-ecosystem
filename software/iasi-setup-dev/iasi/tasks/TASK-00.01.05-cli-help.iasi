@@ -1,0 +1,54 @@
++++
+id = "TASK-00.01.05"
+title = "Implement CLI help output without logging prefixes"
+type = "task"
+status = "pending"
+component = "iasi-setup-dev"
+language = "es"
+format = "iasi"
+specifications = ["help-cli"]
++++
+
+# TASK-00.01.05: Ajustar la ayuda del CLI
+
+## Objetivo
+
+Implementar en `iasi-setup-dev` la presentación de ayuda definida en `SPEC-help-cli.iasi`, con una salida legible, alineada e independiente del formato de los mensajes operativos.
+
+## Requisito esencial
+
+**La ayuda NO lleva prefijos.** Ninguna de sus líneas, incluidos título, secciones y opciones, debe mostrar hora (`hh:mm:ss`), código de mensaje, nivel de logging ni separadores añadidos por el sistema de mensajes. Las líneas vacías se preservan. El formato operativo `hh:mm:ss - Código - Mensaje` permanece intacto para los mensajes de ejecución.
+
+## Trabajo a realizar
+
+1. Consultar `SPEC-help-cli.iasi` y usar su apartado «Salida propuesta» como referencia de contenido, orden, sangrías y alineación.
+2. Identificar la implementación actual de `-h` / `--help` y separar la impresión de ayuda del formateador de logging. Mantener los textos internacionalizables si existe catálogo de mensajes.
+3. Presentar la versión real de la aplicación y las secciones `USO`, `FLAGS`, `PARÁMETROS`, `TARGETS`, `VALORES POR DEFECTO` y `CONFIGURACIÓN`.
+4. Mostrar la ayuda por salida estándar y finalizar correctamente, sin crear, recrear ni arrancar máquinas virtuales.
+5. Mantener los nombres y la semántica de opciones existentes. **No implementar nuevas opciones ni alterar la precedencia de configuración** solo para hacer coincidir el texto. Documentar cualquier discrepancia entre la especificación y el parser real.
+6. Incorporar o adaptar pruebas automatizadas de la ayuda y ejecutar las verificaciones disponibles del proyecto.
+
+## Criterios de aceptación
+
+- `java -jar <jar-generado> -h` muestra la ayuda especificada sin prefijos en ninguna línea.
+- `--help` presenta la misma ayuda cuando esa opción está soportada; si no lo está, registrar la discrepancia conforme a la especificación.
+- La salida conserva encabezados, espacios, alineación y líneas en blanco.
+- La versión mostrada coincide con la versión del artefacto y no está fijada a `0.1.0`.
+- Invocar la ayuda no provoca efectos sobre máquinas virtuales.
+- Los mensajes operativos conservan exactamente su formato anterior.
+- Las pruebas existentes siguen pasando y se añaden comprobaciones para detectar prefijos accidentales.
+
+## Entregables
+
+- Código y recursos de ayuda actualizados.
+- Pruebas de salida de ayuda.
+- Evidencia de ejecución de `-h` y, cuando proceda, `--help`.
+- Relación breve de cambios, comprobaciones y posibles discrepancias detectadas.
+
+## Límites
+
+No refactorizar el parser ni el sistema general de mensajes, salvo los cambios mínimos imprescindibles para desacoplar la ayuda. No modificar la lógica de gestión de máquinas virtuales.
+
+## Referencia
+
+`SPEC-help-cli.iasi` es la fuente de requisitos. Esta tarea describe **la ejecución** de dicha especificación, no la sustituye.

@@ -8,6 +8,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputTimestamp>2026-11-17T00:00:00Z</project.build.outputTimestamp>
         <lombok.version>1.18.48</lombok.version>
+        <task.output>${project.basedir}/outputs/TASK-00.01.06</task.output>
     </properties>
     <dependencies>
         <dependency>
@@ -29,7 +30,26 @@
         </dependency>
     </dependencies>
     <build>
-        <directory>${project.basedir}/outputs/TASK-00.01.04/build/target</directory>
+        <finalName>${project.artifactId}</finalName>
+        <directory>${task.output}/build/target</directory>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/../../definitions</directory>
+                <targetPath>org/iasi/setupdev</targetPath>
+                <filtering>false</filtering>
+                <includes>
+                    <include>defaults.toml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/build</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -86,7 +106,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
-                    <reportsDirectory>${project.basedir}/outputs/TASK-00.01.04/qa/test-results</reportsDirectory>
+                    <reportsDirectory>${task.output}/qa/test-results</reportsDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -129,7 +149,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <outputFile>${project.basedir}/outputs/TASK-00.01.04/artifacts/iasi-setup-dev-0.1.0.jar</outputFile>
+                            <outputFile>${project.basedir}/outputs/${project.artifactId}.jar</outputFile>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -157,13 +177,13 @@
                 <artifactId>formatter-maven-plugin</artifactId>
                 <version>2.24.1</version>
                 <configuration>
-                    <configFile>${project.basedir}/outputs/TASK-00.01.04/qa/config/eclipse.xml</configFile>
+                    <configFile>${task.output}/qa/config/eclipse.xml</configFile>
                     <lineEnding>LF</lineEnding>
                     <encoding>UTF-8</encoding>
                     <directories>
                         <directory>${project.basedir}/src/main/java</directory>
                         <directory>${project.basedir}/src/test/java</directory>
-                        <directory>${project.basedir}/outputs/TASK-00.01.04/qa/tools</directory>
+                        <directory>${task.output}/qa/tools</directory>
                     </directories>
                 </configuration>
                 <executions>
@@ -218,6 +238,7 @@
                 <version>3.5.0</version>
                 <executions>
                     <execution>
+                        <id>javadoc-structure</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>exec</goal>
@@ -225,9 +246,23 @@
                         <configuration>
                             <executable>${java.home}/bin/java</executable>
                             <arguments>
-                                <argument>${project.basedir}/outputs/TASK-00.01.04/qa/tools/SourceGate.java</argument>
+                                <argument>${task.output}/qa/tools/JavadocGate.java</argument>
                                 <argument>${project.basedir}</argument>
-                                <argument>${project.basedir}/outputs/TASK-00.01.04</argument>
+                                <argument>${task.output}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${java.home}/bin/java</executable>
+                            <arguments>
+                                <argument>${task.output}/qa/tools/SourceGate.java</argument>
+                                <argument>${project.basedir}</argument>
+                                <argument>${task.output}</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -244,6 +279,19 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.8.1</version>
+                <executions>
+                    <execution>
+                        <id>javadoc-classpath</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>compile</includeScope>
+                            <outputFile>${task.output}/build/javadoc-classpath.txt</outputFile>
+                        </configuration>
+                    </execution>
+                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>org.codehaus.plexus</groupId>

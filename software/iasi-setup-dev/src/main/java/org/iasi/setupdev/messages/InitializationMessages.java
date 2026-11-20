@@ -10,6 +10,15 @@ import org.iasi.common.i18n.MessageCatalog;
 import org.iasi.common.logging.ConsoleSink;
 import org.iasi.common.logging.Severity;
 
+/**
+ * Reports application initialization diagnostics and terminates failed initialization with the accumulated return code.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ * @history 2026-11-19 | 0.1.0 | Support direct localized error diagnostics during initialization.
+ */
 public final class InitializationMessages {
     private static final Context        CTX     = Context.getInstance();
     private static final Clock          CLOCK   = Clock.systemDefaultZone();
@@ -21,6 +30,10 @@ public final class InitializationMessages {
 
     public static void inputError(String key) {
         stop(RC.ERROR, CATALOG.text("inputError", CATALOG.text(key)));
+    }
+
+    public static void error(String key) {
+        stop(RC.ERROR, CATALOG.text(key));
     }
 
     public static void ioError() {

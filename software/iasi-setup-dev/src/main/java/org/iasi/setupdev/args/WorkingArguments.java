@@ -7,12 +7,23 @@ import java.util.Locale;
 import java.util.Map;
 import lombok.Getter;
 
+/**
+ * Accumulates textual configuration layers and keeps unclassified environment values separate until reconciliation.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 @Getter
 public final class WorkingArguments extends Arguments {
     private final ArrayList<String> flagValues    = new ArrayList<>();
     private final ArrayList<String> pendingNames  = new ArrayList<>();
     private final ArrayList<String> pendingValues = new ArrayList<>();
 
+    /**
+     * Updates an already classified value or defers a new environment name without guessing whether it is a flag, parameter or definition.
+     */
     public void setArgument(String name, String value) {
         var singleValue = new ArrayList<>(List.of(value));
         if (updateExisting(getParameters(), getParameterValues(), name, singleValue)) return;
@@ -46,6 +57,16 @@ public final class WorkingArguments extends Arguments {
 
     public void removePending(String name) {
         if (name != null) remove(pendingNames, pendingValues, name);
+    }
+
+    public List<String> getArgument(String name) {
+        int index = indexOf(getParameters(), name);
+        if (index >= 0) return List.copyOf(getParameterValues().get(index));
+        index = indexOf(getDefines(), name);
+        if (index >= 0) return List.copyOf(getDefineValues().get(index));
+        index = indexOf(getFlags(), name);
+        if (index >= 0) return List.of(flagValues.get(index));
+        return null;
     }
 
     public Map<String, String> singleValues() {

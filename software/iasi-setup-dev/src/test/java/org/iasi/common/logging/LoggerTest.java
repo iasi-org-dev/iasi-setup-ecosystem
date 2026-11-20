@@ -18,14 +18,18 @@ import java.util.Locale;
 import org.iasi.common.i18n.MessageCatalog;
 import org.junit.jupiter.api.Test;
 
-/** Contratos del puerto común con adaptadores ajenos al backend de archivo. */
+/**
+ * Checks backend substitution, shared sanitized events and output resource ownership.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 class LoggerTest {
     private static final Clock CLOCK = Clock.fixed(Instant.parse("2026-11-17T12:34:56Z"), ZoneOffset.UTC);
     private static final MessageDefinition MESSAGE = new Definition("TST01001", Severity.INFO, "event");
 
-    /**
-     * Comprueba sustitución del destino y distribución del mismo evento ya saneado.
-     */
     @Test
     void alternateBackendsReceiveTheSameSanitizedEvent() throws IOException {
         RecordingSink persistent = new RecordingSink();
@@ -43,9 +47,6 @@ class LoggerTest {
         assertTrue(persistent.closed && console.closed);
     }
 
-    /**
-     * Impide anunciar en consola un evento que el backend no ha podido persistir.
-     */
     @Test
     void backendFailurePropagatesBeforeConsoleEmission() throws IOException {
         RecordingSink persistent = new RecordingSink();
@@ -58,10 +59,6 @@ class LoggerTest {
         assertTrue(persistent.closed && console.closed);
     }
 
-    /**
-     * Verifica liberación de ambos adaptadores y conservación de fallos
-     * secundarios.
-     */
     @Test
     void closeAttemptsBothDestinationsAndRetainsSuppressedFailures() {
         RecordingSink persistent = new RecordingSink();
@@ -74,7 +71,6 @@ class LoggerTest {
         assertEquals(1, failure.getSuppressed().length);
     }
 
-    /** El cierre del adaptador no debe apropiarse de stdout/stderr prestados. */
     @Test
     void consoleDoesNotCloseBorrowedStreams() {
         TrackingStream stream = new TrackingStream();
@@ -86,10 +82,6 @@ class LoggerTest {
         assertTrue(stream.toString().contains("still-open"));
     }
 
-    /**
-     * Evita reintroducir dependencias de dominio dentro de la infraestructura
-     * reutilizable.
-     */
     @Test
     void commonSourcesDoNotDependOnSetupDevOrLog4j() throws IOException {
         try (var files = Files.walk(Path.of("src/main/java/org/iasi/common"))) {
@@ -103,10 +95,6 @@ class LoggerTest {
         }
     }
 
-    /**
-     * Rechaza identificadores mal formados en la frontera común, antes de los
-     * adaptadores.
-     */
     @Test
     void invalidMessageCodeCannotReachDestinations() throws IOException {
         RecordingSink persistent = new RecordingSink();
@@ -117,18 +105,10 @@ class LoggerTest {
         assertTrue(persistent.events.isEmpty() && console.events.isEmpty());
     }
 
-    /**
-     * Compone una aplicación de prueba con catálogo propio y dos adaptadores
-     * inyectados.
-     */
     private Logger logger(LogSink persistent, LogSink console) {
         return new Logger(new MessageCatalog("org.iasi.common.logging.fixture", Locale.ROOT), CLOCK, "independent-component", persistent, console);
     }
 
-    /**
-     * La representación conserva sus garantías aunque se construya fuera de la
-     * fachada.
-     */
     @Test
     void directlyConstructedEventsCannotInjectControlsOrSecrets() {
         LogEvent event = new LogEvent(java.time.ZonedDateTime.now(CLOCK), "TST01002", Severity.INFO, "component\nforged",
@@ -138,23 +118,37 @@ class LoggerTest {
         assertFalse(event.message().contains("\u001b"));
     }
 
+    /**
+     * Supplies test-local event metadata without depending on an application message catalog.
+     *
+     * @author Javier G. Grandez
+     * @since 0.1.0
+     * @version 0.1.0
+     * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+     */
     private record Definition(String code, Severity severity, String key) implements MessageDefinition {
     }
 
+    /**
+     * Records emitted events and simulates backend write and close failures.
+     *
+     * @author Javier G. Grandez
+     * @since 0.1.0
+     * @version 0.1.0
+     * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+     */
     private static final class RecordingSink implements LogSink {
         private final List<LogEvent> events = new ArrayList<>();
         private boolean closed;
         private boolean failWrite;
         private boolean failClose;
 
-        /** Registra el evento original o simula un fallo del backend alternativo. */
         @Override
         public void write(LogEvent event) throws IOException {
             if (failWrite) throw new IOException("Synthetic backend failure");
             events.add(event);
         }
 
-        /** Permite comprobar propiedad de recursos y errores de cierre del contrato. */
         @Override
         public void close() throws IOException {
             closed = true;
@@ -162,10 +156,17 @@ class LoggerTest {
         }
     }
 
+    /**
+     * Detects accidental closure of a stream borrowed by the console sink.
+     *
+     * @author Javier G. Grandez
+     * @since 0.1.0
+     * @version 0.1.0
+     * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+     */
     private static final class TrackingStream extends ByteArrayOutputStream {
         private boolean closed;
 
-        /** Detecta un cierre accidental de un stream que pertenece al consumidor. */
         @Override
         public void close() throws IOException {
             closed = true;

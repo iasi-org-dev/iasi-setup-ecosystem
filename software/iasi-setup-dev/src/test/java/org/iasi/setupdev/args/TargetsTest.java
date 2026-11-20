@@ -10,25 +10,30 @@ import org.junit.jupiter.api.Test;
 import org.iasi.setupdev.targets.TargetDiscovery;
 import org.junit.jupiter.api.io.TempDir;
 
+/**
+ * Checks regex selection, unmatched patterns and preservation of original target lists.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 class TargetsTest {
-    /**
-     * Identifica todos los ausentes y conserva la lista original, incluido el válido.
-     */
+
     @Test
     void reportsMissingTargetsWithoutChangingOriginals(@TempDir Path directory) throws IOException {
-        Files.createDirectory(directory.resolve("iasi-models"));
+        Files.createDirectories(directory.resolve("iasi-models").resolve(TargetDiscovery.MACHINE_CONFIG_DIRECTORY));
         List<String> original = List.of("iasi-model", "iasi-models", "iasi-pepe");
         assertEquals(List.of("iasi-model", "iasi-pepe"), new TargetValidator().validateTargets(new TargetDiscovery().discover(directory), original).missing());
         assertEquals(List.of("iasi-model", "iasi-models", "iasi-pepe"), original);
     }
 
-    /**
-     * Expande regex, conserva el orden y evita ejecutar dos veces una coincidencia.
-     */
     @Test
     void resolvesPatternsWithoutDuplicates(@TempDir Path directory) throws IOException {
         Path api = Files.createDirectory(directory.resolve("iasi-dev-api"));
         Path ui = Files.createDirectory(directory.resolve("iasi-dev-ui"));
+        Files.createDirectory(api.resolve(TargetDiscovery.MACHINE_CONFIG_DIRECTORY));
+        Files.createDirectory(ui.resolve(TargetDiscovery.MACHINE_CONFIG_DIRECTORY));
         Files.createDirectory(directory.resolve("otra-maquina"));
         List<String> original = List.of("iasi-dev-.*", "iasi-dev-api", "inexistente.*");
         var result = new TargetValidator().validateTargets(new TargetDiscovery().discover(directory), original);
@@ -37,21 +42,16 @@ class TargetsTest {
         assertEquals(List.of("iasi-dev-.*", "iasi-dev-api", "inexistente.*"), original);
     }
 
-    /**
-     * Sin patrones se seleccionan todos los candidatos del directorio.
-     */
     @Test
     void resolvesAllWithoutPatterns(@TempDir Path directory) throws IOException {
         Path target = Files.createDirectory(directory.resolve("iasi-dev-api"));
+        Files.createDirectory(target.resolve(TargetDiscovery.MACHINE_CONFIG_DIRECTORY));
         Files.createFile(directory.resolve("defaults.toml"));
         var result = new TargetValidator().validateTargets(new TargetDiscovery().discover(directory), List.of());
         assertEquals(List.of(target), result.selected());
         assertTrue(result.missing().isEmpty());
     }
 
-    /**
-     * Una expresión mal formada se distingue de una expresión sin coincidencias.
-     */
     @Test
     void rejectsMalformedPattern(@TempDir Path directory) throws IOException {
         ArgumentException error = assertThrows(ArgumentException.class,
@@ -59,18 +59,12 @@ class TargetsTest {
         assertEquals("invalidTargetPattern", error.getMessage());
     }
 
-    /**
-     * Sin posicionales se conserva una lista vacía para la selección posterior.
-     */
     @Test
     void noTargetsMeansAllDefinitions() {
         Arguments parsed = new CommandLineLoader();
         assertTrue(parsed.getTargets().isEmpty());
     }
 
-    /**
-     * El directorio de búsqueda y los nombres originales son datos independientes.
-     */
     @Test
     void separatesDefinitionsDirectoryFromTargets() {
         Arguments parsed = new CommandLineLoader("--definitions", "xxx", "iasi-models", "-v", "otra-maquina");
@@ -78,9 +72,6 @@ class TargetsTest {
         assertEquals(List.of("iasi-models", "otra-maquina"), parsed.getTargets());
     }
 
-    /**
-     * Cada carga conserva su lista de targets sin compartirla con otra carga.
-     */
     @Test
     void preservesImmutableOriginalTargets() {
         Arguments parsed = new CommandLineLoader("iasi-models");

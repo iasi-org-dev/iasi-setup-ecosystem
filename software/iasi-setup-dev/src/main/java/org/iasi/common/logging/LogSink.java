@@ -3,19 +3,22 @@ package org.iasi.common.logging;
 import java.io.IOException;
 
 /**
- * Puerto de salida implementable por consola, archivo o un futuro adaptador
- * Log4j.
+ * Accepts sanitized events through a backend-neutral output contract.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 public interface LogSink extends AutoCloseable {
+
     /**
-     * Consume el evento sin alterar su código, instante, severidad ni texto
-     * saneado.
+     * Consumes an already sanitized event without changing its identity, timestamp or severity.
      */
     void write(LogEvent event) throws IOException;
 
     /**
-     * Libera únicamente los recursos que posee el destino; propaga fallos de
-     * cierre.
+     * Releases only resources owned by this sink; borrowed process streams must remain open.
      */
     @Override
     void close() throws IOException;

@@ -12,6 +12,14 @@ import org.iasi.setupdev.args.CommandLineLoader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+/**
+ * Checks textual TOML scalar and array loading and rejection of malformed documents.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 class ExternalConfigurationTest {
     @TempDir
     Path directory;

@@ -1,0 +1,90 @@
++++
+id = "SPEC-help-cli"
+title = "CLI help output for iasi-setup-dev"
+type = "specification"
+status = "proposed"
+component = "iasi-setup-dev"
+language = "es"
+format = "iasi"
++++
+
+# Especificación: ayuda de línea de comandos
+
+## Objetivo
+
+Ajustar la salida de ayuda de `iasi-setup-dev`, mostrada mediante `-h` o `--help`, para que sea clara, coherente y legible. Esta especificación afecta a la **presentación de la ayuda**, no al formato de los mensajes operativos ni al análisis general de argumentos.
+
+## Requisito obligatorio: ayuda sin prefijos
+
+**La ayuda no lleva prefijos de ningún tipo.**
+
+- No anteponer hora (`hh:mm:ss`).
+- No anteponer códigos de mensaje.
+- No anteponer nivel de logging, etiquetas ni el separador ` - `.
+- No pasar las líneas de ayuda por el formateador de mensajes operativos.
+- Preservar las líneas en blanco, sangrías, alineación y encabezados que se muestran en el ejemplo.
+- La internacionalización de los textos es compatible con esta regla: consultar un catálogo no implica aplicar formato de log.
+
+El formato operativo `hh:mm:ss - Código - Mensaje` **solo** corresponde a mensajes de ejecución, nunca al texto de ayuda.
+
+## Salida propuesta
+
+El número de versión deberá obtenerse de la versión real de la aplicación; `0.1.0` es el valor del ejemplo.
+
+```text
+IASI Setup Dev 0.1.0
+Herramienta para implementar el sistema de desarrollo del ecosistema IASI.
+
+USO
+  iasi-setup-dev [flags...] [parámetros...] [targets...]
+
+FLAGS
+  -h, --help                  Mostrar esta ayuda
+  -f                          Recrear las máquinas virtuales existentes
+  -a                          Arrancar las máquinas después de crearlas
+  -v                          Mostrar mensajes de progreso
+  -V                          Mostrar mensajes de progreso detallados
+  -s                          No generar mensajes por consola
+
+PARÁMETROS
+  --config <fichero>          Fichero TOML de configuración
+  --env <prefijo>             Prefijo de las variables de entorno
+  --definitions <directorio>  Directorio de definiciones de máquinas
+  --machines <directorio>     Directorio de máquinas virtuales
+  --logs <directorio>         Directorio de ficheros de log
+
+TARGETS
+  Máquinas virtuales que se van a procesar.
+
+VALORES POR DEFECTO
+  Directorios: directorio actual.
+  Máquinas existentes: se conservan.
+  Máquinas creadas: no se arrancan.
+
+CONFIGURACIÓN
+  Precedencia (de menor a mayor prioridad):
+  Hardcoded < recursos internos < TOML externo < entorno < CLI
+```
+
+## Reglas de implementación
+
+1. El comando `-h` o `--help` presenta la ayuda por salida estándar y finaliza normalmente, sin iniciar tareas de creación, recreación o arranque de máquinas.
+2. El texto de ayuda se emite sin prefijos aunque se utilice internamente el catálogo internacionalizado de mensajes.
+3. La opción `--env <prefijo>` **sí** mantiene su argumento `<prefijo>`; la prohibición de prefijos se refiere exclusivamente a los prefijos de las **líneas de salida de ayuda**.
+4. Conservar el formato de los mensajes operativos existente; no modificarlo para cumplir esta especificación.
+5. Evitar implementar la ayuda como una serie de mensajes de progreso con marcas de tiempo. Centralizar su representación y, cuando ya existan metadatos de opciones, reutilizarlos sin duplicar definiciones innecesariamente.
+6. No introducir opciones nuevas ni cambiar la semántica o la precedencia de configuración como parte de este ajuste. Si existen discrepancias entre la ayuda propuesta y las opciones realmente soportadas, señalarlas antes de añadir comportamientos.
+7. No insertar códigos o prefijos extra en líneas de título, encabezados, líneas vacías, opciones o notas finales.
+
+## Criterios de aceptación
+
+- `java -jar iasi-setup-dev-0.1.0.jar -h` muestra una ayuda estructurada equivalente a la sección «Salida propuesta».
+- `java -jar iasi-setup-dev-0.1.0.jar --help` produce el mismo resultado, si `--help` está soportado por el parser.
+- **Ninguna línea** comienza por una hora, un código de mensaje, un nivel de logging ni el prefijo ` - `.
+- Se respetan sangrías, alineación, títulos y líneas en blanco.
+- Pedir ayuda no ejecuta ninguna operación sobre máquinas virtuales.
+- Los mensajes ordinarios de ejecución mantienen su formato de logging actual.
+
+## Alcance
+
+Modificar únicamente los componentes necesarios para generar y presentar la ayuda, y sus pruebas. No refactorizar el parser, los servicios de máquinas ni el sistema general de mensajes salvo que resulte imprescindible para separar la presentación de ayuda del logging.

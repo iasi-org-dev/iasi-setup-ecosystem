@@ -10,13 +10,29 @@ import org.junit.jupiter.api.Test;
 import org.iasi.setupdev.core.Initializer;
 import org.junit.jupiter.api.io.TempDir;
 
+/**
+ * Checks mandatory values, typed lists and filesystem preparation for declared arguments.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 class ArgumentValidatorTest {
     @TempDir
     Path directory;
 
-    /**
-     * El consumidor recibe una ruta preparada y un entero, sin repetir validaciones.
-     */
+    @Test
+    void checksMissingMandatoryArgumentsAndPreservesTypedLists() throws IOException {
+        ArgsList definitions = new ArgsList()
+            .add(new ARG("servers", "SERVERS", ArgType.PARM, ArgClass.STRING, true, true, false));
+        ArgumentValidator validator = new ArgumentValidator(definitions);
+        assertThrows(ArgumentException.class, () -> validator.validateArgs(new WorkingArguments()));
+        WorkingArguments working = new WorkingArguments();
+        working.setParameter("servers", java.util.List.of("uno", "dos"));
+        assertEquals(java.util.List.of("uno", "dos"), validator.validateArgs(working).get("servers"));
+    }
+
     @Test
     void preparesDirectoryAndConvertsEffectiveValues() throws IOException {
         Path logs = directory.resolve("logs");
@@ -26,9 +42,6 @@ class ArgumentValidatorTest {
         assertEquals(2, values.get("verbose"));
     }
 
-    /**
-     * Un valor inválido impide crear los directorios solicitados.
-     */
     @Test
     void rejectsInvalidValuesBeforeCreatingDirectories() {
         Path logs = directory.resolve("logs");
@@ -37,9 +50,6 @@ class ArgumentValidatorTest {
         assertFalse(Files.exists(logs));
     }
 
-    /**
-     * Un archivo existente no se acepta como directorio de logs.
-     */
     @Test
     void rejectsFileAsDirectory() throws IOException {
         Path file = Files.createFile(directory.resolve("logs"));

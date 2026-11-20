@@ -8,11 +8,16 @@ import java.nio.file.Path;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Protects reusable package boundaries and application-owned process termination points.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 class DependencyDirectionTest {
-    /**
-     * El paquete base solo depende del JDK; common no puede importar el launcher
-     * que lo consume.
-     */
+
     @Test
     void layersOnlyDependOnLowerLayers() throws IOException {
         try (var sources = Files.walk(Path.of("src/main/java/org/iasi"))) {
@@ -21,10 +26,6 @@ class DependencyDirectionTest {
         }
     }
 
-    /**
-     * La salida normal pertenece a App y los abortos de inicialización a sus
-     * mensajes; los paquetes comunes no terminan la JVM.
-     */
     @Test
     void terminationStaysAtApplicationBoundaries() throws IOException {
         try (var sources = Files.walk(Path.of("src/main/java"))) {
@@ -39,10 +40,6 @@ class DependencyDirectionTest {
         }
     }
 
-    /**
-     * App reúne el punto de entrada estático y run de instancia, sin una clase Main
-     * separada.
-     */
     @Test
     void appContainsStaticEntryPointAndInstanceRun() throws Exception {
         var main = App.class.getMethod("main", String[].class);
@@ -54,10 +51,6 @@ class DependencyDirectionTest {
         assertFalse(Files.exists(Path.of("src/main/java/org/iasi/setupdev/Main.java")));
     }
 
-    /**
-     * Comprueba las fronteras en imports reales y no en ejemplos o comentarios de
-     * documentación.
-     */
     private void checkImports(Path source) throws IOException {
         String file = source.toString().replace('\\', '/');
         for (String line : Files.readAllLines(source)) {

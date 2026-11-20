@@ -10,14 +10,18 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+/**
+ * Exercises source metrics and style checks using isolated synthetic Java fixtures.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 class SourceGateTest {
     @TempDir
     Path fixture;
 
-    /**
-     * Contrasta puntuaciones conocidas y comentarios sin confundirlos con literales
-     * Java.
-     */
     @Test
     void knownMetricsAndCommentCounting() throws Exception {
         String method = "int value() {\n    // comment\n    /* comment */ int number = 1;\n    String text = \"/* literal */\";\n    return number;\n}";
@@ -26,7 +30,6 @@ class SourceGateTest {
                 .anyMatch(line -> line.startsWith("Fixture.java,value,") && line.endsWith(",5,0,1,0")));
     }
 
-    /** Evita contabilizar una continuación else-if como un nuevo nivel anidado. */
     @Test
     void elseIfUsesOneNestingLevel() throws Exception {
         String method = "int value(boolean a, boolean b) {\n    if (a) return 1;\n    else if (b) return 2;\n    else return 3;\n}";
@@ -35,10 +38,6 @@ class SourceGateTest {
                 .anyMatch(line -> line.startsWith("Fixture.java,value,") && line.endsWith(",5,1,3,4")));
     }
 
-    /**
-     * Introduce defectos de estilo y codificación para confirmar que el gate los
-     * rechaza.
-     */
     @Test
     void styleAndBomAreRejected() throws Exception {
         assertNotEquals(0, check("int value(boolean test) {\n    if (test) { return 1; }\n    return 0;\n}"));
@@ -47,19 +46,12 @@ class SourceGateTest {
         assertNotEquals(0, execute());
     }
 
-    /**
-     * Comprueba el límite de líneas efectivas mediante un método generado demasiado
-     * largo.
-     */
     @Test
     void rejectsLongMethods() throws Exception {
         assertNotEquals(0, check("void value() {\n" + "    System.nanoTime();\n".repeat(61) + "}"));
         assertTrue(Files.readString(fixture.resolve("result.log")).contains("length exceeds 60"));
     }
 
-    /**
-     * Introduce decisiones independientes suficientes para superar ambos máximos.
-     */
     @Test
     void rejectsCyclomaticAndCognitiveExcess() throws Exception {
         assertNotEquals(0, check("void value(boolean test) {\n" + "    if (test) System.nanoTime();\n".repeat(16) + "}"));
@@ -68,7 +60,6 @@ class SourceGateTest {
         assertTrue(output.contains("cognitive exceeds 15"));
     }
 
-    /** Genera cuatro bucles anidados y exige el rechazo por profundidad. */
     @Test
     void rejectsDeepNesting() throws Exception {
         String method = "void value(boolean test) {\n" + "    while (test) {\n".repeat(4) + "        System.nanoTime();\n" + "    }\n".repeat(4) + "}";
@@ -76,22 +67,14 @@ class SourceGateTest {
         assertTrue(Files.readString(fixture.resolve("result.log")).contains("nesting exceeds 3"));
     }
 
-    /**
-     * Crea una fuente mínima y una copia del checker en scratch para probar
-     * controles sin alterar el producto.
-     */
     private int check(String method) throws Exception {
         Files.createDirectories(fixture.resolve("src"));
         Files.createDirectories(fixture.resolve("qa/tools"));
-        Files.copy(Path.of("outputs/TASK-00.01.04/qa/tools/SourceGate.java"), fixture.resolve("qa/tools/SourceGate.java"));
+        Files.copy(Path.of("outputs/TASK-00.01.06/qa/tools/SourceGate.java"), fixture.resolve("qa/tools/SourceGate.java"));
         Files.writeString(fixture.resolve("src/Fixture.java"), "class Fixture {\n" + method + "\n}\n");
         return execute();
     }
 
-    /**
-     * Lanza el checker en otro proceso con tiempo acotado y conserva el diagnóstico
-     * de la prueba.
-     */
     private int execute() throws IOException, InterruptedException {
         String java = Path.of(System.getProperty("java.home"), "bin", "java").toString();
         Process child = new ProcessBuilder(java, fixture.resolve("qa/tools/SourceGate.java").toString(), fixture.toString()).redirectErrorStream(true)

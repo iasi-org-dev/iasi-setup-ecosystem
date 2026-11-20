@@ -1,0 +1,38 @@
+[
+  {
+    "name": "help-es",
+    "args": [
+      "-h"
+    ],
+    "rc": 0,
+    "filesystem_unchanged": true
+  },
+  {
+    "name": "help-en",
+    "args": [
+      "-h"
+    ],
+    "rc": 0,
+    "filesystem_unchanged": true
+  },
+  {
+    "name": "help-skips-operations",
+    "args": [
+      "-afh",
+      "--config",
+      "absent.toml",
+      "--logs",
+      "new-logs"
+    ],
+    "rc": 0,
+    "filesystem_unchanged": true
+  },
+  {
+    "name": "unsupported-long-help",
+    "args": [
+      "--help"
+    ],
+    "rc": 16,
+    "filesystem_unchanged": true
+  }
+]

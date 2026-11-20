@@ -1,0 +1,53 @@
++++
+id = "SPC-MACHINE-DISCOVERY"
+title = "Machine directory discovery"
+type = "specification"
+status = "proposed"
+language = "java"
++++
+
+# Machine directory discovery
+
+## Purpose
+
+Discover candidate machine directories without interpreting or validating their configuration.
+
+## Rules
+
+1. A machine search root may originate from an explicit command-line argument, application configuration, or a default location. The same discovery rules apply in every case.
+2. Enumerate only **immediate child directories** of the search root. Other files and directories may exist there and must not be returned as candidates.
+3. An immediate child directory is a candidate machine directory **if and only if** it contains an **immediate child directory** whose name equals the configured machine configuration directory name.
+4. The default configuration directory name is `config-data`. It must be declared centrally as a named Java constant inside the JAR, e.g. `MACHINE_CONFIG_DIRECTORY`, not repeated as a string literal in discovery code. Changing this constant must allow the discovery convention to be adjusted without changing the discovery algorithm.
+5. Discovery must **not** inspect configuration files, enforce required files, parse TOML/YAML, or determine whether a candidate machine is valid. Those checks belong exclusively to the later validation phase.
+6. A directory lacking the required configuration subdirectory must be silently excluded from the set of machine candidates. Its mere existence is not a configuration error.
+7. Discovery must not recursively search for the marker inside a candidate or infer a machine from a nested descendant.
+8. Discovery must not modify the filesystem.
+
+## Example
+
+Given the search root `C:\\Maquinas`:
+
+```text
+C:\Maquinas\
+├── iasi-tools\
+│   └── config-data\         candidate
+├── iasi-models\
+│   └── config-data\         candidate
+├── iasi-dev\
+│   └── docs\                excluded
+├── backups\                excluded
+└── iso\                    excluded
+```
+
+## Responsibility boundary
+
+- **Discovery**: return candidate machine directories based solely on directory structure.
+- **Validation**: subsequently verify their machine definitions and configuration contents.
+
+## Acceptance criteria
+
+- Both an explicit and a default/configured search root use the same filter.
+- The result includes only direct child directories containing a direct `config-data` subdirectory (or the central constant's replacement value).
+- Unrelated folders and files are excluded.
+- A grandchild `config-data` without a direct marker does not qualify.
+- No configuration parsing or validation is performed during discovery.

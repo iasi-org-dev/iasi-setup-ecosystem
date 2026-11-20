@@ -11,8 +11,12 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Destino UTF-8 por ejecución; independiente de la verbosidad elegida para
- * consola.
+ * Persists UTF-8 events without console colors in an exclusively created execution log.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 public final class FileLogSink implements LogSink {
     private static final DateTimeFormatter FILE_TIME = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
@@ -21,8 +25,8 @@ public final class FileLogSink implements LogSink {
     private final boolean trace;
 
     /**
-     * Crea un archivo exclusivo; el prefijo identifica la aplicación sin acoplar
-     * esta clase a ella.
+     * Requires a previously prepared directory and exclusively creates the execution log without overwriting an existing file.
+     * @throws IOException if creation fails, including a filename collision
      */
     public FileLogSink(Path directory, String application, Clock clock, boolean trace) throws IOException {
         if (!application.matches("[A-Za-z0-9._-]+")) throw new IllegalArgumentException("Invalid application identifier");
@@ -31,10 +35,6 @@ public final class FileLogSink implements LogSink {
         writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW);
     }
 
-    /**
-     * Persiste metadatos sin ANSI y fuerza la escritura antes de que se anuncie el
-     * evento en consola.
-     */
     @Override
     public void write(LogEvent event) throws IOException {
         if (event.severity() == Severity.TRACE && !trace) return;
@@ -43,15 +43,10 @@ public final class FileLogSink implements LogSink {
         writer.flush();
     }
 
-    /**
-     * Ruta creada por este adaptador, útil para inspección sin exponerla en la
-     * fachada.
-     */
     public Path file() {
         return file;
     }
 
-    /** Cierra el archivo propio y propaga errores de persistencia. */
     @Override
     public void close() throws IOException {
         writer.close();

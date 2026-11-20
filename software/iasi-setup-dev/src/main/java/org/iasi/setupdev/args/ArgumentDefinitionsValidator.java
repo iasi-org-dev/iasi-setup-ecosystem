@@ -1,7 +1,12 @@
 package org.iasi.setupdev.args;
 
 /**
- * Comprueba los argumentos cargados contra el esquema, fuera del loader sintáctico.
+ * Checks loaded CLI names and multiplicity against the declarations accepted by the application.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 public final class ArgumentDefinitionsValidator {
     public void validateArguments(Arguments arguments, ArgsList definitions) {

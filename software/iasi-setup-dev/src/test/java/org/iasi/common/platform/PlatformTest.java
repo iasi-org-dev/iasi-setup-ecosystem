@@ -7,11 +7,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+/**
+ * Checks host classification and explicit operation status using simulated system properties.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 class PlatformTest {
-    /**
-     * Ejercita familias de SO mediante propiedades inyectadas sin hosts físicos
-     * adicionales.
-     */
+
     @ParameterizedTest
     @CsvSource({"Windows 11,WINDOWS", "Windows Server 2025,WINDOWS", "Linux,LINUX", "GNU/Linux,LINUX", "Mac OS X,MACOS", "macOS,MACOS", "Darwin,MACOS",
             "FreeBSD,UNKNOWN", "unknown,UNKNOWN"})
@@ -19,10 +24,6 @@ class PlatformTest {
         assertEquals(expected, detect(name).family());
     }
 
-    /**
-     * Comprueba que runtime y arquitectura no se confunden con capacidades de
-     * hipervisor.
-     */
     @Test
     void preservesStructuredFieldsWithoutProviderAssumptions() {
         Platform platform = detect("Linux");
@@ -34,20 +35,12 @@ class PlatformTest {
         assertNotNull(Platform.detect().family());
     }
 
-    /**
-     * Construye propiedades de prueba deterministas, incluida una arquitectura
-     * distinta del host.
-     */
     static Platform detect(String name) {
         Map<String, String> properties = Map.of("os.name", name, "os.version", "6.0", "os.arch", "s390x", "java.runtime.version", "25", "java.vendor",
                 "test-vendor");
         return Platform.detect(key -> properties.getOrDefault(key, "unknown"));
     }
 
-    /**
-     * Verifica que el productor común marca Error solo para familias desconocidas y
-     * nunca deduce Info de sus datos.
-     */
     @ParameterizedTest
     @CsvSource({"Windows 11,0", "Linux,0", "Darwin,0", "FreeBSD,16", "unknown,16"})
     void platformOperationProducesExplicitRc(String name, int expected) {

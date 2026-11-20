@@ -8,21 +8,20 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * Selección de targets disponibles mediante las expresiones originales del CLI.
+ * Matches original regular expressions against discovered target names without modifying the original patterns.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 public final class TargetValidator {
-    /**
-     * Compila los patrones y selecciona los targets disponibles sin modificar los
-     * patrones originales ni consultar el directorio de definiciones.
-     */
+
     public Selection validateTargets(List<Path> availableTargets, List<String> targets) {
         List<Pattern> patterns = compilePatterns(targets);
         return selectTargets(targets, patterns, availableTargets);
     }
 
-    /**
-     * Comprueba la sintaxis de todas las expresiones antes de buscar coincidencias.
-     */
     private List<Pattern> compilePatterns(List<String> targets) {
         try {
             return targets.stream().map(Pattern::compile).toList();
@@ -31,10 +30,6 @@ public final class TargetValidator {
         }
     }
 
-    /**
-     * Selecciona nombres completos, evita duplicados y registra cada patrón sin
-     * coincidencias. Sin patrones selecciona todos los candidatos.
-     */
     private Selection selectTargets(List<String> targets, List<Pattern> patterns, List<Path> candidates) {
         if (patterns.isEmpty()) return new Selection(candidates, List.of());
         var selected = new LinkedHashSet<Path>();
@@ -47,20 +42,20 @@ public final class TargetValidator {
         return new Selection(List.copyOf(selected), missing);
     }
 
-    /**
-     * Evalúa una expresión regular sobre el nombre completo de cada candidato.
-     */
     private List<Path> findMatches(Pattern pattern, List<Path> candidates) {
         return candidates.stream().filter(path -> pattern.matcher(path.getFileName().toString()).matches()).toList();
     }
 
     /**
-     * Resultado separado de los patrones originales conservados en el contexto.
+     * Separates immutable selected paths from original patterns that matched no target.
+     *
+     * @author Javier G. Grandez
+     * @since 0.1.0
+     * @version 0.1.0
+     * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
      */
     public record Selection(List<Path> selected, List<String> missing) {
-        /**
-         * Conserva copias inmutables de coincidencias y patrones sin coincidencias.
-         */
+
         public Selection {
             selected = List.copyOf(selected);
             missing = List.copyOf(missing);

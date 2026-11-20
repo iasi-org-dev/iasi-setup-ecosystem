@@ -1,0 +1,128 @@
+[
+  {
+    "name": "root-default",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-default\\test-machines"
+    ],
+    "rc": 0,
+    "selected": [
+      "machine-a",
+      "machine-b"
+    ],
+    "filesystem_unchanged": true,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-default\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-default\\definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-default\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-default\\logs\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = [C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-default\\definitions\\machine-a, C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-default\\definitions\\machine-b]\n",
+    "stderr": ""
+  },
+  {
+    "name": "root-cli",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-cli\\test-machines",
+      "--definitions",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-cli\\cli-definitions"
+    ],
+    "rc": 0,
+    "selected": [
+      "machine-a",
+      "machine-b"
+    ],
+    "filesystem_unchanged": true,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-cli\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-cli\\cli-definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-cli\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-cli\\logs\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = [C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-cli\\cli-definitions\\machine-a, C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-cli\\cli-definitions\\machine-b]\n",
+    "stderr": ""
+  },
+  {
+    "name": "root-toml",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-toml\\test-machines",
+      "--config",
+      "settings.toml"
+    ],
+    "rc": 0,
+    "selected": [
+      "machine-a",
+      "machine-b"
+    ],
+    "filesystem_unchanged": true,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-toml\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-toml\\toml-definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-toml\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-toml\\logs\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = [C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-toml\\toml-definitions\\machine-a, C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-toml\\toml-definitions\\machine-b]\n",
+    "stderr": ""
+  },
+  {
+    "name": "root-environment",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-environment\\test-machines",
+      "--env",
+      "IASI_DISCOVERY"
+    ],
+    "rc": 0,
+    "selected": [
+      "machine-a",
+      "machine-b"
+    ],
+    "filesystem_unchanged": true,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-environment\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-environment\\environment-definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-environment\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-environment\\logs\n  env      = IASI_DISCOVERY\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = [C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-environment\\environment-definitions\\machine-a, C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\root-environment\\environment-definitions\\machine-b]\n",
+    "stderr": ""
+  },
+  {
+    "name": "empty-default",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\empty-default\\test-machines"
+    ],
+    "rc": 0,
+    "selected": [],
+    "filesystem_unchanged": true,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\empty-default\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\empty-default\\definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\empty-default\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\empty-default\\logs\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": ""
+  },
+  {
+    "name": "empty-explicit",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\empty-explicit\\test-machines",
+      "--definitions",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\empty-explicit\\cli-definitions"
+    ],
+    "rc": 0,
+    "selected": [],
+    "filesystem_unchanged": true,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\empty-explicit\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\empty-explicit\\cli-definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\empty-explicit\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\empty-explicit\\logs\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": ""
+  },
+  {
+    "name": "regex-selection",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\regex-selection\\test-machines",
+      "--definitions",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\regex-selection\\cli-definitions",
+      "machine-.*",
+      "machine-a"
+    ],
+    "rc": 0,
+    "selected": [
+      "machine-a",
+      "machine-b"
+    ],
+    "filesystem_unchanged": true,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\regex-selection\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\regex-selection\\cli-definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\regex-selection\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\regex-selection\\logs\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = [machine-.*, machine-a]\n  resolvedTargets = [C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\regex-selection\\cli-definitions\\machine-a, C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\regex-selection\\cli-definitions\\machine-b]\n",
+    "stderr": ""
+  },
+  {
+    "name": "unqualified-target-warning",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\unqualified-target-warning\\test-machines",
+      "--definitions",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\unqualified-target-warning\\cli-definitions",
+      "unrelated"
+    ],
+    "rc": 4,
+    "selected": [],
+    "filesystem_unchanged": true,
+    "stdout": "17:03:18 - No existe unrelated en el directorio C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\unqualified-target-warning\\cli-definitions.\nContext:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\unqualified-target-warning\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\unqualified-target-warning\\cli-definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\unqualified-target-warning\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\discovery-z9ee6n_c\\unqualified-target-warning\\logs\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 4\n  targets  = [unrelated]\n  resolvedTargets = []\n",
+    "stderr": ""
+  }
+]

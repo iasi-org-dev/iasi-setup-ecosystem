@@ -1,7 +1,12 @@
 package org.iasi.setupdev.args;
 
 /**
- * Tipos de datos que puede declarar un argumento del programa.
+ * Identifies the data representation required when transforming a textual argument value.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 public enum ArgClass {
      BOOLEAN   // Boolean

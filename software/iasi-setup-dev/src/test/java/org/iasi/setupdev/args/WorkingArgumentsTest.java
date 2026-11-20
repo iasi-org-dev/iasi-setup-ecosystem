@@ -5,6 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Checks layer updates, deferred environment classification and preservation of textual flag values.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 class WorkingArgumentsTest {
     @Test
     void updatesExistingValueWithoutAddingPendingEntry() {

@@ -1,0 +1,13 @@
+Context:
+  cwd      = J:\iasi-setup-ecosystem\software\iasi-setup-dev\outputs
+  definitions = .
+  machines = .
+  logs     = .
+  env      = null
+  verbose  = 1
+  force    = false
+  autostart = false
+  help     = false
+  RC       = 0
+  targets  = []
+  resolvedTargets = []

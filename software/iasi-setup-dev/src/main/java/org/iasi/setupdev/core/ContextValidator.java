@@ -14,6 +14,14 @@ import org.iasi.setupdev.args.TargetValidator;
 import org.iasi.setupdev.args.WorkingArguments;
 import org.iasi.setupdev.targets.TargetDiscovery;
 
+/**
+ * Publishes validated application values and resolves targets, aborting initialization on known failures.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 public final class ContextValidator {
     private final Context          ctx = Context.getInstance();
     private final ArgsList         defs;
@@ -37,7 +45,11 @@ public final class ContextValidator {
     }
 
     private void validateValues() throws IOException {
-        Map<String, Object> validated = new ArgumentValidator(defs).validateArgs(workingArguments.singleValues());
+        Map<String, Object> validated = new ArgumentValidator(defs).validateArgs(workingArguments);
+        updateContext(validated);
+    }
+
+    private void updateContext(Map<String, Object> validated) {
         for (var entry : validated.entrySet()) {
             switch (entry.getKey()) {
                 case "definitions" -> ctx.setDefinitions((Path) entry.getValue());
@@ -52,9 +64,6 @@ public final class ContextValidator {
         }
     }
 
-    /**
-     * Avisa de cada target ausente y acumula WARNING sin detener la ejecución.
-     */
     private void validateTargets() throws IOException {
         var availableTargets = new TargetDiscovery().discover(ctx.getDefinitions());
         var selection = new TargetValidator().validateTargets(availableTargets, ctx.getTargets());

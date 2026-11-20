@@ -1,25 +1,22 @@
 package org.iasi.common.logging;
 
 /**
- * Tipos comunes de mensaje y colores de presentación en consola.
+ * Associates message severity with console presentation colors.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 public enum Severity {
     MESSAGE(""), INFO("36"), SUCCESS("32"), WARNING("33"), ERROR("31"), DEBUG("90"), TRACE("90");
 
     private final String color;
 
-    /**
-     * Asocia un estilo ANSI de consola; el color no determina la identidad ni la
-     * severidad del evento.
-     */
     Severity(String color) {
         this.color = color;
     }
 
-    /**
-     * Código ANSI interno para el adaptador de consola; vacío conserva el color
-     * predeterminado.
-     */
     String color() {
         return color;
     }

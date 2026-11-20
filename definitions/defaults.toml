@@ -12,5 +12,5 @@ machines = "C:/Machines"
 logs = "./logs"
 
 # General execution flags.
-verbose = true
+verbose = 1
 

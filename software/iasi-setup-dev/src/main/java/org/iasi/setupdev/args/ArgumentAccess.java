@@ -2,6 +2,14 @@ package org.iasi.setupdev.args;
 
 import java.util.ArrayList;
 
+/**
+ * Reads indexed parameter occurrences without interpreting their data types or executing application actions.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 public final class ArgumentAccess {
     private ArgumentAccess() {
     }

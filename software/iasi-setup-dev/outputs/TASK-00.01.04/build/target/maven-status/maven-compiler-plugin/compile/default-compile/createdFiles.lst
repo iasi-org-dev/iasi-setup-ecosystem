@@ -27,7 +27,6 @@ org\iasi\setupdev\console\ContextSummary.class
 org\iasi\base\Verbosity.class
 org\iasi\setupdev\args\ArgsList.class
 org\iasi\setupdev\args\WorkingArguments.class
-org\iasi\setupdev\args\ArgumentValidator$1.class
 org\iasi\setupdev\args\ArgumentException.class
 org\iasi\common\logging\LogEvent.class
 org\iasi\setupdev\args\ArgumentValuesLoader.class
@@ -36,6 +35,7 @@ org\iasi\common\logging\FileLogSink.class
 org\iasi\common\platform\Platform.class
 org\iasi\setupdev\args\ArgumentAccess.class
 org\iasi\common\logging\Loggers.class
+org\iasi\setupdev\args\ArgumentTransformer$1.class
 org\iasi\common\i18n\MessageCatalog.class
 org\iasi\setupdev\core\Context.class
 org\iasi\setupdev\messages\InitializationMessages.class

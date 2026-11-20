@@ -2,6 +2,14 @@ package org.iasi.setupdev.args;
 
 import org.iasi.setupdev.messages.InitializationMessages;
 
+/**
+ * Loads CLI syntax during construction and aborts locally on malformed tokens, without consulting the argument schema.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 public final class CommandLineLoader extends Arguments {
     public CommandLineLoader(String... tokens) {
         try {

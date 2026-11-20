@@ -2,6 +2,14 @@ package org.iasi.setupdev.args;
 
 import lombok.Getter;
 
+/**
+ * Declares the immutable identity, data class and constraints of one supported argument.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 @Getter
 public final class ARG {
     private final String   cli;

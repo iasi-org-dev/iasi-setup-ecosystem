@@ -11,6 +11,14 @@ import java.time.ZoneOffset;
 import org.iasi.base.Verbosity;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Checks operational console formatting, error routing and optional colors independently of help output.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 class ConsoleSinkTest {
     private static final Clock CLOCK = Clock.fixed(Instant.parse("2026-11-18T12:34:56Z"), ZoneOffset.UTC);
 

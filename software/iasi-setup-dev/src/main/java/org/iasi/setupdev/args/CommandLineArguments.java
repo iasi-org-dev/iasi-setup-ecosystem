@@ -4,6 +4,14 @@ import java.util.List;
 import java.util.Locale;
 import org.iasi.setupdev.messages.InitializationMessages;
 
+/**
+ * Applies explicit CLI values and reconciles remaining environment entries with supported argument declarations.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 public final class CommandLineArguments {
     private final ArgsList         defs;
     private final WorkingArguments workingArguments;

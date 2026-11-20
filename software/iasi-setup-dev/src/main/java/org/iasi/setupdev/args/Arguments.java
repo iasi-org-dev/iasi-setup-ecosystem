@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Stores syntax-only command-line data in indexed name/value lists, preserving occurrence order.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 @Getter
 @Setter
 public class Arguments {

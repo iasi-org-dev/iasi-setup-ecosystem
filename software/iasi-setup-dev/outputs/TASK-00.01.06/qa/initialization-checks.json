@@ -1,0 +1,244 @@
+[
+  {
+    "name": "defaults",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\defaults\\test-machines"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\defaults",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\defaults\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\defaults\\definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\defaults\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\defaults\\logs\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "flags",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\flags\\test-machines",
+      "-af",
+      "-v",
+      "-s",
+      "-V"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\flags",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\flags\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\flags\\definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\flags\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\flags\\logs\n  env      = null\n  verbose  = 3\n  force    = true\n  autostart = true\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "last-silent",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\last-silent\\test-machines",
+      "-Vs"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\last-silent",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\last-silent\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\last-silent\\definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\last-silent\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\last-silent\\logs\n  env      = null\n  verbose  = 0\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "precedence",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\precedence\\test-machines",
+      "--config",
+      "settings.toml",
+      "--logs",
+      "from-cli",
+      "-V"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\precedence",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\precedence\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\precedence\\definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\precedence\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\precedence\\from-cli\n  env      = IASI_TEST\n  verbose  = 3\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "environment",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\environment\\test-machines",
+      "--env",
+      "IASI_TEST"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\environment",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\environment\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\environment\\definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\environment\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\environment\\from-env\n  env      = IASI_TEST\n  verbose  = 2\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "targets",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\targets\\test-machines",
+      "--definitions",
+      "defs",
+      "iasi-dev-.*",
+      "inexistente"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\targets",
+    "rc": 4,
+    "stdout": "17:03:15 - No existe inexistente en el directorio C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\targets\\defs.\nContext:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\targets\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\targets\\defs\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\targets\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\targets\\logs\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 4\n  targets  = [iasi-dev-.*, inexistente]\n  resolvedTargets = [C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\targets\\defs\\iasi-dev-api, C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\targets\\defs\\iasi-dev-ui]\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "two-configs",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\two-configs\\test-machines",
+      "--config",
+      "one.toml,two.toml"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\two-configs",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "17:03:15 - Línea de comandos o configuración incorrecta: Demasiadas configuraciones: solo se admite un fichero --config.\n",
+    "failures": []
+  },
+  {
+    "name": "missing-config",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\missing-config\\test-machines",
+      "--config",
+      "missing.toml"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\missing-config",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "17:03:15 - No existe el fichero o directorio especificado por --config.\n",
+    "failures": []
+  },
+  {
+    "name": "config-is-directory",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\config-is-directory\\test-machines",
+      "--config",
+      "."
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\config-is-directory",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "17:03:16 - La ruta especificada por --config no es un fichero.\n",
+    "failures": []
+  },
+  {
+    "name": "malformed-toml",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\malformed-toml\\test-machines",
+      "--config",
+      "settings.toml"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\malformed-toml",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "17:03:16 - La configuración no es TOML válido.\n",
+    "failures": []
+  },
+  {
+    "name": "unknown-flag",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\unknown-flag\\test-machines",
+      "-z"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\unknown-flag",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "17:03:16 - Línea de comandos o configuración incorrecta: Flag desconocido.\n",
+    "failures": []
+  },
+  {
+    "name": "missing-value",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\missing-value\\test-machines",
+      "--logs",
+      "-v"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\missing-value",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "17:03:16 - Línea de comandos o configuración incorrecta: Se requiere un valor separado y no vacío para el parámetro.\n",
+    "failures": []
+  },
+  {
+    "name": "invalid-environment",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\invalid-environment\\test-machines",
+      "--env",
+      "IASI_TEST"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\invalid-environment",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "17:03:16 - Línea de comandos o configuración incorrecta: Un valor de configuración no tiene el tipo esperado.\n",
+    "failures": []
+  },
+  {
+    "name": "quoted-comma",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\quoted-comma\\test-machines",
+      "--logs",
+      "\"logs,folder\""
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\quoted-comma",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\quoted-comma\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\quoted-comma\\definitions\n  machines = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\quoted-comma\\test-machines\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\quoted-comma\\logs,folder\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "help",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\help\\test-machines",
+      "-h"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\help",
+    "rc": 0,
+    "stdout": "IASI Setup Dev 0.1.0\nHerramienta para implementar el sistema de desarrollo del ecosistema IASI.\n\nUSO\n  iasi-setup-dev [flags...] [parámetros...] [targets...]\n\nFLAGS\n  -h                          Mostrar esta ayuda\n  -f                          Recrear las máquinas virtuales existentes\n  -a                          Arrancar las máquinas después de crearlas\n  -v                          Mostrar mensajes de progreso\n  -V                          Mostrar mensajes de progreso detallados\n  -s                          No generar mensajes por consola\n\nPARÁMETROS\n  --config <fichero>          Fichero TOML de configuración\n  --env <prefijo>             Prefijo de las variables de entorno\n  --definitions <directorio>  Directorio de definiciones de máquinas\n  --machines <directorio>     Directorio de máquinas virtuales\n  --logs <directorio>         Directorio de ficheros de log\n\nTARGETS\n  Máquinas virtuales que se van a procesar.\n\nVALORES POR DEFECTO\n  Directorios: directorio actual.\n  Máquinas existentes: se conservan.\n  Máquinas creadas: no se arrancan.\n\nCONFIGURACIÓN\n  Precedencia (de menor a mayor prioridad):\n  Hardcoded < recursos internos < TOML externo < entorno < CLI\n\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "grouped-help",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\grouped-help\\test-machines",
+      "-sh"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\grouped-help",
+    "rc": 0,
+    "stdout": "IASI Setup Dev 0.1.0\nHerramienta para implementar el sistema de desarrollo del ecosistema IASI.\n\nUSO\n  iasi-setup-dev [flags...] [parámetros...] [targets...]\n\nFLAGS\n  -h                          Mostrar esta ayuda\n  -f                          Recrear las máquinas virtuales existentes\n  -a                          Arrancar las máquinas después de crearlas\n  -v                          Mostrar mensajes de progreso\n  -V                          Mostrar mensajes de progreso detallados\n  -s                          No generar mensajes por consola\n\nPARÁMETROS\n  --config <fichero>          Fichero TOML de configuración\n  --env <prefijo>             Prefijo de las variables de entorno\n  --definitions <directorio>  Directorio de definiciones de máquinas\n  --machines <directorio>     Directorio de máquinas virtuales\n  --logs <directorio>         Directorio de ficheros de log\n\nTARGETS\n  Máquinas virtuales que se van a procesar.\n\nVALORES POR DEFECTO\n  Directorios: directorio actual.\n  Máquinas existentes: se conservan.\n  Máquinas creadas: no se arrancan.\n\nCONFIGURACIÓN\n  Precedencia (de menor a mayor prioridad):\n  Hardcoded < recursos internos < TOML externo < entorno < CLI\n\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "help-skips-configuration",
+    "args": [
+      "--machines",
+      "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\help-skips-configuration\\test-machines",
+      "-h",
+      "--config",
+      "missing.toml",
+      "--logs",
+      "should-not-exist"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.06\\build\\initialization-checks\\run-_tad3w95\\help-skips-configuration",
+    "rc": 0,
+    "stdout": "IASI Setup Dev 0.1.0\nHerramienta para implementar el sistema de desarrollo del ecosistema IASI.\n\nUSO\n  iasi-setup-dev [flags...] [parámetros...] [targets...]\n\nFLAGS\n  -h                          Mostrar esta ayuda\n  -f                          Recrear las máquinas virtuales existentes\n  -a                          Arrancar las máquinas después de crearlas\n  -v                          Mostrar mensajes de progreso\n  -V                          Mostrar mensajes de progreso detallados\n  -s                          No generar mensajes por consola\n\nPARÁMETROS\n  --config <fichero>          Fichero TOML de configuración\n  --env <prefijo>             Prefijo de las variables de entorno\n  --definitions <directorio>  Directorio de definiciones de máquinas\n  --machines <directorio>     Directorio de máquinas virtuales\n  --logs <directorio>         Directorio de ficheros de log\n\nTARGETS\n  Máquinas virtuales que se van a procesar.\n\nVALORES POR DEFECTO\n  Directorios: directorio actual.\n  Máquinas existentes: se conservan.\n  Máquinas creadas: no se arrancan.\n\nCONFIGURACIÓN\n  Precedencia (de menor a mayor prioridad):\n  Hardcoded < recursos internos < TOML externo < entorno < CLI\n\n",
+    "stderr": "",
+    "failures": []
+  }
+]

@@ -1,0 +1,33 @@
+IASI Setup Dev 0.1.0
+Herramienta para implementar el sistema de desarrollo del ecosistema IASI.
+
+USO
+  iasi-setup-dev [flags...] [parámetros...] [targets...]
+
+FLAGS
+  -h                          Mostrar esta ayuda
+  -f                          Recrear las máquinas virtuales existentes
+  -a                          Arrancar las máquinas después de crearlas
+  -v                          Mostrar mensajes de progreso
+  -V                          Mostrar mensajes de progreso detallados
+  -s                          No generar mensajes por consola
+
+PARÁMETROS
+  --config <fichero>          Fichero TOML de configuración
+  --env <prefijo>             Prefijo de las variables de entorno
+  --definitions <directorio>  Directorio de definiciones de máquinas
+  --machines <directorio>     Directorio de máquinas virtuales
+  --logs <directorio>         Directorio de ficheros de log
+
+TARGETS
+  Máquinas virtuales que se van a procesar.
+
+VALORES POR DEFECTO
+  Directorios: directorio actual.
+  Máquinas existentes: se conservan.
+  Máquinas creadas: no se arrancan.
+
+CONFIGURACIÓN
+  Precedencia (de menor a mayor prioridad):
+  Hardcoded < recursos internos < TOML externo < entorno < CLI
+

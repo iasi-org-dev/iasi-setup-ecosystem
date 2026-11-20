@@ -1,0 +1,35 @@
++++
+id = "TASK-MACHINE-DISCOVERY"
+title = "Filter machine candidates during directory discovery"
+type = "task"
+status = "proposed"
+language = "java"
+specification = "machine-discovery.iasi"
++++
+
+# Task: filter machine candidates during discovery
+
+## Objective
+
+Update existing Java discovery logic so it accepts machine directory candidates only when each is a direct child of the search root and itself has a direct child directory named by the central `MACHINE_CONFIG_DIRECTORY` constant (default: `config-data`).
+
+## Implementation instructions
+
+1. Identify the existing discovery entry points for explicitly specified and fallback/configured search directories.
+2. Reuse one consistent candidate filter for all of them; do not duplicate the discovery rules.
+3. Introduce or reuse a centrally defined named Java constant for `config-data` inside the JAR. Avoid scattering the literal through the implementation.
+4. Apply the filter **before** adding directories to the candidate machine collection.
+5. Keep configuration-content parsing, file presence checks, and machine validation out of discovery.
+6. Preserve existing handling of invalid/inaccessible search roots and existing messaging conventions; do not introduce new message codes in this task.
+7. Add automated tests for an explicit root, a fallback root, directories with and without the marker, marker-as-file, nested marker only, unrelated files, and the empty-candidate result.
+8. Make the smallest change compatible with the existing project architecture and the corporate Java/Javadoc rules.
+
+## Done when
+
+- The specification acceptance criteria pass.
+- Tests pass and show that unrelated directories are not returned as machines.
+- Validation remains in its own phase, with no new validation logic added to discovery.
+
+## Scope exclusion
+
+Do not redesign machine validation, directory schemas, logging, or command-line argument handling in this task.

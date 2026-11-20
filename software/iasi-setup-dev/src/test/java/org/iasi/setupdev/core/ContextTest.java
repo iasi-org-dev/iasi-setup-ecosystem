@@ -8,6 +8,14 @@ import java.util.List;
 import org.iasi.base.RC;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Checks singleton identity, immutable original targets and single-threaded return-code accumulation.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ */
 class ContextTest {
     @Test
     void singleThreadedContextPreservesOriginalTargetsAndAccumulatesRc() {

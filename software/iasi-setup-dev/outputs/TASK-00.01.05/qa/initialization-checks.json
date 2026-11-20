@@ -1,0 +1,209 @@
+[
+  {
+    "name": "defaults",
+    "args": [],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\defaults",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\defaults\n  definitions = .\n  machines = .\n  logs     = .\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "flags",
+    "args": [
+      "-af",
+      "-v",
+      "-s",
+      "-V"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\flags",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\flags\n  definitions = .\n  machines = .\n  logs     = .\n  env      = null\n  verbose  = 3\n  force    = true\n  autostart = true\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "last-silent",
+    "args": [
+      "-Vs"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\last-silent",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\last-silent\n  definitions = .\n  machines = .\n  logs     = .\n  env      = null\n  verbose  = 0\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "precedence",
+    "args": [
+      "--config",
+      "settings.toml",
+      "--logs",
+      "from-cli",
+      "-V"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\precedence",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\precedence\n  definitions = .\n  machines = .\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\precedence\\from-cli\n  env      = IASI_TEST\n  verbose  = 3\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = [.\\from-cli]\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "environment",
+    "args": [
+      "--env",
+      "IASI_TEST"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\environment",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\environment\n  definitions = .\n  machines = .\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\environment\\from-env\n  env      = IASI_TEST\n  verbose  = 2\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = [.\\from-env]\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "targets",
+    "args": [
+      "--definitions",
+      "defs",
+      "iasi-dev-.*",
+      "inexistente"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\targets",
+    "rc": 4,
+    "stdout": "23:23:32 - No existe inexistente en el directorio C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\targets\\defs.\nContext:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\targets\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\targets\\defs\n  machines = .\n  logs     = .\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 4\n  targets  = [iasi-dev-.*, inexistente]\n  resolvedTargets = [C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\targets\\defs\\iasi-dev-api, C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\targets\\defs\\iasi-dev-ui]\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "two-configs",
+    "args": [
+      "--config",
+      "one.toml,two.toml"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\two-configs",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "23:23:32 - Línea de comandos o configuración incorrecta: Demasiadas configuraciones: solo se admite un fichero --config.\n",
+    "failures": []
+  },
+  {
+    "name": "missing-config",
+    "args": [
+      "--config",
+      "missing.toml"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\missing-config",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "23:23:32 - No existe el fichero o directorio especificado por --config.\n",
+    "failures": []
+  },
+  {
+    "name": "config-is-directory",
+    "args": [
+      "--config",
+      "."
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\config-is-directory",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "23:23:32 - La ruta especificada por --config no es un fichero.\n",
+    "failures": []
+  },
+  {
+    "name": "malformed-toml",
+    "args": [
+      "--config",
+      "settings.toml"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\malformed-toml",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "23:23:32 - La configuración no es TOML válido.\n",
+    "failures": []
+  },
+  {
+    "name": "unknown-flag",
+    "args": [
+      "-z"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\unknown-flag",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "23:23:32 - Línea de comandos o configuración incorrecta: Flag desconocido.\n",
+    "failures": []
+  },
+  {
+    "name": "missing-value",
+    "args": [
+      "--logs",
+      "-v"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\missing-value",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "23:23:32 - Línea de comandos o configuración incorrecta: Se requiere un valor separado y no vacío para el parámetro.\n",
+    "failures": []
+  },
+  {
+    "name": "invalid-environment",
+    "args": [
+      "--env",
+      "IASI_TEST"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\invalid-environment",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "23:23:32 - Línea de comandos o configuración incorrecta: Un valor de configuración no tiene el tipo esperado.\n",
+    "failures": []
+  },
+  {
+    "name": "quoted-comma",
+    "args": [
+      "--logs",
+      "\"logs,folder\""
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\quoted-comma",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\quoted-comma\n  definitions = .\n  machines = .\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\quoted-comma\\logs,folder\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = [.\\logs,folder]\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "help",
+    "args": [
+      "-h"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\help",
+    "rc": 0,
+    "stdout": "IASI Setup Dev 0.1.0\nHerramienta para implementar el sistema de desarrollo del ecosistema IASI.\n\nUSO\n  iasi-setup-dev [flags...] [parámetros...] [targets...]\n\nFLAGS\n  -h                          Mostrar esta ayuda\n  -f                          Recrear las máquinas virtuales existentes\n  -a                          Arrancar las máquinas después de crearlas\n  -v                          Mostrar mensajes de progreso\n  -V                          Mostrar mensajes de progreso detallados\n  -s                          No generar mensajes por consola\n\nPARÁMETROS\n  --config <fichero>          Fichero TOML de configuración\n  --env <prefijo>             Prefijo de las variables de entorno\n  --definitions <directorio>  Directorio de definiciones de máquinas\n  --machines <directorio>     Directorio de máquinas virtuales\n  --logs <directorio>         Directorio de ficheros de log\n\nTARGETS\n  Máquinas virtuales que se van a procesar.\n\nVALORES POR DEFECTO\n  Directorios: directorio actual.\n  Máquinas existentes: se conservan.\n  Máquinas creadas: no se arrancan.\n\nCONFIGURACIÓN\n  Precedencia (de menor a mayor prioridad):\n  Hardcoded < recursos internos < TOML externo < entorno < CLI\n\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "grouped-help",
+    "args": [
+      "-sh"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\grouped-help",
+    "rc": 0,
+    "stdout": "IASI Setup Dev 0.1.0\nHerramienta para implementar el sistema de desarrollo del ecosistema IASI.\n\nUSO\n  iasi-setup-dev [flags...] [parámetros...] [targets...]\n\nFLAGS\n  -h                          Mostrar esta ayuda\n  -f                          Recrear las máquinas virtuales existentes\n  -a                          Arrancar las máquinas después de crearlas\n  -v                          Mostrar mensajes de progreso\n  -V                          Mostrar mensajes de progreso detallados\n  -s                          No generar mensajes por consola\n\nPARÁMETROS\n  --config <fichero>          Fichero TOML de configuración\n  --env <prefijo>             Prefijo de las variables de entorno\n  --definitions <directorio>  Directorio de definiciones de máquinas\n  --machines <directorio>     Directorio de máquinas virtuales\n  --logs <directorio>         Directorio de ficheros de log\n\nTARGETS\n  Máquinas virtuales que se van a procesar.\n\nVALORES POR DEFECTO\n  Directorios: directorio actual.\n  Máquinas existentes: se conservan.\n  Máquinas creadas: no se arrancan.\n\nCONFIGURACIÓN\n  Precedencia (de menor a mayor prioridad):\n  Hardcoded < recursos internos < TOML externo < entorno < CLI\n\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "help-skips-configuration",
+    "args": [
+      "-h",
+      "--config",
+      "missing.toml",
+      "--logs",
+      "should-not-exist"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.05\\build\\initialization-checks\\run-ptjd9rjw\\help-skips-configuration",
+    "rc": 0,
+    "stdout": "IASI Setup Dev 0.1.0\nHerramienta para implementar el sistema de desarrollo del ecosistema IASI.\n\nUSO\n  iasi-setup-dev [flags...] [parámetros...] [targets...]\n\nFLAGS\n  -h                          Mostrar esta ayuda\n  -f                          Recrear las máquinas virtuales existentes\n  -a                          Arrancar las máquinas después de crearlas\n  -v                          Mostrar mensajes de progreso\n  -V                          Mostrar mensajes de progreso detallados\n  -s                          No generar mensajes por consola\n\nPARÁMETROS\n  --config <fichero>          Fichero TOML de configuración\n  --env <prefijo>             Prefijo de las variables de entorno\n  --definitions <directorio>  Directorio de definiciones de máquinas\n  --machines <directorio>     Directorio de máquinas virtuales\n  --logs <directorio>         Directorio de ficheros de log\n\nTARGETS\n  Máquinas virtuales que se van a procesar.\n\nVALORES POR DEFECTO\n  Directorios: directorio actual.\n  Máquinas existentes: se conservan.\n  Máquinas creadas: no se arrancan.\n\nCONFIGURACIÓN\n  Precedencia (de menor a mayor prioridad):\n  Hardcoded < recursos internos < TOML externo < entorno < CLI\n\n",
+    "stderr": "",
+    "failures": []
+  }
+]

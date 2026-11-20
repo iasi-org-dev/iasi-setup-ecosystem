@@ -1,12 +1,15 @@
 package org.iasi.setupdev.args;
 
 /**
- * Error de validación de argumentos identificado por una clave del catálogo.
+ * Carries a controlled diagnostic key for an invalid application argument.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 public final class ArgumentException extends IllegalArgumentException {
-    /**
-     * Conserva la clave del diagnóstico sin incluir datos externos.
-     */
+
     public ArgumentException(String key) {
         super(key);
     }

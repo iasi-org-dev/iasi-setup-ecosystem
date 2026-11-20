@@ -1,8 +1,12 @@
 package org.iasi.base;
 
 /**
- * Constantes enteras de COR-MSG-RC-001; las combinaciones se forman con OR, sin
- * nombres adicionales.
+ * Defines composable IASI return-code bits without deciding execution flow.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 public final class RC {
     public static final int OK = 0x00;
@@ -14,24 +18,13 @@ public final class RC {
     public static final int SEVERE = 0x20;
     public static final int FATAL = 0x40;
 
-    /**
-     * Clase de constantes; no hay instancias, ordinales ni conversiones desde enum.
-     */
     private RC() {
     }
 
-    /**
-     * Comprueba una máscara en una frontera de entrada; no convierte códigos
-     * nativos externos.
-     */
     public static boolean isValid(int value) {
         return value >= OK && value <= 0x7F;
     }
 
-    /**
-     * Clasifica máscaras válidas por sus bits de error, no por ser distintas de
-     * cero.
-     */
     public static boolean isError(int value) {
         return (value & (ERROR | SEVERE | FATAL)) != 0;
     }

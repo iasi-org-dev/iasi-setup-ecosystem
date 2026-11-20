@@ -1,0 +1,197 @@
+[
+  {
+    "name": "defaults",
+    "args": [],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\defaults",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\defaults\n  definitions = .\n  machines = .\n  logs     = .\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "flags",
+    "args": [
+      "-af",
+      "-v",
+      "-s",
+      "-V"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\flags",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\flags\n  definitions = .\n  machines = .\n  logs     = .\n  env      = null\n  verbose  = 3\n  force    = true\n  autostart = true\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "last-silent",
+    "args": [
+      "-Vs"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\last-silent",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\last-silent\n  definitions = .\n  machines = .\n  logs     = .\n  env      = null\n  verbose  = 0\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = []\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "precedence",
+    "args": [
+      "--config",
+      "settings.toml",
+      "--logs",
+      "from-cli",
+      "-V"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\precedence",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\precedence\n  definitions = .\n  machines = .\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\precedence\\from-cli\n  env      = IASI_TEST\n  verbose  = 3\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = [.\\from-cli]\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "environment",
+    "args": [
+      "--env",
+      "IASI_TEST"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\environment",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\environment\n  definitions = .\n  machines = .\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\environment\\from-env\n  env      = IASI_TEST\n  verbose  = 2\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = [.\\from-env]\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "targets",
+    "args": [
+      "--definitions",
+      "defs",
+      "iasi-dev-.*",
+      "inexistente"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\targets",
+    "rc": 4,
+    "stdout": "22:04:08 - No existe inexistente en el directorio C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\targets\\defs.\nContext:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\targets\n  definitions = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\targets\\defs\n  machines = .\n  logs     = .\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 4\n  targets  = [iasi-dev-.*, inexistente]\n  resolvedTargets = [C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\targets\\defs\\iasi-dev-api, C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\targets\\defs\\iasi-dev-ui]\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "two-configs",
+    "args": [
+      "--config",
+      "one.toml,two.toml"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\two-configs",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "22:04:08 - L�nea de comandos o configuraci�n incorrecta: Demasiadas configuraciones: solo se admite un fichero --config.\n",
+    "failures": []
+  },
+  {
+    "name": "missing-config",
+    "args": [
+      "--config",
+      "missing.toml"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\missing-config",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "22:04:08 - L�nea de comandos o configuraci�n incorrecta: Ruta incorrecta.\n",
+    "failures": []
+  },
+  {
+    "name": "malformed-toml",
+    "args": [
+      "--config",
+      "settings.toml"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\malformed-toml",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "22:04:08 - L�nea de comandos o configuraci�n incorrecta: La configuraci�n no es TOML v�lido.\n",
+    "failures": []
+  },
+  {
+    "name": "unknown-flag",
+    "args": [
+      "-z"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\unknown-flag",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "22:04:08 - L�nea de comandos o configuraci�n incorrecta: Flag desconocido.\n",
+    "failures": []
+  },
+  {
+    "name": "missing-value",
+    "args": [
+      "--logs",
+      "-v"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\missing-value",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "22:04:09 - L�nea de comandos o configuraci�n incorrecta: Se requiere un valor separado y no vac�o para el par�metro.\n",
+    "failures": []
+  },
+  {
+    "name": "invalid-environment",
+    "args": [
+      "--env",
+      "IASI_TEST"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\invalid-environment",
+    "rc": 16,
+    "stdout": "",
+    "stderr": "22:04:09 - L�nea de comandos o configuraci�n incorrecta: Un valor de configuraci�n no tiene el tipo esperado.\n",
+    "failures": []
+  },
+  {
+    "name": "quoted-comma",
+    "args": [
+      "--logs",
+      "\"logs,folder\""
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\quoted-comma",
+    "rc": 0,
+    "stdout": "Context:\n  cwd      = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\quoted-comma\n  definitions = .\n  machines = .\n  logs     = C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\quoted-comma\\logs,folder\n  env      = null\n  verbose  = 1\n  force    = false\n  autostart = false\n  help     = false\n  RC       = 0\n  targets  = []\n  resolvedTargets = [.\\logs,folder]\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "help",
+    "args": [
+      "-h"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\help",
+    "rc": 0,
+    "stdout": "22:04:09 - USO\n22:04:09 -   iasi-setup-dev [flags] [parametros] [targets...]\n22:04:09 - FLAGS\n22:04:09 -   -h  Mostrar ayuda\n22:04:09 -   -f  Forzar (por defecto false)\n22:04:09 -   -a  Arrancar la maquina despues de crearla (por defecto false)\n22:04:09 -   -s  Verbosidad 0; -v 2; -V 3; por defecto 1\n22:04:09 -   Se admiten grupos de flags y gana la ultima seleccion de verbosidad.\n22:04:09 - PARAMETROS\n22:04:09 -   --config <fichero>        Configuracion TOML externa\n22:04:09 -   --env <prefijo>           Variables PREFIJO_NOMBRE en mayusculas\n22:04:09 -   --definitions <directorio> Definiciones de maquinas\n22:04:09 -   --machines <directorio>   Directorio de maquinas\n22:04:09 -   --logs <directorio>       Directorio de logs\n22:04:09 -   Directorios por defecto: directorio actual.\n22:04:09 -   Precedencia: hardcoded < recurso interno < TOML externo < entorno < CLI.\n22:04:09 - TARGETS\n22:04:09 -   Se admiten varios nombres o expresiones regulares.\n22:04:09 -   Ejemplo: iasi-setup-dev --definitions ./defs \"iasi-dev-.*\"\n22:04:09 -   Sin targets se seleccionan todos los disponibles en definitions.\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "grouped-help",
+    "args": [
+      "-sh"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\grouped-help",
+    "rc": 0,
+    "stdout": "22:04:09 - USO\n22:04:09 -   iasi-setup-dev [flags] [parametros] [targets...]\n22:04:09 - FLAGS\n22:04:09 -   -h  Mostrar ayuda\n22:04:09 -   -f  Forzar (por defecto false)\n22:04:09 -   -a  Arrancar la maquina despues de crearla (por defecto false)\n22:04:09 -   -s  Verbosidad 0; -v 2; -V 3; por defecto 1\n22:04:09 -   Se admiten grupos de flags y gana la ultima seleccion de verbosidad.\n22:04:09 - PARAMETROS\n22:04:09 -   --config <fichero>        Configuracion TOML externa\n22:04:09 -   --env <prefijo>           Variables PREFIJO_NOMBRE en mayusculas\n22:04:09 -   --definitions <directorio> Definiciones de maquinas\n22:04:09 -   --machines <directorio>   Directorio de maquinas\n22:04:09 -   --logs <directorio>       Directorio de logs\n22:04:09 -   Directorios por defecto: directorio actual.\n22:04:09 -   Precedencia: hardcoded < recurso interno < TOML externo < entorno < CLI.\n22:04:09 - TARGETS\n22:04:09 -   Se admiten varios nombres o expresiones regulares.\n22:04:09 -   Ejemplo: iasi-setup-dev --definitions ./defs \"iasi-dev-.*\"\n22:04:09 -   Sin targets se seleccionan todos los disponibles en definitions.\n",
+    "stderr": "",
+    "failures": []
+  },
+  {
+    "name": "help-skips-configuration",
+    "args": [
+      "-h",
+      "--config",
+      "missing.toml",
+      "--logs",
+      "should-not-exist"
+    ],
+    "cwd": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.04\\build\\initialization-checks\\run-uv8r87to\\help-skips-configuration",
+    "rc": 0,
+    "stdout": "22:04:09 - USO\n22:04:09 -   iasi-setup-dev [flags] [parametros] [targets...]\n22:04:09 - FLAGS\n22:04:09 -   -h  Mostrar ayuda\n22:04:09 -   -f  Forzar (por defecto false)\n22:04:09 -   -a  Arrancar la maquina despues de crearla (por defecto false)\n22:04:09 -   -s  Verbosidad 0; -v 2; -V 3; por defecto 1\n22:04:09 -   Se admiten grupos de flags y gana la ultima seleccion de verbosidad.\n22:04:09 - PARAMETROS\n22:04:09 -   --config <fichero>        Configuracion TOML externa\n22:04:09 -   --env <prefijo>           Variables PREFIJO_NOMBRE en mayusculas\n22:04:09 -   --definitions <directorio> Definiciones de maquinas\n22:04:09 -   --machines <directorio>   Directorio de maquinas\n22:04:09 -   --logs <directorio>       Directorio de logs\n22:04:09 -   Directorios por defecto: directorio actual.\n22:04:09 -   Precedencia: hardcoded < recurso interno < TOML externo < entorno < CLI.\n22:04:09 - TARGETS\n22:04:09 -   Se admiten varios nombres o expresiones regulares.\n22:04:09 -   Ejemplo: iasi-setup-dev --definitions ./defs \"iasi-dev-.*\"\n22:04:09 -   Sin targets se seleccionan todos los disponibles en definitions.\n",
+    "stderr": "",
+    "failures": []
+  }
+]

@@ -9,8 +9,12 @@ import java.time.ZonedDateTime;
 import org.iasi.common.i18n.MessageCatalog;
 
 /**
- * Fachada común: localiza y sanea una vez; los adaptadores reciben el mismo
- * evento. No es thread-safe.
+ * Localizes and sanitizes events before distributing them to persistent and console sinks.
+ *
+ * @author Javier G. Grandez
+ * @since 0.1.0
+ * @version 0.1.0
+ * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  */
 public final class Logger implements AutoCloseable {
     private final MessageCatalog catalog;
@@ -19,10 +23,6 @@ public final class Logger implements AutoCloseable {
     private final LogSink persistent;
     private final LogSink console;
 
-    /**
-     * Inyecta destinos; un adaptador Log4j puede sustituir persistencia sin cambiar
-     * a los consumidores.
-     */
     public Logger(MessageCatalog catalog, Clock clock, String component, LogSink persistent, LogSink console) {
         this.catalog = catalog;
         this.clock = clock;
@@ -32,8 +32,8 @@ public final class Logger implements AutoCloseable {
     }
 
     /**
-     * Emite un evento atómico. Un fallo de persistencia se propaga antes de
-     * anunciarlo en consola.
+     * Writes the persistent sink before the console, so a persistence failure cannot announce a successfully logged event.
+     * @throws IOException if either output backend fails
      */
     public void emit(MessageDefinition definition, Object... arguments) throws IOException {
         ZonedDateTime time = ZonedDateTime.now(clock);
@@ -44,8 +44,7 @@ public final class Logger implements AutoCloseable {
     }
 
     /**
-     * Diagnóstico previo al arranque, sin abrir archivos ni requerir un backend
-     * disponible.
+     * Reports a bootstrap error without opening a file or requiring a persistent logging backend.
      */
     public static void earlyError(MessageCatalog catalog, PrintStream err, Clock clock, MessageDefinition definition, Object... arguments) {
         String text = catalog.text(definition.key(), arguments);
@@ -54,8 +53,7 @@ public final class Logger implements AutoCloseable {
     }
 
     /**
-     * Intenta cerrar ambos destinos incluso si uno falla, conservando excepciones
-     * suprimidas.
+     * Attempts to close both sinks, retaining a second failure as a suppressed exception.
      */
     @Override
     public void close() throws IOException {
