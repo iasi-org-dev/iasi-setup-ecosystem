@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import org.iasi.setupdev.args.layer.CommandLineArguments;
-import org.iasi.setupdev.args.loader.CommandLineLoader;
-import org.iasi.setupdev.args.model.WorkingArguments;
+import org.iasi.args.layer.CommandLineArguments;
+import org.iasi.args.loader.CommandLineLoader;
+import org.iasi.args.model.WorkingArguments;
 import org.iasi.setupdev.core.Initializer;
 import org.junit.jupiter.api.Test;
 

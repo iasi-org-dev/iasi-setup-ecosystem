@@ -1,9 +1,9 @@
-package org.iasi.setupdev.args;
+package org.iasi.args;
 
-import org.iasi.setupdev.args.model.*;
-import org.iasi.setupdev.args.loader.*;
-import org.iasi.setupdev.args.layer.*;
-import org.iasi.setupdev.args.validation.*;
+import org.iasi.args.model.*;
+import org.iasi.args.loader.*;
+import org.iasi.args.layer.*;
+import org.iasi.args.validation.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;

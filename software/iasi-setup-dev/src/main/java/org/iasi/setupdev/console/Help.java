@@ -22,7 +22,7 @@ public final class Help {
     }
 
     Help(Locale locale) {
-        catalog = new MessageCatalog("messages", locale);
+        catalog = new MessageCatalog("messages.messages", locale);
     }
 
     /**

@@ -1,4 +1,85 @@
 -------------------------------------------------------------------------------
 Test set: org.iasi.setupdev.AppSingleInstanceTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.427 s -- in org.iasi.setupdev.AppSingleInstanceTest
+Tests run: 3, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 0.355 s <<< FAILURE! -- in org.iasi.setupdev.AppSingleInstanceTest
+org.iasi.setupdev.AppSingleInstanceTest.busyApplicationDoesNotReadConfigurationOrChangeActiveResources -- Time elapsed: 0.143 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+Exception in thread "main" java.lang.ExceptionInInitializerError
+	at org.iasi.setupdev.core.StartupChecks.acquireInstanceLock(StartupChecks.java:44)
+	at org.iasi.setupdev.InstanceLockEntryPoint.main(InstanceLockEntryPoint.java:16)
+Caused by: java.util.MissingResourceException: Can't find bundle for base name messages, locale en_ES
+	at java.base/java.util.ResourceBundle.throwMissingResourceException(ResourceBundle.java:2012)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1664)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1574)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1529)
+	at java.base/java.util.ResourceBundle.getBundle(ResourceBundle.java:1045)
+	at org.iasi.common.i18n.MessageCatalog.<init>(MessageCatalog.java:21)
+	at org.iasi.setupdev.messages.InitializationMessages.<clinit>(InitializationMessages.java:26)
+	... 2 more
+ ==> expected: <16> but was: <1>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+	at org.iasi.setupdev.AppSingleInstanceTest.result(AppSingleInstanceTest.java:78)
+	at org.iasi.setupdev.AppSingleInstanceTest.busyApplicationDoesNotReadConfigurationOrChangeActiveResources(AppSingleInstanceTest.java:38)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+org.iasi.setupdev.AppSingleInstanceTest.releasesOwnershipWhenInitializationTerminatesWithAnError -- Time elapsed: 0.134 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+Exception in thread "main" java.lang.ExceptionInInitializerError
+	at org.iasi.setupdev.configuration.ExternalConfiguration.apply(ExternalConfiguration.java:32)
+	at org.iasi.setupdev.core.Initializer.applyExternalConfiguration(Initializer.java:63)
+	at org.iasi.setupdev.core.Initializer.initialize(Initializer.java:41)
+	at org.iasi.setupdev.App.run(App.java:34)
+	at org.iasi.setupdev.InstanceLockEntryPoint.main(InstanceLockEntryPoint.java:18)
+Caused by: java.util.MissingResourceException: Can't find bundle for base name messages, locale en_ES
+	at java.base/java.util.ResourceBundle.throwMissingResourceException(ResourceBundle.java:2012)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1664)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1574)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1529)
+	at java.base/java.util.ResourceBundle.getBundle(ResourceBundle.java:1045)
+	at org.iasi.common.i18n.MessageCatalog.<init>(MessageCatalog.java:21)
+	at org.iasi.setupdev.messages.InitializationMessages.<clinit>(InitializationMessages.java:26)
+	... 5 more
+ ==> expected: <16> but was: <1>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+	at org.iasi.setupdev.AppSingleInstanceTest.result(AppSingleInstanceTest.java:78)
+	at org.iasi.setupdev.AppSingleInstanceTest.releasesOwnershipWhenInitializationTerminatesWithAnError(AppSingleInstanceTest.java:61)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+org.iasi.setupdev.AppSingleInstanceTest.reportsIoFailureSeparatelyWithoutStartingConfiguration -- Time elapsed: 0.076 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+Exception in thread "main" java.lang.ExceptionInInitializerError
+	at org.iasi.setupdev.core.StartupChecks.acquireInstanceLock(StartupChecks.java:47)
+	at org.iasi.setupdev.InstanceLockEntryPoint.main(InstanceLockEntryPoint.java:16)
+Caused by: java.util.MissingResourceException: Can't find bundle for base name messages, locale en_ES
+	at java.base/java.util.ResourceBundle.throwMissingResourceException(ResourceBundle.java:2012)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1664)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1574)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1529)
+	at java.base/java.util.ResourceBundle.getBundle(ResourceBundle.java:1045)
+	at org.iasi.common.i18n.MessageCatalog.<init>(MessageCatalog.java:21)
+	at org.iasi.setupdev.messages.InitializationMessages.<clinit>(InitializationMessages.java:26)
+	... 2 more
+ ==> expected: <16> but was: <1>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+	at org.iasi.setupdev.AppSingleInstanceTest.result(AppSingleInstanceTest.java:78)
+	at org.iasi.setupdev.AppSingleInstanceTest.reportsIoFailureSeparatelyWithoutStartingConfiguration(AppSingleInstanceTest.java:53)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+

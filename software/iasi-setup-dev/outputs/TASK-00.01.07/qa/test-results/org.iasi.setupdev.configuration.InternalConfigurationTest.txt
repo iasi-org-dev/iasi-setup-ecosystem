@@ -1,4 +1,17 @@
 -------------------------------------------------------------------------------
 Test set: org.iasi.setupdev.configuration.InternalConfigurationTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in org.iasi.setupdev.configuration.InternalConfigurationTest
+Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.006 s <<< FAILURE! -- in org.iasi.setupdev.configuration.InternalConfigurationTest
+org.iasi.setupdev.configuration.InternalConfigurationTest.loadsTheEcosystemDefaultsResourceAsText -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <{machines=C:/Machines, definitions=./definitions, logs=./logs, verbose=1}> but was: <{id-machines=config-data, id-host=iasi-host, machines=C:/Machines, definitions=./definitions, logs=./logs, verbose=1, recreate=true}>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+	at org.iasi.setupdev.configuration.InternalConfigurationTest.loadsTheEcosystemDefaultsResourceAsText(InternalConfigurationTest.java:31)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+

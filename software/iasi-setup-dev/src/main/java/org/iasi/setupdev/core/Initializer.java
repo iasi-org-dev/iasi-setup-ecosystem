@@ -2,15 +2,15 @@ package org.iasi.setupdev.core;
 
 import org.iasi.setupdev.messages.InitializationMessages;
 
-import org.iasi.setupdev.args.model.ARG;
-import org.iasi.setupdev.args.model.ArgClass;
-import org.iasi.setupdev.args.model.ArgType;
-import org.iasi.setupdev.args.model.ArgsList;
-import org.iasi.setupdev.args.model.Arguments;
-import org.iasi.setupdev.args.layer.CommandLineArguments;
-import org.iasi.setupdev.args.loader.CommandLineLoader;
-import org.iasi.setupdev.args.layer.EnvironmentArguments;
-import org.iasi.setupdev.args.model.WorkingArguments;
+import org.iasi.args.model.ARG;
+import org.iasi.args.model.ArgClass;
+import org.iasi.args.model.ArgType;
+import org.iasi.args.model.ArgsList;
+import org.iasi.args.model.Arguments;
+import org.iasi.args.layer.CommandLineArguments;
+import org.iasi.args.loader.CommandLineLoader;
+import org.iasi.args.layer.EnvironmentArguments;
+import org.iasi.args.model.WorkingArguments;
 import org.iasi.setupdev.configuration.ExternalConfiguration;
 import org.iasi.setupdev.configuration.InternalConfiguration;
 import org.iasi.setupdev.console.Help;
@@ -33,19 +33,37 @@ public final class Initializer {
 
     public Context initialize(String[] args) {
         try {
-            definitions = createArgumentDefinitions();
-            Arguments commandLine = new CommandLineLoader(args);
-            ctx.initializeTargets(commandLine.getTargets());
-            if (showHelp(commandLine)) return ctx;
-            applyInternalConfiguration();
-            applyExternalConfiguration(commandLine);
-            applyEnvironment(commandLine);
-            applyArguments(commandLine);
-            validateArgs(commandLine);
+            createInitialContext();
+            Arguments arguments = loadArguments(args);
+            if (showHelp(arguments)) return ctx;
+            completeContext(arguments);
+            validateContext(arguments);
         } catch (Exception exception) {
             InitializationMessages.unexpectedFailure();
         }
         return ctx;
+    }
+
+    private void createInitialContext() {
+        Context.getInstance();
+        definitions = createArgumentDefinitions();
+    }
+
+    private Arguments loadArguments(String[] args) {
+        Arguments commandLine = new CommandLineLoader(args);
+        ctx.initializeTargets(commandLine.getTargets());
+        return commandLine;
+    }
+
+    private void completeContext(Arguments arguments) {
+        applyInternalConfiguration();
+        applyExternalConfiguration(arguments);
+        applyEnvironment(arguments);
+        applyArguments(arguments);
+    }
+
+    private void validateContext(Arguments arguments) {
+        new ContextValidator(definitions, workingArguments).validate(arguments);
     }
 
     private void applyInternalConfiguration() {
@@ -69,10 +87,6 @@ public final class Initializer {
 
     private void applyArguments(Arguments commandLine) {
         new CommandLineArguments(definitions, workingArguments).apply(commandLine);
-    }
-
-    private void validateArgs(Arguments commandLine) {
-        new ContextValidator(definitions, workingArguments).validate(commandLine);
     }
 
     public ArgsList createArgumentDefinitions() {

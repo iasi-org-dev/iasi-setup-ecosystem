@@ -1,4 +1,49 @@
 -------------------------------------------------------------------------------
 Test set: org.iasi.setupdev.console.HelpTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s -- in org.iasi.setupdev.console.HelpTest
+Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.016 s <<< FAILURE! -- in org.iasi.setupdev.console.HelpTest
+org.iasi.setupdev.console.HelpTest.containsNoOperationalPrefixesColorsOrUnsupportedAliases -- Time elapsed: 0.001 s <<< ERROR!
+java.util.MissingResourceException: Can't find bundle for base name messages, locale es
+	at java.base/java.util.ResourceBundle.throwMissingResourceException(ResourceBundle.java:2012)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1664)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1574)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1529)
+	at java.base/java.util.ResourceBundle.getBundle(ResourceBundle.java:1045)
+	at org.iasi.common.i18n.MessageCatalog.<init>(MessageCatalog.java:21)
+	at org.iasi.setupdev.console.Help.<init>(Help.java:25)
+	at org.iasi.setupdev.console.HelpTest.render(HelpTest.java:55)
+	at org.iasi.setupdev.console.HelpTest.containsNoOperationalPrefixesColorsOrUnsupportedAliases(HelpTest.java:34)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+org.iasi.setupdev.console.HelpTest.englishHelpUsesTheSameBuildVersionAndSectionStructure -- Time elapsed: 0.001 s <<< ERROR!
+java.util.MissingResourceException: Can't find bundle for base name messages, locale en
+	at java.base/java.util.ResourceBundle.throwMissingResourceException(ResourceBundle.java:2012)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1664)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1574)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1529)
+	at java.base/java.util.ResourceBundle.getBundle(ResourceBundle.java:1045)
+	at org.iasi.common.i18n.MessageCatalog.<init>(MessageCatalog.java:21)
+	at org.iasi.setupdev.console.Help.<init>(Help.java:25)
+	at org.iasi.setupdev.console.HelpTest.render(HelpTest.java:55)
+	at org.iasi.setupdev.console.HelpTest.englishHelpUsesTheSameBuildVersionAndSectionStructure(HelpTest.java:47)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+org.iasi.setupdev.console.HelpTest.matchesSpanishHelpIncludingBlankLinesAndAlignment -- Time elapsed: 0.014 s <<< ERROR!
+java.util.MissingResourceException: Can't find bundle for base name messages, locale es
+	at java.base/java.util.ResourceBundle.throwMissingResourceException(ResourceBundle.java:2012)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1664)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1574)
+	at java.base/java.util.ResourceBundle.getBundleImpl(ResourceBundle.java:1529)
+	at java.base/java.util.ResourceBundle.getBundle(ResourceBundle.java:1045)
+	at org.iasi.common.i18n.MessageCatalog.<init>(MessageCatalog.java:21)
+	at org.iasi.setupdev.console.Help.<init>(Help.java:25)
+	at org.iasi.setupdev.console.HelpTest.render(HelpTest.java:55)
+	at org.iasi.setupdev.console.HelpTest.matchesSpanishHelpIncludingBlankLinesAndAlignment(HelpTest.java:29)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
