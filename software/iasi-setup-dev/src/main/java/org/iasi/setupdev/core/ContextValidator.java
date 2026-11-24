@@ -52,11 +52,14 @@ public final class ContextValidator {
     private void updateContext(Map<String, Object> validated) {
         for (var entry : validated.entrySet()) {
             switch (entry.getKey()) {
+                case "id-host" -> ctx.setIdHost((String) entry.getValue());
+                case "id-machines" -> ctx.setIdMachines((String) entry.getValue());
                 case "definitions" -> ctx.setDefinitions((Path) entry.getValue());
                 case "machines" -> ctx.setMachines((Path) entry.getValue());
                 case "logs" -> ctx.setLogs((Path) entry.getValue());
                 case "verbose" -> ctx.setVerbose((Integer) entry.getValue());
                 case "force" -> ctx.setForce((Boolean) entry.getValue());
+                case "recreate" -> ctx.setRecreate((Boolean) entry.getValue());
                 case "autostart" -> ctx.setAutostart((Boolean) entry.getValue());
                 case "help" -> ctx.setHelp((Boolean) entry.getValue());
                 case "env" -> ctx.setEnv((String) entry.getValue());
@@ -65,7 +68,7 @@ public final class ContextValidator {
     }
 
     private void validateTargets() throws IOException {
-        var availableTargets = new TargetDiscovery().discover(ctx.getDefinitions());
+        var availableTargets = new TargetDiscovery().discover(ctx.getDefinitions(), ctx.getIdMachines());
         var selection = new TargetValidator().validateTargets(availableTargets, ctx.getTargets());
         ctx.setResolvedTargets(selection.selected());
         var missing = selection.missing();

@@ -1,5 +1,6 @@
 [wsl]
 enabled = true
+recreate = false
 distribution = 'Ubuntu-24.04'
 name = 'IASI'
 path = 'C:\Machines\WSL'

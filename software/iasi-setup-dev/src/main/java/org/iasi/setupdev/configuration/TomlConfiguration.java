@@ -57,9 +57,16 @@ public final class TomlConfiguration {
     private Arguments loadArguments(TomlParseResult document) {
         Arguments arguments = new Arguments();
         for (String name : document.keySet()) {
-            ArrayList<String> values = loadValues(document.get(java.util.List.of(name)));
+            Object value = document.get(java.util.List.of(name));
+            if (value instanceof org.tomlj.TomlTable table) {
+                for (String child : table.keySet()) {
+                    arguments.getParameters().add(child);
+                    arguments.getParameterValues().add(loadValues(table.get(child)));
+                }
+                continue;
+            }
             arguments.getParameters().add(name);
-            arguments.getParameterValues().add(values);
+            arguments.getParameterValues().add(loadValues(value));
         }
         return arguments;
     }

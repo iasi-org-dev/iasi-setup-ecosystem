@@ -18,16 +18,21 @@ import java.util.List;
  */
 public final class TargetDiscovery {
     public static final String MACHINE_CONFIG_DIRECTORY = "config-data";
+    
 
     public List<Path> discover(Path definitions) throws IOException {
+        return discover(definitions, MACHINE_CONFIG_DIRECTORY);
+    }
+
+    public List<Path> discover(Path definitions, String machineIdentifier) throws IOException {
         try (var entries = Files.list(definitions)) {
-            return entries.filter(this::isMachineCandidate)
+            return entries.filter(path -> isMachineCandidate(path, machineIdentifier))
                     .sorted(Comparator.comparing(path -> path.getFileName().toString()))
                     .toList();
         }
     }
 
-    private boolean isMachineCandidate(Path candidate) {
-        return Files.isDirectory(candidate) && Files.isDirectory(candidate.resolve(MACHINE_CONFIG_DIRECTORY));
+    private boolean isMachineCandidate(Path candidate, String machineIdentifier) {
+        return Files.isDirectory(candidate) && Files.isDirectory(candidate.resolve(machineIdentifier));
     }
 }

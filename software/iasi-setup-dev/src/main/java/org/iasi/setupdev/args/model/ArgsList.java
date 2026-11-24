@@ -36,10 +36,8 @@ public final class ArgsList {
 
     public List<String> getEnvironmentNames() {
         return args.values().stream()
-                .filter(arg -> arg.getArgType() != ArgType.TARGET)
-                .map(ARG::getEnv)
+                .map(this::environmentName)
                 .filter(Objects::nonNull)
-                .map(name -> name.toUpperCase(Locale.ROOT))
                 .distinct()
                 .toList();
     }
@@ -47,11 +45,19 @@ public final class ArgsList {
     public ARG getByEnvironment(String name) {
         ARG flag = null;
         for (ARG arg : args.values()) {
-            if (arg.getEnv() == null || !arg.getEnv().equalsIgnoreCase(name) || arg.getArgType() == ArgType.TARGET) continue;
+            String environmentName = environmentName(arg);
+            if (environmentName == null || !environmentName.equalsIgnoreCase(name)) continue;
             if (arg.getArgType() != ArgType.FLAG) return arg;
             if (flag == null) flag = arg;
         }
         return flag;
+    }
+
+    private String environmentName(ARG arg) {
+        if (arg.getArgType() == ArgType.TARGET) return null;
+        if (arg.getArgType() == ArgType.FLAG && arg.getEnv() == null) return null;
+        String name = arg.getEnv() == null ? arg.getCli() : arg.getEnv();
+        return name.replace('-', '_').toUpperCase(Locale.ROOT);
     }
 
     public Map<String, ARG> getValues() {

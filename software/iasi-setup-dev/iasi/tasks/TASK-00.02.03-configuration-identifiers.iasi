@@ -1,0 +1,149 @@
++++
+title = "Configurable Host and Machine Identifiers"
+task = "TASK-00.02.02"
+version = "0.2.2"
++++
+
+# 1. Objective
+
+Standardize the configuration identifiers used to identify the host configuration directory and valid machine definition directories.
+
+These identifiers MUST be configurable through all existing configuration sources.
+
+# 2. Parameters
+
+Introduce the following parameters:
+
+| Parameter | Type | Default value |
+|---|---|---|
+| id-host | String | iasi-host |
+| id-machines | String | config-data |
+
+- `id-host`: directory name identifying the host configuration.
+- `id-machines`: subdirectory name identifying a valid machine definition.
+
+These parameters represent directory identifiers, not absolute or relative paths.
+
+# 3. Default configuration
+
+Update the existing `defaults.toml` located at the root of the Java resources directory.
+
+```toml
+id-host = "iasi-host"
+id-machines = "config-data"
+```
+
+Use these exact parameter names.
+
+Remove the previous configuration keys for these same identifiers. Do not maintain duplicate keys or compatibility aliases.
+
+Update the embedded Java default values accordingly.
+
+# 4. External configuration
+
+The external TOML configuration file specified through `--config` MUST support the same parameter names.
+
+Example:
+
+```toml
+id-host = "my-host"
+id-machines = "machine-data"
+```
+
+# 5. Environment variables
+
+Both parameters MUST be configurable through environment variables.
+
+Using `IASI` as the environment prefix:
+
+```text
+IASI_ID_HOST
+IASI_ID_MACHINES
+```
+
+Environment variable names MUST be generated according to the following general rules:
+
+- Use the configured environment prefix.
+- Convert parameter names to uppercase.
+- Replace hyphens with underscores.
+- Use an underscore as the prefix separator.
+
+The environment prefix MUST follow the existing `--env` configuration mechanism.
+
+This transformation MUST be generic. Do not implement parameter-specific environment variable mappings.
+
+# 6. Command-line interface
+
+Introduce the following CLI parameters:
+
+```text
+--id-host <identifier>
+--id-machines <identifier>
+```
+
+Include both parameters in the application help, including their default values and descriptions.
+
+Preserve the existing help formatting conventions.
+
+# 7. Configuration precedence
+
+Preserve the established configuration precedence, from lowest to highest priority:
+
+1. Embedded Java default values.
+2. Internal resource `defaults.toml`.
+3. External configuration file specified through `--config`.
+4. Environment variables.
+5. Command-line arguments.
+
+Each configuration source MUST be able to override the values provided by lower-priority sources.
+
+# 8. Execution context and integration
+
+Both resolved identifiers MUST be available through the existing execution context.
+
+Replace hardcoded directory identifiers in the existing Java implementation with the corresponding resolved configuration values.
+
+Machine discovery MUST use `id-machines` to identify valid machine definition directories.
+
+Host configuration discovery MUST use `id-host` wherever applicable.
+
+Preserve the existing semantics and default values of `--definitions` and `--machines`.
+
+Both MUST remain `.` by default.
+
+# 9. Corporate requirements
+
+- Follow existing IASI corporate development guidelines.
+- Reuse existing configuration mechanisms.
+- Reuse existing argument-processing mechanisms.
+- Reuse the existing execution context.
+- Do not introduce unnecessary dependencies.
+- Do not modify platform-specific scripts.
+- Do not implement new host orchestration functionality.
+- Do not refactor unrelated packages.
+
+# 10. Validation
+
+Verify only the functionality directly affected by this task:
+
+- Successful compilation.
+- Embedded default values.
+- Internal TOML configuration.
+- External TOML configuration.
+- Environment variable configuration.
+- Command-line configuration.
+- Configuration precedence.
+- Machine discovery using a customized identifier.
+- Updated help information.
+
+Do not execute the complete test suite or corporate Quality Gate.
+
+# 11. Version
+
+Update the application version to `0.2.2`.
+
+# 12. Acceptance criteria
+
+Both identifiers are configurable through all established configuration sources, using consistent naming conventions and the existing configuration precedence.
+
+No duplicate configuration keys or hardcoded directory identifiers remain in the affected Java implementation.

@@ -19,19 +19,22 @@ public final class ContextSummary {
                 Context:
                   os       = %s
                   cwd      = %s
+                  id-host  = %s
+                  id-machines = %s
                   definitions = %s
                   machines = %s
                   logs     = %s
                   env      = %s
                   verbose  = %d
                   force    = %s
+                  recreate = %s
                   autostart = %s
                   help     = %s
                   RC       = %d
                   targets  = %s
                   resolvedTargets = %s
                 """, ctx.getOS(), Path.of("").toAbsolutePath().normalize(),
-                ctx.getDefinitions(), ctx.getMachines(), ctx.getLogs(), ctx.getEnv(),
-                ctx.getVerbose(), ctx.isForce(), ctx.isAutostart(), ctx.isHelp(), ctx.getRC(), ctx.getTargets(), ctx.getResolvedTargets());
+                ctx.getIdHost(), ctx.getIdMachines(), ctx.getDefinitions(), ctx.getMachines(), ctx.getLogs(), ctx.getEnv(),
+                ctx.getVerbose(), ctx.isForce(), ctx.isRecreate(), ctx.isAutostart(), ctx.isHelp(), ctx.getRC(), ctx.getTargets(), ctx.getResolvedTargets());
     }
 }

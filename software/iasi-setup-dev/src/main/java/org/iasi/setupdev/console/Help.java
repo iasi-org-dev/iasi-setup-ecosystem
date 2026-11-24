@@ -22,7 +22,7 @@ public final class Help {
     }
 
     Help(Locale locale) {
-        catalog = new MessageCatalog("org.iasi.setupdev.messages.catalog", locale);
+        catalog = new MessageCatalog("messages", locale);
     }
 
     /**
@@ -48,7 +48,7 @@ public final class Help {
 
     private String version() {
         Properties properties = new Properties();
-        try (var resource = Help.class.getResourceAsStream("/org/iasi/setupdev/version.properties")) {
+        try (var resource = Help.class.getResourceAsStream("/version.properties")) {
             if (resource == null) throw new IllegalStateException("Missing build version");
             properties.load(resource);
             return properties.getProperty("version");

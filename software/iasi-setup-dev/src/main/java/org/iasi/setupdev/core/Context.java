@@ -23,6 +23,8 @@ public final class Context {
     private final PrintStream out = System.out;
     private final PrintStream err = System.err;
     private Path definitions = Path.of(".");
+    private String idHost = "iasi-host";
+    private String idMachines = "config-data";
     private List<String> targets = List.of();
     private List<Path> resolvedTargets = List.of();
     private boolean targetsInitialized;
@@ -31,6 +33,7 @@ public final class Context {
     private int verbose = 1;
     private String env;
     private boolean force = false;
+    private boolean recreate = true;
     private boolean autostart = false;
     private boolean help = false;
     private int rc = RC.OK;
@@ -61,6 +64,22 @@ public final class Context {
     public static Context getInstance() {
         if (instance == null) instance = new Context();
         return instance;
+    }
+
+    public String getIdHost() {
+        return idHost;
+    }
+
+    public void setIdHost(String idHost) {
+        this.idHost = idHost;
+    }
+
+    public String getIdMachines() {
+        return idMachines;
+    }
+
+    public void setIdMachines(String idMachines) {
+        this.idMachines = idMachines;
     }
 
     public Path getDefinitions() {
@@ -126,6 +145,14 @@ public final class Context {
 
     public void setForce(boolean force) {
         this.force = force;
+    }
+
+    public boolean isRecreate() {
+        return recreate;
+    }
+
+    public void setRecreate(boolean recreate) {
+        this.recreate = recreate;
     }
 
     public boolean isAutostart() {

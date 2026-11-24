@@ -23,7 +23,7 @@ import org.iasi.common.logging.Severity;
 public final class InitializationMessages {
     private static final Context        CTX     = Context.getInstance();
     private static final Clock          CLOCK   = Clock.systemDefaultZone();
-    private static final MessageCatalog CATALOG = new MessageCatalog("org.iasi.setupdev.messages.catalog", Locale.getDefault());
+    private static final MessageCatalog CATALOG = new MessageCatalog("messages", Locale.getDefault());
     private static final ConsoleSink    CONSOLE = new ConsoleSink(CTX.out(), CTX.err(), Verbosity.NORMAL, System.console() != null);
 
     private InitializationMessages() {

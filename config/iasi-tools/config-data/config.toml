@@ -12,3 +12,8 @@ memory_maximum_gb = 4
 
 switch = "iasi-net"
 source_iso = 'C:\discos\ubuntu-24.04.5-live-server-amd64.iso'
+
+# Local lab credentials; do not commit production passwords.
+[identity]
+user = 'iasi'
+password = 'iasi'

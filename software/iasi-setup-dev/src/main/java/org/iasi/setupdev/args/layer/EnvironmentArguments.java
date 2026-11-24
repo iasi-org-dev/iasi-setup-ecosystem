@@ -58,6 +58,8 @@ public final class EnvironmentArguments {
     private void applyVariable(String prefix, String name, WorkingArguments working) {
         String variable = (prefix + "_" + name).toUpperCase(Locale.ROOT);
         String value = System.getenv(variable);
-        if (value != null) working.setArgument(name, value);
+        if (value == null) return;
+        ARG definition = definitions.getByEnvironment(name);
+        if (definition != null) working.setArgument(definition.getCli(), value);
     }
 }

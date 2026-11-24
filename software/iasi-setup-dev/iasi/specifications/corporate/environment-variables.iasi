@@ -1,0 +1,68 @@
++++
+title = "Corporate Environment Variable Resolution"
+type = "specification"
+scope = "corporate"
++++
+
+# Environment Variable Resolution
+
+## 1. Environment activation
+
+Environment variable resolution MUST only be performed when an environment prefix (`env`) has been defined and is not empty.
+
+If no environment prefix has been defined, environment variable lookup MUST be skipped entirely.
+
+No implicit environment prefix MUST be assumed.
+
+## 2. Flags
+
+Flags are identified by a single character.
+
+- If an explicit environment key has been defined, use that key.
+- If no explicit environment key has been defined, skip environment variable lookup for that flag.
+
+Environment keys MUST NOT be automatically generated from flag identifiers.
+
+## 3. Parameters
+
+For named parameters:
+
+- If an explicit environment key has been defined, use that key.
+- Otherwise, automatically derive the environment key from the parameter name.
+
+The automatically generated environment key MUST follow this format:
+
+```text
+PREFIX_PARAMETER_NAME
+```
+
+The transformation rules are:
+
+1. Concatenate the environment prefix and the parameter name using an underscore.
+2. Replace hyphens with underscores.
+3. Convert the resulting name to uppercase.
+
+## 4. Examples
+
+Given the environment prefix `iasi`:
+
+| Identifier | Type | Explicit environment key | Result |
+|---|---|---|---|
+| f | Flag | Not defined | No lookup |
+| r | Flag | IASI_RECREATE_HOST | IASI_RECREATE_HOST |
+| definitions | Parameter | Not defined | IASI_DEFINITIONS |
+| id-host | Parameter | Not defined | IASI_ID_HOST |
+| id-machines | Parameter | Not defined | IASI_ID_MACHINES |
+| machines | Parameter | CUSTOM_MACHINES | CUSTOM_MACHINES |
+
+If the environment prefix is not defined, none of these environment variables MUST be looked up.
+
+## 5. Configuration precedence
+
+Values obtained from environment variables MUST follow the established corporate configuration precedence.
+
+## 6. Implementation
+
+Environment variable resolution MUST be generic and driven by argument definitions.
+
+Parameter-specific mappings and hardcoded environment variable names MUST NOT be introduced into the resolution mechanism.

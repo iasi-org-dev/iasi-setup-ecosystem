@@ -48,6 +48,7 @@ public final class CommandLineArguments {
             switch (flag) {
                 case "h" -> applyFlag(flag, "help", "true");
                 case "f" -> applyFlag(flag, "force", "true");
+                case "r" -> applyFlag(flag, "recreate", "true");
                 case "a" -> applyFlag(flag, "autostart", "true");
                 case "v" -> applyFlag(flag, "verbose", "2");
                 case "V" -> applyFlag(flag, "verbose", "3");

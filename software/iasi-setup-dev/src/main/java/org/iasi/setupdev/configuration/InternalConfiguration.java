@@ -14,7 +14,7 @@ import org.iasi.setupdev.messages.InitializationMessages;
  * @history 2026-11-20 | 0.1.0 | Load the ecosystem defaults resource as an internal configuration layer.
  */
 public final class InternalConfiguration {
-    private static final String RESOURCE = "/org/iasi/setupdev/defaults.toml";
+    private static final String RESOURCE = "/defaults.toml";
 
     public void apply(WorkingArguments working) {
         try (var resource = InternalConfiguration.class.getResourceAsStream(RESOURCE)) {

@@ -1,14 +1,9 @@
 [network]
+recreate = false
 name = "iasi-net"
 subnet = "10.77.0.0/24"
 prefix-length = 24
 gateway = "10.77.0.1"
-
-[internet]
-name = "Default Switch"
-
-[nat]
-name = "iasi-nat"
 
 [dns]
 servers = [
@@ -24,3 +19,7 @@ iasi-models = "10.77.0.30"
 iasi-labs = "10.77.0.40"
 iasi-work = "10.77.0.50"
 iasi-tests = "10.77.0.60"
+
+[windows.hyperv]
+internet = "Default Switch"
+nat = "iasi-nat"
