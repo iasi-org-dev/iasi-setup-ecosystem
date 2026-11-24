@@ -1,8 +1,10 @@
 org\iasi\setupdev\args\layer\EnvironmentArguments.class
 org\iasi\common\validation\ValueConversion.class
+org\iasi\setupdev\orchestrator\PlatformOrchestrator$1.class
 org\iasi\setupdev\App.class
 org\iasi\common\validation\package-info.class
 org\iasi\setupdev\args\validation\ArgumentTransformer$1.class
+org\iasi\setupdev\orchestrator\PlatformOrchestrator.class
 org\iasi\common\i18n\package-info.class
 org\iasi\common\platform\AdministratorPrivileges$1.class
 org\iasi\base\RC.class
@@ -73,4 +75,5 @@ org\iasi\setupdev\targets\TargetValidator$Selection.class
 org\iasi\setupdev\args\model\Arguments.class
 org\iasi\setupdev\core\Context.class
 org\iasi\setupdev\messages\InitializationMessages.class
+org\iasi\setupdev\orchestrator\package-info.class
 org\iasi\common\platform\package-info.class

@@ -4,6 +4,7 @@ import org.iasi.setupdev.console.ContextSummary;
 import org.iasi.setupdev.core.Context;
 import org.iasi.setupdev.core.Initializer;
 import org.iasi.setupdev.core.StartupChecks;
+import org.iasi.setupdev.orchestrator.PlatformOrchestrator;
 
 /**
  * Defines the process entry point and the current initialize-and-inspect application sequence.
@@ -33,6 +34,7 @@ public final class App {
         Context ctx = new Initializer().initialize(args);
         if (ctx.isHelp()) return ctx.getRC();
         new ContextSummary().print(ctx, ctx.out());
+        new PlatformOrchestrator().execute(ctx);
         return ctx.getRC();
     }
 }
