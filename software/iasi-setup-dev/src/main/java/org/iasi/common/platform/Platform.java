@@ -28,6 +28,10 @@ public record Platform(Family family, String name, String version, String archit
         WINDOWS, LINUX, MACOS, UNKNOWN
     }
 
+    public static Family getOperatingSystem() {
+        return detect().family();
+    }
+
     public static Platform detect() {
         return detect(key -> System.getProperty(key, "unknown"));
     }

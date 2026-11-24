@@ -70,7 +70,7 @@ class SourceGateTest {
     private int check(String method) throws Exception {
         Files.createDirectories(fixture.resolve("src"));
         Files.createDirectories(fixture.resolve("qa/tools"));
-        Files.copy(Path.of("outputs/TASK-00.01.06/qa/tools/SourceGate.java"), fixture.resolve("qa/tools/SourceGate.java"));
+        Files.copy(Path.of("outputs/TASK-00.01.07/qa/tools/SourceGate.java"), fixture.resolve("qa/tools/SourceGate.java"));
         Files.writeString(fixture.resolve("src/Fixture.java"), "class Fixture {\n" + method + "\n}\n");
         return execute();
     }

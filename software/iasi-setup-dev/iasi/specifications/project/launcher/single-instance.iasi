@@ -1,0 +1,44 @@
++++
+id = "REQ-SINGLE-INSTANCE"
+type = "requirement"
+title = "Single instance execution of the IASI coordinator"
+status = "proposed"
+version = "1.0.0"
+language = "es"
++++
+
+# Requerimiento: ejecución única del coordinador IASI
+
+## Objetivo
+
+Garantizar que, dentro del ámbito de bloqueo definido, **solo una instancia del coordinador IASI puede estar ejecutándose a la vez**, con independencia del nombre o ubicación del JAR que la contiene.
+
+## Alcance
+
+Se aplica al proceso coordinador desde su arranque hasta su finalización, tanto en Windows como en Linux. No se identifica una instancia mediante el nombre del JAR, su ruta, su PID ni la existencia de un fichero.
+
+## Requisitos
+
+- **REQ-SI-01. Exclusión mutua.** Antes de realizar acciones con efectos externos, incluida la extracción de scripts, el coordinador debe intentar adquirir un bloqueo exclusivo mediante una operación atómica del sistema operativo.
+- **REQ-SI-02. Identidad estable.** Todas las copias y variantes del JAR que implementan el coordinador deben usar el mismo recurso de bloqueo: `${java.io.tmpdir}/iasi.lock`.
+- **REQ-SI-03. Ubicación independiente.** `iasi.lock` debe estar directamente en el directorio temporal del sistema y **fuera** de `${java.io.tmpdir}/iasi`, dedicado a recursos extraídos.
+- **REQ-SI-04. Instancia activa.** Si el bloqueo ya está ocupado, la nueva instancia debe comunicar la situación, finalizar con código de retorno no satisfactorio y no interferir con la instancia existente.
+- **REQ-SI-05. Ciclo de vida.** La instancia propietaria debe mantener el bloqueo durante toda la ejecución y liberarlo y cerrar los recursos asociados durante la terminación controlada.
+- **REQ-SI-06. Recuperación.** Si la JVM termina de forma abrupta, un arranque posterior debe poder adquirir el bloqueo liberado por el sistema operativo. La permanencia física de `iasi.lock` no implica una instancia activa.
+- **REQ-SI-07. Archivo persistente.** El coordinador **no debe borrar, renombrar ni recrear** `iasi.lock` como parte de su limpieza, ni durante el arranque ni al finalizar, evitando carreras entre procesos.
+- **REQ-SI-08. Fallo seguro.** Si no es posible abrir el fichero o determinar/adquirir el bloqueo por un error de E/S o permisos, la ejecución no debe continuar como si hubiera exclusividad.
+- **REQ-SI-09. Multiplataforma.** La solución debe utilizar mecanismos estándar de Java NIO y funcionar en Windows y Linux sin herramientas externas.
+- **REQ-SI-10. Responsabilidades.** El control de instancia única es independiente del descubrimiento y validación de máquinas, de la extracción de recursos y de la ejecución de scripts.
+
+## Aclaración sobre el ámbito
+
+`java.io.tmpdir` puede variar entre usuarios o entornos. Por tanto, el requisito garantiza exclusión **entre instancias que resuelvan el mismo archivo de bloqueo sobre el mismo sistema de ficheros**. La exclusión global entre usuarios diferentes requiere una decisión específica sobre una ubicación común y sus permisos; queda fuera de este requerimiento.
+
+## Criterios de aceptación
+
+1. `setup.jar` arranca y mantiene el bloqueo; una segunda ejecución de ese JAR es rechazada.
+2. Mientras se ejecuta `setup.jar`, una copia renombrada como `setup2.jar` también es rechazada.
+3. Al finalizar la primera instancia, otra puede arrancar sin borrar `iasi.lock`.
+4. Tras terminar forzosamente la primera JVM, una nueva instancia puede adquirir el bloqueo sin intervención manual.
+5. La segunda instancia no borra ni modifica los recursos temporales de la primera.
+6. Si el bloqueo no está disponible por un error, el coordinador termina con un diagnóstico y sin iniciar el trabajo.

@@ -1,8 +1,8 @@
 package org.iasi.setupdev.configuration;
 
 import java.io.IOException;
-import org.iasi.setupdev.args.ArgumentException;
-import org.iasi.setupdev.args.WorkingArguments;
+import org.iasi.setupdev.args.validation.ArgumentException;
+import org.iasi.setupdev.args.model.WorkingArguments;
 import org.iasi.setupdev.messages.InitializationMessages;
 
 /**

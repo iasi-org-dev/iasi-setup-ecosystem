@@ -1,5 +1,4 @@
 /**
- * Discovers target directories while leaving regex selection and machine
- * operations to other components.
+ * Discovers and validates work targets selected by the application.
  */
 package org.iasi.setupdev.targets;

@@ -1,0 +1,14 @@
+org.iasi.base
+org.iasi.common.i18n
+org.iasi.common.logging
+org.iasi.common.operation
+org.iasi.common.platform
+org.iasi.common.process
+org.iasi.common.validation
+org.iasi.setupdev
+org.iasi.setupdev.args
+org.iasi.setupdev.configuration
+org.iasi.setupdev.console
+org.iasi.setupdev.core
+org.iasi.setupdev.messages
+org.iasi.setupdev.targets

@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.List;
 import org.iasi.base.RC;
+import org.iasi.common.platform.Platform;
 
 /**
  * Holds one single-threaded execution state, borrowed console streams and immutable original target selections.
@@ -12,9 +13,13 @@ import org.iasi.base.RC;
  * @since 0.1.0
  * @version 0.1.0
  * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
+ * @history 2026-11-20 | 0.1.0 | Retain the OS identified by the process entry point.
+ * @history 2026-11-24 | 0.1.0 | Record the execution start time for duration reporting.
  */
 public final class Context {
     private static Context instance;
+    private Platform.Family os;
+    private final long begin = System.currentTimeMillis();
     private final PrintStream out = System.out;
     private final PrintStream err = System.err;
     private Path definitions = Path.of(".");
@@ -31,6 +36,18 @@ public final class Context {
     private int rc = RC.OK;
 
     private Context() {
+    }
+
+    public long getBegin() {
+        return begin;
+    }
+
+    public Platform.Family getOS() {
+        return os;
+    }
+
+    public void setOS(Platform.Family os) {
+        this.os = os;
     }
 
     public String getEnv() {

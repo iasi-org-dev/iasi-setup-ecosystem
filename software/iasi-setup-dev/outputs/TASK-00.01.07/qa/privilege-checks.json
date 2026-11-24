@@ -1,0 +1,59 @@
+{
+  "elevated": false,
+  "cases": [
+    {
+      "name": "help",
+      "args": [
+        "-h"
+      ],
+      "rc": 16,
+      "stdout": "",
+      "stderr": "18:02:44 - La aplicación debe ejecutarse como administrador. Abre una consola con privilegios de administrador y vuelve a ejecutarla.\n"
+    },
+    {
+      "name": "before-configuration",
+      "args": [
+        "-h",
+        "--config",
+        "missing.toml",
+        "--logs",
+        "new-logs"
+      ],
+      "rc": 16,
+      "stdout": "",
+      "stderr": "18:02:44 - La aplicación debe ejecutarse como administrador. Abre una consola con privilegios de administrador y vuelve a ejecutarla.\n"
+    },
+    {
+      "name": "no-arguments",
+      "args": [],
+      "rc": 16,
+      "stdout": "",
+      "stderr": "18:02:44 - La aplicación debe ejecutarse como administrador. Abre una consola con privilegios de administrador y vuelve a ejecutarla.\n"
+    },
+    {
+      "name": "before-syntax",
+      "args": [
+        "-"
+      ],
+      "rc": 16,
+      "stdout": "",
+      "stderr": "18:02:44 - La aplicación debe ejecutarse como administrador. Abre una consola con privilegios de administrador y vuelve a ejecutarla.\n"
+    },
+    {
+      "name": "before-directories",
+      "args": [
+        "--logs",
+        "new-logs"
+      ],
+      "rc": 16,
+      "stdout": "",
+      "stderr": "18:02:45 - La aplicación debe ejecutarse como administrador. Abre una consola con privilegios de administrador y vuelve a ejecutarla.\n"
+    },
+    {
+      "name": "unsupported-os-before-administrator",
+      "rc": 16,
+      "stdout": "",
+      "stderr": "18:02:45 - El sistema operativo no está soportado. La ejecución se ha detenido.\n"
+    }
+  ]
+}

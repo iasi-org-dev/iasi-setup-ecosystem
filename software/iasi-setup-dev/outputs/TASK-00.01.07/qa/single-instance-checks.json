@@ -1,0 +1,42 @@
+{
+  "harness": "Test-only holding entry point; unchanged production SingleInstanceLock bytecode from the delivered JAR",
+  "lock": "C:\\Users\\Javier\\Documents\\prj\\iasi-dev\\iasi-setup-ecosystem\\software\\iasi-setup-dev\\outputs\\TASK-00.01.07\\build\\single-instance-56rmbwzy\\temporary\\iasi.lock",
+  "persistent_file_preserved": true,
+  "cases": [
+    {
+      "name": "same-jar-rejected",
+      "jar": "setup.jar",
+      "rc": 16,
+      "stdout": "BUSY\n",
+      "stderr": ""
+    },
+    {
+      "name": "renamed-jar-rejected",
+      "jar": "setup2.jar",
+      "rc": 16,
+      "stdout": "BUSY\n",
+      "stderr": ""
+    },
+    {
+      "name": "after-controlled-release",
+      "jar": "setup2.jar",
+      "rc": 0,
+      "stdout": "LOCKED\n",
+      "stderr": ""
+    },
+    {
+      "name": "after-force-kill",
+      "jar": "setup.jar",
+      "rc": 0,
+      "stdout": "LOCKED\n",
+      "stderr": ""
+    },
+    {
+      "name": "io-error-prevents-work",
+      "jar": "setup2.jar",
+      "rc": 16,
+      "stdout": "IO_ERROR\n",
+      "stderr": ""
+    }
+  ]
+}

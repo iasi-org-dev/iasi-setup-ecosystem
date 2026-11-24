@@ -9,6 +9,7 @@ org\iasi\common\validation\package-info.class
 org\iasi\setupdev\package-info.class
 org\iasi\setupdev\args\CommandLineArguments.class
 org\iasi\common\i18n\package-info.class
+org\iasi\common\platform\AdministratorPrivileges$1.class
 org\iasi\setupdev\configuration\TomlConfiguration$BorrowedStream.class
 org\iasi\base\RC.class
 org\iasi\setupdev\targets\package-info.class
@@ -29,6 +30,7 @@ org\iasi\setupdev\core\package-info.class
 org\iasi\setupdev\targets\TargetDiscovery.class
 org\iasi\common\logging\Severity.class
 org\iasi\setupdev\args\CommandLineLoader.class
+org\iasi\common\platform\AdministratorPrivileges.class
 org\iasi\setupdev\configuration\ExternalConfiguration.class
 org\iasi\common\logging\Redactor.class
 org\iasi\common\platform\Platform$Family.class

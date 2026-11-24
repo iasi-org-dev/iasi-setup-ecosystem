@@ -1,5 +1,5 @@
 /**
- * Identifies host operating-system and runtime properties without probing
- * machine provisioning capabilities.
+ * Identifies host operating-system, runtime and effective privilege information
+ * without performing machine provisioning operations.
  */
 package org.iasi.common.platform;

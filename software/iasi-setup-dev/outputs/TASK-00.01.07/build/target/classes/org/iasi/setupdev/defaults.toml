@@ -1,0 +1,16 @@
+# Default CLI parameter values for iasi-setup-dev.
+# CLI arguments take precedence over these values.
+
+# Directory containing machine definitions.
+definitions = "./definitions"
+
+# Directory where virtual machines are stored.
+# Change this default for the target host.
+machines = "C:/Machines"
+
+# Directory for execution logs.
+logs = "./logs"
+
+# General execution flags.
+verbose = 1
+

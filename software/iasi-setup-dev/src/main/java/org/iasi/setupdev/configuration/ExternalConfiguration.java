@@ -2,10 +2,10 @@ package org.iasi.setupdev.configuration;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import org.iasi.setupdev.args.ArgumentException;
-import org.iasi.setupdev.args.Arguments;
-import org.iasi.setupdev.args.ArgumentAccess;
-import org.iasi.setupdev.args.WorkingArguments;
+import org.iasi.setupdev.args.validation.ArgumentException;
+import org.iasi.setupdev.args.model.Arguments;
+import org.iasi.setupdev.args.access.ArgumentAccess;
+import org.iasi.setupdev.args.model.WorkingArguments;
 import org.iasi.setupdev.messages.InitializationMessages;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;

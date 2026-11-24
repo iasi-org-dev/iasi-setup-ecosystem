@@ -18,6 +18,7 @@ import org.iasi.common.logging.Severity;
  * @version 0.1.0
  * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  * @history 2026-11-19 | 0.1.0 | Support direct localized error diagnostics during initialization.
+ * @history 2026-11-20 | 0.1.0 | Report shutdown cleanup failures without recursively terminating the JVM.
  */
 public final class InitializationMessages {
     private static final Context        CTX     = Context.getInstance();
@@ -34,6 +35,11 @@ public final class InitializationMessages {
 
     public static void error(String key) {
         stop(RC.ERROR, CATALOG.text(key));
+    }
+
+    public static void reportError(String key) {
+        CTX.setRC(RC.ERROR);
+        CONSOLE.write(Severity.ERROR, CATALOG.text(key), CLOCK);
     }
 
     public static void ioError() {

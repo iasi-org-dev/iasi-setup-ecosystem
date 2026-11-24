@@ -17,6 +17,7 @@ public final class ContextSummary {
     public void print(Context ctx, PrintStream out) {
         out.printf("""
                 Context:
+                  os       = %s
                   cwd      = %s
                   definitions = %s
                   machines = %s
@@ -29,7 +30,7 @@ public final class ContextSummary {
                   RC       = %d
                   targets  = %s
                   resolvedTargets = %s
-                """, Path.of("").toAbsolutePath().normalize(),
+                """, ctx.getOS(), Path.of("").toAbsolutePath().normalize(),
                 ctx.getDefinitions(), ctx.getMachines(), ctx.getLogs(), ctx.getEnv(),
                 ctx.getVerbose(), ctx.isForce(), ctx.isAutostart(), ctx.isHelp(), ctx.getRC(), ctx.getTargets(), ctx.getResolvedTargets());
     }

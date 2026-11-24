@@ -21,6 +21,7 @@ class ContextTest {
     void singleThreadedContextPreservesOriginalTargetsAndAccumulatesRc() {
         Context ctx = Context.getInstance();
         assertSame(ctx, Context.getInstance());
+        assertTrue(ctx.getBegin() > 0);
         assertEquals(Path.of("."), ctx.getDefinitions());
         assertEquals(Path.of("."), ctx.getMachines());
         assertEquals(Path.of("."), ctx.getLogs());

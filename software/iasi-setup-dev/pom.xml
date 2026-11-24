@@ -8,7 +8,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputTimestamp>2026-11-17T00:00:00Z</project.build.outputTimestamp>
         <lombok.version>1.18.48</lombok.version>
-        <task.output>${project.basedir}/outputs/TASK-00.01.06</task.output>
+        <task.output>${project.basedir}/outputs/TASK-00.01.07</task.output>
     </properties>
     <dependencies>
         <dependency>

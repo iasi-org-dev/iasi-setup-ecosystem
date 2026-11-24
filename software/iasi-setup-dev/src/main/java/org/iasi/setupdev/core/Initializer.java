@@ -2,15 +2,15 @@ package org.iasi.setupdev.core;
 
 import org.iasi.setupdev.messages.InitializationMessages;
 
-import org.iasi.setupdev.args.ARG;
-import org.iasi.setupdev.args.ArgClass;
-import org.iasi.setupdev.args.ArgType;
-import org.iasi.setupdev.args.ArgsList;
-import org.iasi.setupdev.args.Arguments;
-import org.iasi.setupdev.args.CommandLineArguments;
-import org.iasi.setupdev.args.CommandLineLoader;
-import org.iasi.setupdev.args.EnvironmentArguments;
-import org.iasi.setupdev.args.WorkingArguments;
+import org.iasi.setupdev.args.model.ARG;
+import org.iasi.setupdev.args.model.ArgClass;
+import org.iasi.setupdev.args.model.ArgType;
+import org.iasi.setupdev.args.model.ArgsList;
+import org.iasi.setupdev.args.model.Arguments;
+import org.iasi.setupdev.args.layer.CommandLineArguments;
+import org.iasi.setupdev.args.loader.CommandLineLoader;
+import org.iasi.setupdev.args.layer.EnvironmentArguments;
+import org.iasi.setupdev.args.model.WorkingArguments;
 import org.iasi.setupdev.configuration.ExternalConfiguration;
 import org.iasi.setupdev.configuration.InternalConfiguration;
 import org.iasi.setupdev.console.Help;
@@ -23,6 +23,8 @@ import org.iasi.setupdev.console.Help;
  * @version 0.1.0
  * @history 2026-11-19 | 0.1.0 | Establish structural documentation and component responsibilities.
  * @history 2026-11-20 | 0.1.0 | Apply bundled TOML defaults before external configuration layers.
+ * @history 2026-11-20 | 0.1.0 | Require effective administrator privileges before processing inputs or configuration.
+ * @history 2026-11-20 | 0.1.0 | Move OS and privilege prerequisites to the process entry point.
  */
 public final class Initializer {
     private final Context          ctx              = Context.getInstance();

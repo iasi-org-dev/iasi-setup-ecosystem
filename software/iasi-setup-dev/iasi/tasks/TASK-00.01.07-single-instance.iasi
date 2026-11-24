@@ -1,0 +1,56 @@
++++
+id = "TASK-SINGLE-INSTANCE"
+type = "task"
+title = "Implement single-instance locking in the Java coordinator"
+status = "proposed"
+version = "1.0.0"
+language = "es"
+requirements = ["REQ-SINGLE-INSTANCE"]
++++
+
+# Tarea: implementar ejecución única del coordinador IASI
+
+## Objetivo
+
+Implementar el requerimiento `REQ-SINGLE-INSTANCE` sin mezclar la gestión del bloqueo con la extracción de scripts, el descubrimiento de máquinas ni la validación de configuraciones.
+
+## Trabajo a realizar
+
+1. Crear un componente Java de responsabilidad única para adquirir, mantener y liberar el bloqueo de instancia (por ejemplo, `SingleInstanceLock`; adaptar el nombre al paquete y convenciones existentes).
+2. Obtener la ubicación con `System.getProperty("java.io.tmpdir")` y `Path.resolve("iasi.lock")`. Definir el nombre del fichero como una única constante, sin literales duplicados.
+3. Abrir el fichero existente o crearlo si no existe, usando `FileChannel` y `tryLock()`. Gestionar tanto el resultado `null` como `OverlappingFileLockException` como bloqueo ocupado.
+4. Conservar las referencias a `FileChannel` y `FileLock` durante todo el proceso; no usar un `try-with-resources` que cierre el bloqueo prematuramente.
+5. Integrar la adquisición al comienzo del flujo del coordinador, **antes de extraer recursos temporales o realizar cualquier acción con efectos externos**. Solo una adquisición satisfactoria permite continuar.
+6. Ante bloqueo ocupado, utilizar el mecanismo corporativo de mensajes/códigos de retorno existente y detener esa instancia sin alterar la que ya trabaja. Ante error de E/S o permisos, fallar de modo seguro con un diagnóstico distinto.
+7. Liberar `FileLock` y cerrar `FileChannel` al terminar, también por excepciones controladas (`finally`/`AutoCloseable` o equivalente). No incorporar `System.exit` en el componente de bloqueo.
+8. No borrar ni renombrar `iasi.lock` en ningún caso. Excluirlo expresamente de la limpieza de `${java.io.tmpdir}/iasi`.
+9. No introducir ficheros PID, sondeos de procesos, retardos arbitrarios ni dependencias externas para resolver la exclusión.
+10. Añadir documentación Javadoc de paquete y clase conforme a la normativa corporativa `javadoc.iasi`; documentar los métodos solo cuando aporte valor.
+
+## Pruebas obligatorias
+
+- Una instancia adquiere el bloqueo y otra JVM concurrente no lo adquiere.
+- La exclusión se mantiene con un JAR renombrado (`setup.jar` y `setup2.jar`).
+- Una vez liberado el bloqueo, otra instancia puede adquirirlo aunque el fichero persista.
+- Tras matar forzosamente la JVM propietaria, una nueva instancia puede adquirirlo.
+- Los errores de acceso al fichero impiden arrancar el trabajo.
+- Una instancia rechazada no extrae scripts, no inicia tareas y no limpia los temporales de la instancia activa.
+- Ejecutar las pruebas de integración en Windows y Linux si la infraestructura de pruebas lo permite; documentar las no ejecutadas.
+
+## Exclusiones
+
+- No cambiar la ruta temporal de extracción de recursos (`${java.io.tmpdir}/iasi`).
+- No implementar exclusión global entre usuarios con directorios temporales distintos.
+- No modificar el formato de mensajes corporativos ni el parser de argumentos, salvo la integración estrictamente necesaria.
+- No implementar un servicio de vigilancia o limpieza para el fichero de bloqueo.
+
+## Entregables
+
+- Implementación Java integrada en el flujo de inicio y finalización.
+- Pruebas unitarias y de integración.
+- Evidencias de ejecución y resultados de pruebas.
+- Documentación mínima del comportamiento y del ámbito del bloqueo.
+
+## Definición de terminado
+
+La tarea se considera terminada cuando se cumplen todos los criterios de aceptación de `REQ-SINGLE-INSTANCE`, incluyendo la prueba de JAR renombrado y la recuperación después de una terminación abrupta.

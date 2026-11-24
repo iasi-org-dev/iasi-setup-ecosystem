@@ -5,13 +5,13 @@ import org.iasi.setupdev.messages.InitializationMessages;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
-import org.iasi.setupdev.args.ArgsList;
-import org.iasi.setupdev.args.Arguments;
-import org.iasi.setupdev.args.ArgumentException;
-import org.iasi.setupdev.args.ArgumentDefinitionsValidator;
-import org.iasi.setupdev.args.ArgumentValidator;
-import org.iasi.setupdev.args.TargetValidator;
-import org.iasi.setupdev.args.WorkingArguments;
+import org.iasi.setupdev.args.model.ArgsList;
+import org.iasi.setupdev.args.model.Arguments;
+import org.iasi.setupdev.args.validation.ArgumentException;
+import org.iasi.setupdev.args.validation.ArgumentDefinitionsValidator;
+import org.iasi.setupdev.args.validation.ArgumentValidator;
+import org.iasi.setupdev.targets.TargetValidator;
+import org.iasi.setupdev.args.model.WorkingArguments;
 import org.iasi.setupdev.targets.TargetDiscovery;
 
 /**

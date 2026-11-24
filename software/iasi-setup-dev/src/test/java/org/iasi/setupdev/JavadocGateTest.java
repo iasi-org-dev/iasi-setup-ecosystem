@@ -50,7 +50,7 @@ class JavadocGateTest {
     }
 
     private int runGate() throws Exception {
-        Path tool = Path.of("outputs/TASK-00.01.06/qa/tools/JavadocGate.java").toAbsolutePath();
+        Path tool = Path.of("outputs/TASK-00.01.07/qa/tools/JavadocGate.java").toAbsolutePath();
         Path java = Path.of(System.getProperty("java.home"), "bin", "java");
         Process process = new ProcessBuilder(java.toString(), tool.toString(), fixture.toString(), fixture.toString(), "--structure-only")
                 .redirectErrorStream(true).redirectOutput(fixture.resolve("gate.log").toFile()).start();

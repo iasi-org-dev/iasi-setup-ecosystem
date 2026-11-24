@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.iasi.setupdev.JavadocGateTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.247 s -- in org.iasi.setupdev.JavadocGateTest

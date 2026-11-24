@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="org.iasi.setupdev.args.TargetsTest" time="0.013" tests="7" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="org.iasi.setupdev.args.TargetsTest" time="0.015" tests="7" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="ES"/>
     <property name="sun.boot.library.path" value="C:\SDK\java\jdk-25.0.5.0.3\bin"/>
-    <property name="sun.java.command" value="C:\Users\Javier\AppData\Local\Temp\surefire14812128984746940799\surefirebooter-20261120170259033_3.jar C:\Users\Javier\AppData\Local\Temp\surefire14812128984746940799 2026-11-20T17-02-58_945-jvmRun1 surefire-20261120170259033_1tmp surefire_0-20261120170259033_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\Javier\AppData\Local\Temp\surefire3491719798352631514\surefirebooter-20261120172609889_3.jar C:\Users\Javier\AppData\Local\Temp\surefire3491719798352631514 2026-11-20T17-26-09_803-jvmRun1 surefire-20261120172609889_1tmp surefire_0-20261120172609889_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\Javier\Documents\prj\iasi-dev\iasi-setup-ecosystem\software\iasi-setup-dev\outputs\TASK-00.01.06\build\target\test-classes;C:\Users\Javier\Documents\prj\iasi-dev\iasi-setup-ecosystem\software\iasi-setup-dev\outputs\TASK-00.01.06\build\target\classes;C:\Users\Javier\.m2\repository\org\projectlombok\lombok\1.18.48\lombok-1.18.48.jar;C:\Users\Javier\.m2\repository\org\tomlj\tomlj\1.1.1\tomlj-1.1.1.jar;C:\Users\Javier\.m2\repository\org\antlr\antlr4-runtime\4.11.1\antlr4-runtime-4.11.1.jar;C:\Users\Javier\.m2\repository\org\checkerframework\checker-qual\3.21.2\checker-qual-3.21.2.jar;C:\Users\Javier\.m2\repository\org\junit\jupiter\junit-jupiter\5.11.0\junit-jupiter-5.11.0.jar;C:\Users\Javier\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.11.0\junit-jupiter-api-5.11.0.jar;C:\Users\Javier\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\Javier\.m2\repository\org\junit\platform\junit-platform-commons\1.11.0\junit-platform-commons-1.11.0.jar;C:\Users\Javier\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\Javier\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.11.0\junit-jupiter-params-5.11.0.jar;C:\Users\Javier\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.11.0\junit-jupiter-engine-5.11.0.jar;C:\Users\Javier\.m2\repository\org\junit\platform\junit-platform-engine\1.11.0\junit-platform-engine-1.11.0.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\Javier\AppData\Local\Temp\surefire14812128984746940799\surefirebooter-20261120170259033_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Javier\AppData\Local\Temp\surefire3491719798352631514\surefirebooter-20261120172609889_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="25.0.5.0.3+1-LTS-2"/>
@@ -61,9 +61,9 @@
   </properties>
   <testcase name="rejectsMalformedPattern(Path)" classname="org.iasi.setupdev.args.TargetsTest" time="0.003"/>
   <testcase name="resolvesAllWithoutPatterns(Path)" classname="org.iasi.setupdev.args.TargetsTest" time="0.003"/>
-  <testcase name="reportsMissingTargetsWithoutChangingOriginals(Path)" classname="org.iasi.setupdev.args.TargetsTest" time="0.003"/>
+  <testcase name="reportsMissingTargetsWithoutChangingOriginals(Path)" classname="org.iasi.setupdev.args.TargetsTest" time="0.002"/>
   <testcase name="separatesDefinitionsDirectoryFromTargets" classname="org.iasi.setupdev.args.TargetsTest" time="0.001"/>
   <testcase name="preservesImmutableOriginalTargets" classname="org.iasi.setupdev.args.TargetsTest" time="0.0"/>
-  <testcase name="resolvesPatternsWithoutDuplicates(Path)" classname="org.iasi.setupdev.args.TargetsTest" time="0.003"/>
-  <testcase name="noTargetsMeansAllDefinitions" classname="org.iasi.setupdev.args.TargetsTest" time="0.0"/>
+  <testcase name="resolvesPatternsWithoutDuplicates(Path)" classname="org.iasi.setupdev.args.TargetsTest" time="0.002"/>
+  <testcase name="noTargetsMeansAllDefinitions" classname="org.iasi.setupdev.args.TargetsTest" time="0.002"/>
 </testsuite>

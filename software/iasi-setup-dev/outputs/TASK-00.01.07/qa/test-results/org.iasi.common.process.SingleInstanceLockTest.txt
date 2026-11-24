@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.iasi.common.process.SingleInstanceLockTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s -- in org.iasi.common.process.SingleInstanceLockTest

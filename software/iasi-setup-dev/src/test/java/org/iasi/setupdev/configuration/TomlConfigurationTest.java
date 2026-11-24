@@ -6,8 +6,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import org.iasi.setupdev.args.ArgumentAccess;
-import org.iasi.setupdev.args.ArgumentException;
+import org.iasi.setupdev.args.access.ArgumentAccess;
+import org.iasi.setupdev.args.validation.ArgumentException;
 import org.junit.jupiter.api.Test;
 
 /**

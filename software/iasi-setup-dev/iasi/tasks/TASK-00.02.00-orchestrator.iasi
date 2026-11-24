@@ -1,0 +1,257 @@
++++
+title = "Implement Orchestrator"
+task = "TASK-00.02.00"
+version = "0.2.0"
++++
+
+# Objective
+
+Implement the platform-dependent execution orchestrator for `iasi-setup-dev`.
+
+The Java application already provides command-line argument processing, configuration management and execution context.
+
+The orchestrator is responsible for extracting, preparing and executing the platform-specific scripts, waiting for their completion and managing their return codes.
+
+Java orchestrates. Platform-specific scripts implement the actual setup functionality.
+
+# Requirements
+
+## 1. Operating system selection
+
+Determine the operating system on which the Java application is running.
+
+Operating system selection MUST be implemented using a `switch` statement.
+
+Initially supported operating systems:
+
+- Windows.
+- Linux.
+- macOS.
+
+Each operating system MUST be treated independently.
+
+Linux and macOS MUST NOT share the same implementation directory, even when both use shell scripts.
+
+Unsupported operating systems MUST generate the corresponding corporate error code.
+
+## 2. Resource structure
+
+Platform-specific resources MUST be located under `resources/bin`, using a separate directory for each operating system.
+
+```text
+resources/
+└── bin/
+    ├── windows/
+    │   ├── setup.ps1
+    │   └── ...
+    ├── linux/
+    │   ├── setup.sh
+    │   └── ...
+    └── macos/
+        ├── setup.sh
+        └── ...
+```
+
+Each directory contains all the scripts and auxiliary resources required by the corresponding operating system.
+
+The orchestrator MUST NOT extract resources belonging to other operating systems.
+
+## 3. Resource extraction
+
+Obtain the operating system temporary directory using the standard Java mechanisms.
+
+Create an `iasi` directory within the temporary directory.
+
+Extract the selected operating system resources into its corresponding subdirectory.
+
+```text
+<temporary-directory>/
+└── iasi/
+    ├── windows/
+    ├── linux/
+    └── macos/
+```
+
+Resource extraction MUST:
+
+- Work when the application is executed from a packaged JAR.
+- Extract the complete selected directory recursively.
+- Preserve the original directory structure.
+- Replace previously extracted resources to prevent execution of obsolete scripts.
+- Include auxiliary resources, not only executable scripts.
+
+Only the directory corresponding to the current operating system needs to be created and populated.
+
+## 4. Working directory and path resolution
+
+The directory used to extract scripts MUST NOT become the application working directory.
+
+The orchestrator MUST preserve the original working directory from which the Java application was invoked.
+
+The default values MUST remain:
+
+- `--definitions`: `.`
+- `--machines`: `.`
+
+When these parameters are not explicitly configured, they MUST reference the original working directory.
+
+Relative paths MUST retain their original meaning and MUST NOT be resolved against the temporary script directory.
+
+The orchestrator MUST:
+
+- Execute the entry-point script using its absolute path.
+- Explicitly configure the subprocess working directory using the original working directory.
+- Preserve the existing configuration precedence rules.
+
+Platform-specific scripts MUST locate their own auxiliary scripts and resources relative to their own location, independently of the working directory.
+
+The extraction process MUST be transparent to the user.
+
+## 5. Execution permissions
+
+Prepare the extracted resources before executing the entry-point script.
+
+### 5.1. Windows
+
+- Unblock extracted PowerShell scripts using `Unblock-File`.
+- Ensure that the extracted PowerShell scripts can be executed.
+- Apply the required PowerShell execution policy at process level.
+- Do not permanently modify the user or machine execution policy.
+- Wait for the permission preparation process to complete.
+- Retrieve and process its return code.
+
+### 5.2. Linux
+
+- Grant execution permissions to the corresponding shell scripts.
+- Verify that the permission preparation operation completes successfully.
+- Retrieve and process its return code.
+
+### 5.3. macOS
+
+- Grant execution permissions to the corresponding shell scripts.
+- Verify that the permission preparation operation completes successfully.
+- Retrieve and process its return code.
+
+## 6. Script execution
+
+Execute the entry-point script corresponding to the selected operating system.
+
+| Operating system | Entry point |
+|---|---|
+| Windows | `setup.ps1` |
+| Linux | `setup.sh` |
+| macOS | `setup.sh` |
+
+Use the existing execution context to obtain the parameters required by the script.
+
+The orchestrator MUST:
+
+- Reuse the existing parsed arguments and configuration.
+- Translate parameters into the existing script command-line interface when necessary.
+- Preserve argument boundaries.
+- Correctly handle paths and parameter values containing spaces.
+- Use the absolute path of the extracted entry-point script.
+- Preserve the original working directory.
+- Wait synchronously until the subprocess completes.
+- Retrieve the subprocess exit code.
+
+Standard output and standard error MUST be handled without causing subprocess blocking.
+
+The orchestrator MUST NOT duplicate the functionality already implemented by the platform-specific scripts.
+
+## 7. Return code management
+
+All return codes MUST follow the existing IASI corporate return code specification.
+
+Return codes generated by the orchestrator and the executed processes MUST be accumulated using the bitwise OR operator.
+
+```java
+rc |= processRC;
+```
+
+This includes:
+
+- Operating system selection.
+- Resource extraction.
+- Permission preparation.
+- Process creation.
+- Script execution.
+- Process completion.
+- Internal orchestration errors.
+
+Return codes MUST NOT be accumulated using arithmetic addition or numerical maximum.
+
+An operation that produces an error preventing subsequent execution MUST stop the affected execution flow.
+
+The accumulated return code MUST be preserved and returned to the caller.
+
+The orchestrator MUST NOT invoke `System.exit()`.
+
+Only the application entry point is responsible for terminating the Java process.
+
+```java
+System.exit(rc);
+```
+
+## 8. Execution flow
+
+The logical execution sequence MUST be:
+
+1. Obtain the existing execution context.
+2. Preserve the original working directory.
+3. Identify the operating system.
+4. Select the platform using `switch`.
+5. Prepare the temporary destination directory.
+6. Extract the platform-specific resources.
+7. Prepare execution permissions.
+8. Build the platform-specific command.
+9. Execute the entry-point script.
+10. Wait for process completion.
+11. Retrieve and accumulate the return codes.
+12. Return the accumulated return code.
+
+## 9. Corporate development requirements
+
+- Follow the existing IASI structured programming guidelines.
+- Follow the corporate Java naming conventions.
+- Follow the corporate Javadoc specification.
+- Reuse the existing execution context.
+- Reuse the existing return code definitions.
+- Preserve the existing configuration precedence.
+- Maintain a clear separation of responsibilities.
+- Do not duplicate argument parsing.
+- Do not refactor unrelated packages.
+- Do not introduce unnecessary dependencies.
+- Do not implement functionality outside the scope of this task.
+
+## 10. Validation
+
+Validation MUST be restricted to the scope of this task.
+
+Verify:
+
+- Successful compilation.
+- Resource extraction from the packaged JAR.
+- Independent operating system resource directories.
+- Execution permission preparation.
+- Correct argument propagation.
+- Preservation of the original working directory.
+- Default values for `--definitions` and `--machines`.
+- Synchronous subprocess execution.
+- Return code accumulation using bitwise OR.
+
+Execute only tests directly related to the implemented functionality.
+
+Do not execute the complete test suite, unrelated integration tests or the complete corporate Quality Gate.
+
+Report any platform-specific validation that could not be performed in the current environment.
+
+## 11. Version
+
+Update the application version to `0.2.0`.
+
+## 12. Acceptance criteria
+
+The Java application successfully delegates execution to the corresponding platform-specific setup script, preserving the existing configuration, arguments, working directory and corporate return code semantics.
+
+The temporary location of the extracted resources MUST NOT alter the functional behaviour of the application.

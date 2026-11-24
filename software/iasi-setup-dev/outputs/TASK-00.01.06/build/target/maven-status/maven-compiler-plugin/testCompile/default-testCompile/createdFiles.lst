@@ -1,3 +1,4 @@
+org\iasi\common\platform\AdministratorPrivilegesTest.class
 org\iasi\common\logging\LoggerTest$Definition.class
 org\iasi\setupdev\console\HelpTest.class
 org\iasi\common\platform\PlatformTest.class
